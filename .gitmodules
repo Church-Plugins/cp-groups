@@ -1,3 +1,0 @@
-[submodule "includes/ChurchPlugins"]
-	path = includes/ChurchPlugins
-	url = git@github.com:Church-Plugins/cp-connect.git
