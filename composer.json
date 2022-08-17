@@ -1,0 +1,25 @@
+{
+  "name": "churchplugins/cp-groups",
+  "type": "wordpress-plugin",
+  "description": "Church groups plugin.",
+  "keywords": [],
+  "homepage": "https://churchplugins.com",
+  "authors": [
+    {
+      "name": "Tanner Moushey",
+      "email": "tanner@churchplugins.com",
+      "homepage": "https://churchplugins.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "*",
+    "wpackio/enqueue": "^3.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "CP_Groups\\": "includes/",
+      "ChurchPlugins\\": "includes/ChurchPlugins/"
+    }
+  }
+}
