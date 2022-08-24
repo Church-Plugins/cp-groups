@@ -13,11 +13,18 @@ class Init {
 	protected static $_instance;
 
 	/**
-	 * Setup Topic taxonomy
+	 * Setup Type taxonomy
 	 *
-	 * @var Department
+	 * @var Type
 	 */
-	public $department;
+	public $type;
+
+	/**
+	 * Setup Group Category taxonomy
+	 *
+	 * @var Type
+	 */
+	public $category;
 
 	/**
 	 * Only make one instance of Init
@@ -69,7 +76,7 @@ class Init {
 	 * @author Tanner Moushey
 	 */
 	public function get_objects() {
-		return [ $this->department ];
+		return [ $this->type ];
 	}
 
 	/**
@@ -92,19 +99,12 @@ class Init {
 
 	public function register_taxonomies() {
 
-		$this->department = Department::get_instance();
+		$this->type = Type::get_instance();
+		$this->category = Category::get_instance();
 
-		if ( cp_groups()->enabled() ) {
-			$this->department->add_actions();
-			do_action( 'cp_register_taxonomies' );
-		} else {
-			// still register the taxonomy, but do so in the background
-			add_filter( $this->department->taxonomy . '_args', function( $args ){
-				$args['show_admin_column'] = false;
-				return $args;
-			} );
-			$this->department->register_taxonomy();
-		}
+		$this->type->add_actions();
+		$this->category->add_actions();
+		do_action( 'cp_register_taxonomies' );
 
 	}
 

@@ -12,37 +12,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @author tanner moushey
  * @since 1.0
  */
-class Department extends Taxonomy  {
+class Type extends Taxonomy  {
 	
-	/**
-	 * Store the found department
-	 * 
-	 * @var bool 
-	 */
-	protected static $_rewrite_department = false;
-
-	/**
-	 * Store the request URI
-	 * 
-	 * @var bool 
-	 */
-	protected static $_request_uri = false;
-
-	/**
-	 * @var array 
-	 */
-	protected static $_groups_regex = false;
-
 	/**
 	 * Child class constructor. Punts to the parent.
 	 *
 	 * @author costmo
 	 */
 	protected function __construct() {
-		$this->taxonomy = "cp_department";
+		$this->taxonomy = "cp_group_type";
 
-		$this->single_label = apply_filters( "{$this->taxonomy}_single_label", 'Department' );
-		$this->plural_label = apply_filters( "{$this->taxonomy}_plural_label", 'Departments' );
+		$this->single_label = apply_filters( "{$this->taxonomy}_single_label", 'Type' );
+		$this->plural_label = apply_filters( "{$this->taxonomy}_plural_label", 'Types' );
 		
 		parent::__construct();
 	}
@@ -72,7 +53,7 @@ class Department extends Taxonomy  {
 	 * @author Tanner Moushey
 	 */
 	public function get_object_types() {
-		return apply_filters( 'cp_department_taxonomy_types', [ cp_groups()->setup->post_types->groups->post_type ] );
+		return apply_filters( 'cp_group_type_taxonomy_types', [ cp_groups()->setup->post_types->groups->post_type ] );
 	}
 
 	public function get_args() {

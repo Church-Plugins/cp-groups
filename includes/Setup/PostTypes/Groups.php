@@ -53,7 +53,7 @@ class Groups extends PostType {
 			return $title;
 		}
 		
-		return __( 'Add name', 'cp-groups' );
+		return __( 'Group name', 'cp-groups' );
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Groups extends PostType {
 	 */
 	public function get_args() {
 		$args               = parent::get_args();
-		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-id' );
+		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['has_archive'] = false;
 		$args['supports'][] = 'page-attributes';
 		return $args;
@@ -116,18 +116,54 @@ class Groups extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Title', 'cp-groups' ),
-			'desc' => __( 'The title for this groups member.', 'cp-groups' ),
-			'id'   => 'title',
+			'name' => __( 'Group Leader', 'cp-groups' ),
+			'desc' => __( 'The name of the group leader.', 'cp-groups' ),
+			'id'   => 'leader',
 			'type' => 'text',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Email', 'cp-groups' ),
-			'desc' => __( 'The email address for this groups member.', 'cp-groups' ),
-			'id'   => 'email',
-			'type' => 'text_email',
+			'name' => __( 'Meeting Time Desc', 'cp-groups' ),
+			'desc' => __( 'The Day / Time of the meeting. Ex "Thursdays at 6pm"', 'cp-groups' ),
+			'id'   => 'time_desc',
+			'type' => 'text',
 		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Meeting Location', 'cp-groups' ),
+			'desc' => __( 'The location for the meeting. Ex City Name, ST 12345', 'cp-groups' ),
+			'id'   => 'location',
+			'type' => 'text',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Kid Friendly', 'cp-groups' ),
+			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
+			'id'   => 'kid_friendly',
+			'type' => 'checkbox',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Handicap Accessible', 'cp-groups' ),
+			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
+			'id'   => 'handicap_accessible',
+			'type' => 'checkbox',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Registration Action', 'cp-groups' ),
+			'desc' => __( 'The action for the group register button (email address, registration page, etc).', 'cp-groups' ),
+			'id'   => 'action_register',
+			'type' => 'text',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Contact Action', 'cp-groups' ),
+			'desc' => __( 'The action for the group contact button (email address, contact page, etc).', 'cp-groups' ),
+			'id'   => 'action_contact',
+			'type' => 'text',
+		] );
+
 	}
 	
 }
