@@ -1,0 +1,121 @@
+.cp-groups-filter {
+	padding: var(--cp-gap--md);
+	background: var(--cp-color-ui-inverted-light );
+	
+	@include media-breakpoint-up(md) {
+		legend {
+			display: block;
+		}
+		
+		&--toggle {
+			display: none;
+		}
+	}
+	
+	&--form {
+		display: flex;
+		justify-content: flex-start;
+		flex-flow: row wrap;
+
+		> * {
+			margin-bottom: var(--cp-gap--sm);
+
+			&:not(:last-child) {
+				margin-right: var(--cp-gap--sm);
+			}
+		}
+
+		.filter__button {
+			button {
+				color: inherit;
+			}
+		}
+	}
+
+	&--has-dropdown {
+		position: relative;
+
+		@include media-breakpoint-up(md) {
+			display: block;
+			margin-right: 0 !important;
+			width: 100%;
+			
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+		
+		&.open {
+			.cp-groups-filter--dropdown {
+				display: block;
+			}
+		}
+	}
+
+	&--dropdown-button {
+		justify-content: space-between;
+		
+		&.cp-button {
+			--cp-button--bg: white;
+			--cp-button--bg--hover: var(--cp-color-ui-inverted );
+		}
+		
+		width: 100%;
+		
+		svg, .material-icons-outlined {
+			display: none;
+			margin: -0.25em -0.25em -0.25em 0.25em;
+		}
+
+		&:after {
+			content: '\e313';
+			font-family: 'Material Icons Outlined';
+			font-size: 1.5em;
+			line-height: .75em;
+			margin: -0.25em -0.25em -0.25em 0.25em;
+		}
+	}
+
+	&--dropdown {
+		display: none;
+		background: white;
+		padding: var(--cp-gap--sm) var(--cp-gap--md);
+		box-shadow: var(--cp-box-shadow);
+		border-radius: .5em;
+		margin-top: .25em;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		min-width: 100%;
+		z-index: 5555;
+		width: calc( 100% + var(--cp-gap--md) * 2 );
+		margin-left: calc(var(--cp-gap--md) * -1);
+		max-height: 50vh;
+		overflow: scroll;
+
+		label {
+			display: block;
+			cursor: pointer;
+			white-space: nowrap;
+		}
+	}
+
+	&--filters {
+		display: flex;
+		margin-bottom: 2rem;
+
+		&--filter {
+			border: 1px solid;
+			border-radius: 20px;
+			display: inline-flex;
+			padding: 0 .5em;
+			margin-right: .5em;
+
+			&:before {
+				content: '\e5cd';
+				font-family: 'Material Icons Outlined';
+				margin: 0 0.25em 0 -0.25em;
+			}
+		}
+	}
+}

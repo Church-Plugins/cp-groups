@@ -27,6 +27,13 @@ class Init {
 	public $category;
 
 	/**
+	 * Setup Group Life Stage taxonomy
+	 *
+	 * @var Type
+	 */
+	public $life_stage;
+
+	/**
 	 * Only make one instance of Init
 	 *
 	 * @return Init
@@ -76,7 +83,7 @@ class Init {
 	 * @author Tanner Moushey
 	 */
 	public function get_objects() {
-		return [ $this->type ];
+		return [ $this->type, $this->category, $this->life_stage ];
 	}
 
 	/**
@@ -101,9 +108,12 @@ class Init {
 
 		$this->type = Type::get_instance();
 		$this->category = Category::get_instance();
+		$this->life_stage = LifeStage::get_instance();
 
 		$this->type->add_actions();
 		$this->category->add_actions();
+		$this->life_stage->add_actions();
+		
 		do_action( 'cp_register_taxonomies' );
 
 	}

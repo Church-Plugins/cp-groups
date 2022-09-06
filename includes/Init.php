@@ -43,6 +43,7 @@ class Init {
 		$this->enqueue = new \WPackio\Enqueue( 'cpGroups', 'dist', $this->get_version(), 'plugin', CP_GROUPS_PLUGIN_FILE );
 		add_action( 'plugins_loaded', [ $this, 'maybe_setup' ], - 9999 );
 		add_action( 'init', [ $this, 'maybe_init' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
 	}
 
 	/**
@@ -90,7 +91,7 @@ class Init {
 	 * @return void
 	 */
 	protected function includes() {
-		require_once( 'Templates.php' );
+		Templates::init();
 		Admin\Init::get_instance();
 		$this->setup = Setup\Init::get_instance();
 	}

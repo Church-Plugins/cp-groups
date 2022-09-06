@@ -1,0 +1,82 @@
+$gap: min(3.5%, var(--cp-gap--sm, 1rem));
+
+.cp-group-single {
+	position: relative;
+
+	&--details {
+		flex: 1 1 0;
+		display: flex;
+		flex-direction: column;
+		margin-left: $gap;
+		padding: var(--cp-ui--gap-y--sm);
+		justify-content: space-between;
+		overflow: hidden;
+	}
+
+	&--title {
+		margin: 0;
+		//font-size: min(3.75vw, var(--cp-font-size-h5));
+		line-height: 1.5;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	
+	&--content {
+		//font-size: var(--cp-font-size--sm);
+		line-height: 1.5;
+	}
+
+	.cp-group-single--title {
+		margin-top: var(--cp-gap--sm);
+	}
+
+	&--meta,
+	&--categories {
+		//font-size: min(2.75vw, var(--cp-font-size--sm));
+		display: flex;
+	}
+	
+	&--categories {
+		a {
+			text-transform: uppercase;
+			margin-right: var(--cp-gap--sm);
+		}
+	}
+	
+	&--meta {
+		margin-top: 0;
+		flex-flow: row;
+		overflow: hidden;
+		flex-flow: row wrap;
+		align-items: center;
+
+		svg, .material-icons-outlined {
+			font-size: 1em;
+			margin-right: .5em;
+		}
+
+		> * {
+			margin-right: var(--cp-gap--sm);
+			display: inline-flex;
+			align-items: center;
+			flex-flow: row;
+		}
+
+	}
+	
+	&--locations {
+		margin-bottom: var(--cp-gap-base);
+	}
+
+	@include media-breakpoint-down(md) {
+		margin-top: min(3.5%,1rem);
+		padding: min(3.5%,1rem);
+
+		&--details {
+			justify-content: space-evenly;
+		}
+
+	}
+
+}

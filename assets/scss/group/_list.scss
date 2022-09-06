@@ -1,0 +1,137 @@
+$gap: min(3.5%, var(--cp-gap--sm, 1rem));
+
+.cp-group-item {
+	padding: var(--cp-gap--md);
+	position: relative;
+	background: transparent;
+	overflow: hidden;
+	width: 100%;
+	margin-bottom: var(--cp-gap--md);
+	border-radius: var(--cp-border-radius);
+	display: flex;
+	flex-direction: row;
+
+	&:before {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: var(--cp-color-ui-inverted-light);
+		opacity: .4;
+		z-index: -1;	
+		top: 0;
+		left: 0;
+	}
+
+	&--thumb {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		overflow: hidden;
+		border-radius: var(--cp-border-radius-sm);
+		flex: 0 1 35%;
+
+		&--canvas {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-bottom: 100%;
+			background-position: center center !important;
+			//background-color: rgb(196, 196, 196);
+
+			@include media-breakpoint-up(lg) {
+				padding-bottom: 62.5%;
+			}
+		}
+
+		img {
+			display: none;
+			width: auto;
+			height: auto;
+		}
+	}
+
+	&--details {
+		flex: 1 1 0;
+		display: flex;
+		flex-direction: column;
+		margin-left: $gap;
+		padding: var(--cp-ui--gap-y--sm);
+		justify-content: space-between;
+		overflow: hidden;
+	}
+
+	&--title {
+		margin: 0;
+		font-size: min(3.75vw, var(--cp-font-size-h5));
+		line-height: 1.5;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	
+	&--content {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+		font-size: var(--cp-font-size--sm);
+		line-height: 1.5;
+	}
+
+	.cp-group-item--title {
+		margin-top: var(--cp-gap--sm);
+	}
+
+	&--meta,
+	&--categories {
+		font-size: min(2.75vw, var(--cp-font-size--sm));
+		display: flex;
+	}
+	
+	&--categories {
+		a {
+			text-transform: uppercase;
+			margin-right: var(--cp-gap--sm);
+		}
+	}
+	
+	&--meta {
+		margin-top: 0;
+		flex-flow: row;
+		overflow: hidden;
+		flex-flow: row wrap;
+		align-items: center;
+
+		svg, .material-icons-outlined {
+			font-size: 1em;
+			margin-right: .5em;
+		}
+
+		> * {
+			margin-right: var(--cp-gap--sm);
+			display: inline-flex;
+			align-items: center;
+			flex-flow: row;
+		}
+
+	}
+	
+	&--locations {
+		margin-top: var(--cp-gap-base);
+	}
+
+	@include media-breakpoint-down(md) {
+		margin-top: min(3.5%,1rem);
+		padding: min(3.5%,1rem);
+
+		&--details {
+			justify-content: space-evenly;
+		}
+
+	}
+
+}

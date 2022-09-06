@@ -23,7 +23,7 @@ class Groups extends PostType {
 	 * @author costmo
 	 */
 	protected function __construct() {
-		$this->post_type = "cp_groups";
+		$this->post_type = "cp_group";
 
 		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Groups' ) );
 		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
@@ -34,7 +34,18 @@ class Groups extends PostType {
 	public function add_actions() {
 		add_filter( 'enter_title_here', [ $this, 'add_title' ], 10, 2 );
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
+		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		parent::add_actions();
+	}
+	
+	public function groups_query( $query ) {
+		if ( $this->post_type !== $query->get( 'post_type' ) ) {
+			return;
+		}
+		
+		$query->set( 'orderby', 'post_title' );
+		$query->set( 'order', 'ASC' );
+//		$query->set( 'meta_key', 'meta_value' );
 	}
 
 	/**
@@ -96,7 +107,6 @@ class Groups extends PostType {
 	public function get_args() {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
-		$args['has_archive'] = false;
 		$args['supports'][] = 'page-attributes';
 		return $args;
 	}
