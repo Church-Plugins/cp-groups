@@ -1,4 +1,9 @@
 .cp-groups-archive {
+	
+	.cp-groups-filter {
+		padding: var(--cp-gap--md);
+		background: var(--cp-color-ui-inverted-light);
+	}
 
 	&--container {
 		@include media-breakpoint-up(md) {

@@ -95,7 +95,11 @@ class Groups extends PostType {
 			return false;
 		}
 		
-		return $type->rewrite['slug'];
+		if ( isset( $type->rewrite['slug'] ) ) {
+			return $type->rewrite['slug'];
+		}
+		
+		return false;
 	}	
 	
 	/**
@@ -108,6 +112,11 @@ class Groups extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
+		
+		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
+			$args['has_archive'] = false;
+		}
+		
 		return $args;
 	}
 	

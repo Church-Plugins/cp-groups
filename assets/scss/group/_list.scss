@@ -1,5 +1,17 @@
 $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 
+.entry-content {
+	.cp-group-item {
+		&--title {
+			font-size: min(3.75vw, var(--cp-font-size-h5)) !important;
+			
+			a {
+				text-decoration: none;
+			}
+		}
+	}
+}
+
 .cp-group-item {
 	padding: var(--cp-gap--md);
 	position: relative;
@@ -63,12 +75,12 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 	}
 
 	&--title {
-		margin: 0;
-		font-size: min(3.75vw, var(--cp-font-size-h5));
-		line-height: 1.5;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
+		margin: 0;
+		font-size: min(3.75vw, var(--cp-font-size-h5));
+		line-height: 1.5;
 	}
 	
 	&--content {

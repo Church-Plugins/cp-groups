@@ -1,6 +1,15 @@
+.entry-content {
+	.cp-groups-filter {
+		&--filters {
+			a {
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+
 .cp-groups-filter {
-	padding: var(--cp-gap--md);
-	background: var(--cp-color-ui-inverted-light );
 	
 	@include media-breakpoint-up(md) {
 		legend {

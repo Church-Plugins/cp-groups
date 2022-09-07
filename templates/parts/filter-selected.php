@@ -19,7 +19,7 @@ if ( empty( $get ) ) {
 			$get = $_GET;
 			unset( $get[ $tax->taxonomy ][ array_search( $slug, $get[ $tax->taxonomy ] ) ] );
 			?>
-			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cp-groups-filter--filters--filter"><?php echo $term->name; ?></a>
+			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>#cp-group-filters" class="cp-groups-filter--filters--filter"><?php echo $term->name; ?></a>
 		<?php endforeach; ?>
 	<?php endforeach; ?>
 </div>
