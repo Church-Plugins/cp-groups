@@ -12,7 +12,7 @@ try {
 
 <div class="cp-group-single">
 	
-	<div class="cp-group-single--thumb" onclick="window.location = jQuery(this).parent().find('a').attr('href');">
+	<div class="cp-group-single--thumb">
 		<?php if ( $item['thumb'] ) : ?>
 			<img alt="<?php esc_attr( $item['title'] ); ?>" src="<?php echo esc_url( $item['thumb'] ); ?>">
 		<?php endif; ?>
@@ -48,7 +48,11 @@ try {
 			</div>
 		<?php endif; ?>
 
-		<h3 class="cp-group-single--title"><a href="<?php the_permalink(); ?>"><?php echo $item['title']; ?></a></h3>
+		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>
+		
+		<?php if ( $item['leader'] ) : ?>
+			<h6 class="cp-group-single--leader"><?php echo $item['leader']; ?></h6>
+		<?php endif; ?>
 		
 		<div class="cp-group-single--meta">
 			<?php if ( ! empty( $item['startTime'] ) ) : ?>

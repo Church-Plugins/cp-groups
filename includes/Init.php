@@ -81,8 +81,8 @@ class Init {
 	 * @author costmo
 	 */
 	public function app_enqueue() {
-		$this->enqueue->enqueue( 'styles', 'main', [] );
-		$this->enqueue->enqueue( 'scripts', 'main', [] );
+		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
+		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog' ] ] );
 	}
 
 	/**

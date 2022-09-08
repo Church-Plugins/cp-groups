@@ -4,7 +4,44 @@ window.cpGroupsFilter = window.cpGroupsFilter || {};
 
 jQuery(function ($) {
 	
-	$(document).ready(function() {} );
+	$(document).ready(function() {
+		$('.cp-group-item--title a').on('click', function(e) {
+			e.preventDefault();
+			
+			let $this = $(this);
+			let $modalElem = $this.parents('.cp-group-item').find('.cp-group-modal').clone();
+	
+			$modalElem.dialog({
+				title        : '',
+				dialogClass  : 'groups-modal-popup',
+				autoOpen     : false,
+				draggable    : false,
+				width        : 'auto',
+				modal        : true,
+				resizable    : false,
+				closeOnEscape: true,
+				position     : {
+					my: 'center',
+					at: 'center',
+					of: window
+				},
+				open         : function () {
+					// close dialog by clicking the overlay behind it
+					$('.ui-widget-overlay').bind('click', function () {
+						$modalElem.dialog('close');
+					});
+
+				},
+//				close        : function () {
+//					history.replaceState(null, null, '/integrations/');
+//					document.title = 'SmartVault Integration Center - Accounting, Tax, e-Signature, Fetching and More';
+//				}
+			});
+
+			$modalElem.dialog('open');
+			
+		});
+	} );
 	
 	var groupsFilter = function() {
 		var SELF = this;

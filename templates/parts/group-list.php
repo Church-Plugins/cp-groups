@@ -1,5 +1,7 @@
 <?php
 use ChurchPlugins\Helpers;
+use CP_Groups\Templates;
+
 try {
 	$item = new \CP_Groups\Controllers\Group( get_the_ID() );
 	$item = $item->get_api_data();
@@ -64,5 +66,10 @@ try {
 			</div>
 		<?php endif; ?>
 	</div>
+	
+	<div style="display:none;">
+		<?php Templates::get_template_part( "parts/group-modal" ); ?>	
+	</div>
+	
 
 </div>
