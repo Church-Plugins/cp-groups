@@ -1,5 +1,6 @@
 <?php
 use ChurchPlugins\Helpers;
+use CP_Groups\Templates;
 try {
 	$item = new \CP_Groups\Controllers\Group( get_the_ID() );
 	$item = $item->get_api_data();
@@ -23,7 +24,7 @@ try {
 		<?php if ( ! empty( $item['locations'] ) ) : ?>
 			<div class="cp-group-single--locations">
 				<?php foreach( $item['locations'] as $id => $location ) : ?>
-					<a class="cp-button is-xsmall is-transparent" href="#"><?php echo $location['title']; ?></a>
+					<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( 'location_' . $id, 'cp_location' ); ?>"><?php echo $location['title']; ?></a>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>		
@@ -33,7 +34,7 @@ try {
 				<?php if ( ! empty( $item['types'] ) ) : ?>
 					<div class="cp-group-single--type">
 						<?php foreach( $item['types'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall" href="#"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
@@ -41,7 +42,7 @@ try {
 				<?php if ( ! empty( $item['lifeStages'] ) ) : ?>
 					<div class="cp-group-single--life-stage">
 						<?php foreach( $item['lifeStages'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall is-transparent" href="#"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_life_stage' ); ?>"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
