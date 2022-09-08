@@ -5,7 +5,7 @@ window.cpGroupsFilter = window.cpGroupsFilter || {};
 jQuery(function ($) {
 	
 	$(document).ready(function() {
-		$('.cp-group-item--title a').on('click', function(e) {
+		$('.cp-group-item').on('click', '.cp-group-item--title a, .cp-group-item--thumb',function(e) {
 			e.preventDefault();
 			
 			let $this = $(this);
