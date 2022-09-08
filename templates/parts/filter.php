@@ -33,23 +33,7 @@ $get = $_GET;
 				</div>
 			</div>
 		<?php endforeach; ?>
-		
+
 	</form>
 
-	<script>
-
-	  	jQuery('.cp-groups-filter--toggle--button').on('click', function(e) {
-			e.preventDefault();
-			jQuery('.cp-groups-filter--has-dropdown').toggle();
-		});
-
-	  	jQuery('.cp-groups-filter--form input[type=checkbox]').on('change', function() {
-			jQuery('.cp-groups-filter--form').submit();
-		});
-
-		jQuery('.cp-groups-filter--has-dropdown a').on( 'click', function(e) {
-			e.preventDefault();
-			jQuery(this).parent().toggleClass('open');
-		})
-	</script>
 </div>

@@ -11,7 +11,7 @@
 
 .cp-groups-filter {
 	
-	@include media-breakpoint-up(md) {
+	//@include media-breakpoint-up(md) {
 		legend {
 			display: block;
 		}
@@ -19,7 +19,7 @@
 		&--toggle {
 			display: none;
 		}
-	}
+	//}
 	
 	&--form {
 		display: flex;
@@ -44,7 +44,7 @@
 	&--has-dropdown {
 		position: relative;
 
-		@include media-breakpoint-up(md) {
+		//@include media-breakpoint-up(md) {
 			display: block;
 			margin-right: 0 !important;
 			width: 100%;
@@ -52,7 +52,7 @@
 			&:last-child {
 				margin-bottom: 0;
 			}
-		}
+		//}
 		
 		&.open {
 			.cp-groups-filter--dropdown {
@@ -90,15 +90,15 @@
 		background: white;
 		padding: var(--cp-gap--sm) var(--cp-gap--md);
 		box-shadow: var(--cp-box-shadow);
-		border-radius: .5em;
+		border-radius: var(--cp-border-radius);
 		margin-top: .25em;
 		position: absolute;
 		top: 100%;
 		left: 0;
-		min-width: 100%;
+		width: 100%;
 		z-index: 5555;
-		width: calc( 100% + var(--cp-gap--md) * 2 );
-		margin-left: calc(var(--cp-gap--md) * -1);
+		//width: calc( 100% + var(--cp-gap--md) * 2 );
+		//margin-left: calc(var(--cp-gap--md) * -1);
 		max-height: 50vh;
 		overflow: scroll;
 
