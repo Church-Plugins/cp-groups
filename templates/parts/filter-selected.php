@@ -8,6 +8,8 @@ $get = $_GET;
 if ( empty( $get ) ) {
 	return;
 }
+
+unset( $get['groups-paged'] );
 ?>
 <div class="cp-groups-filter--filters">
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>

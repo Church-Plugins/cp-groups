@@ -52,6 +52,32 @@ class Templates {
 	}
 
 	/**
+	 * Build the link for the facet buttons
+	 * 
+	 * @param $slug
+	 * @param $facet
+	 *
+	 * @return string
+	 * @since  1.0.0
+	 *
+	 * @author Tanner Moushey
+	 */
+	public static function get_facet_link( $slug, $facet ) {
+		$uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+		$get = $_GET;
+
+		if ( empty( $get ) ) {
+			$get = [];
+		}
+		
+		unset( $get['groups-paged'] );
+		
+		$get[ $facet ] = [ $slug ];
+
+		return esc_url( add_query_arg( $get, $uri ) ) . '#cp-group-filters';
+	}
+	
+	/**
 	 * @return \WP_Query|null
 	 * @since  1.0.0
 	 *
