@@ -33,7 +33,7 @@
 			margin: var(--cp-gap-base) 0;
 		}
 		
-		&--content {
+		&--content:last-child {
 			p:last-child {
 				margin-bottom: 0;
 			}

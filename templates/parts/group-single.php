@@ -67,6 +67,7 @@ try {
 		
 		<div class="cp-group-single--content"><?php echo wp_kses_post( $item['desc'] ); ?></div>
 		
+		<?php do_action( 'cp_group_single_after_content', $item ); ?>
 	</div>
 
 </div>
