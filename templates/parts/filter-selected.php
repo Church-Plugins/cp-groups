@@ -3,6 +3,7 @@ use ChurchPlugins\Helpers;
 
 $taxonomies = apply_filters( 'cp_groups_filter_facets', cp_groups()->setup->taxonomies->get_objects() );
 $uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+$uri = explode( 'page', $uri )[0];
 $get = $_GET;
 
 $search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';

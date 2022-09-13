@@ -67,6 +67,10 @@ try {
 		
 		<div class="cp-group-single--content"><?php echo wp_kses_post( $item['desc'] ); ?></div>
 		
+		<?php if ( $public_url = get_post_meta( $item['id'], 'public_url', true ) ) : ?>
+			<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
+		<?php endif; ?>
+		
 		<?php if ( $registration_url = get_post_meta( $item['id'], 'registration_url', true ) ) : ?>
 			<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $registration_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
 		<?php endif; ?>
