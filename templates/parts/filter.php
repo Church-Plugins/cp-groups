@@ -3,11 +3,12 @@ use ChurchPlugins\Helpers;
 
 $taxonomies = apply_filters( 'cp_groups_filter_facets', cp_groups()->setup->taxonomies->get_objects() );
 $uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+$uri = explode( 'page', $uri )[0];
 $get = $_GET;
 ?>
 <div id="cp-group-filters" class="cp-groups-filter">
 
-	<form method="get" action="#cp-group-filters" class="cp-groups-filter--form">
+	<form method="get" action="<?php echo $uri; ?>#cp-group-filters" class="cp-groups-filter--form">
 
 		<legend class="text-xlarge"><?php _e( 'Filter by', 'cp-groups' ); ?></legend>
 
