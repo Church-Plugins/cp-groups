@@ -5,6 +5,7 @@ $taxonomies = apply_filters( 'cp_groups_filter_facets', cp_groups()->setup->taxo
 $uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
 $get = $_GET;
 
+$search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
 if ( empty( $get ) ) {
 	return;
 }
@@ -12,6 +13,10 @@ if ( empty( $get ) ) {
 unset( $get['groups-paged'] );
 ?>
 <div class="cp-groups-filter--filters">
+	<?php if ( ! empty( $_GET[ $search_param ] ) ) : unset( $get[ $search_param ] ); ?>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo __( 'Search:' ) . ' ' . Helpers::get_request( $search_param ); ?></a>
+	<?php endif; ?>
+
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>
 		<?php foreach( $_GET[ $tax->taxonomy ] as $slug ) :
 			if ( ! $term = get_term_by( 'slug', $slug, $tax->taxonomy ) ) {

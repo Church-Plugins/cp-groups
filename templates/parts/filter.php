@@ -4,6 +4,9 @@ use ChurchPlugins\Helpers;
 $taxonomies = apply_filters( 'cp_groups_filter_facets', cp_groups()->setup->taxonomies->get_objects() );
 $uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
 $get = $_GET;
+
+$search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
+
 ?>
 <div id="cp-group-filters" class="cp-groups-filter">
 
@@ -14,6 +17,14 @@ $get = $_GET;
 		<div class="cp-groups-filter--toggle">
 			<a href="#" class="cp-groups-filter--toggle--button cp-button"><span><?php _e( 'Filter', 'cp-library' ); ?></span> <?php echo Helpers::get_icon( 'filter' ); ?></a>
 		</div>
+
+		<div class="cp-groups-filter--facet cp-groups-filter--search">
+			<div class="cp-groups-filter--search--box cp-button is-light">
+				<button type="submit"><span class="material-icons-outlined">search</span></button>
+				<input type="text" name="<?php echo $search_param; ?>" value="<?php echo Helpers::get_param( $_GET, $search_param ); ?>"
+					   placeholder="<?php _e( 'Search', 'cp-groups' ); ?>"/>
+			</div>
+		</div>	
 		
 		<?php foreach( $taxonomies as $tax ) :
 			$terms = apply_filters( 'cp_groups_filter_facet_terms', get_terms( [ 'taxonomy' => $tax->taxonomy ] ), $tax->taxonomy, $tax );

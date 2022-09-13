@@ -10,6 +10,10 @@ if ( isset( $params['groups-paged' ] ) ) {
 	$params['paged'] = $params['groups-paged'];
 }
 
+if ( isset( $params['group-search' ] ) ) {
+	$params['s'] = $params['group-search'];
+}
+
 $wp_query = new WP_Query( $params );
 
 ?>
