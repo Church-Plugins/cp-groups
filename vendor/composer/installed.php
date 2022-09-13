@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '51e143788aafac6ac6c8952f276c99081db08162',
+    'reference' => '36175c10e658b2b383d86808502415bfa0688f41',
     'name' => 'churchplugins/cp-groups',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '51e143788aafac6ac6c8952f276c99081db08162',
+      'reference' => '36175c10e658b2b383d86808502415bfa0688f41',
     ),
     'composer/installers' => 
     array (
-      'pretty_version' => 'v2.1.1',
-      'version' => '2.1.1.0',
+      'pretty_version' => 'v2.2.0',
+      'version' => '2.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'af93ba6e52236418f07a278033eba6959ee5b983',
+      'reference' => 'c29dc4b93137acb82734f672c37e029dfbd95b35',
     ),
     'wpackio/enqueue' => 
     array (
