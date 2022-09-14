@@ -26,12 +26,20 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 	<div class="cp-group-item--details">
 
-		<?php if ( ! empty( $item['types'] ) || ! empty( $item['lifeStages'] ) ) : ?>
+		<?php if ( ! empty( $item['types'] ) || ! empty( $item['categories'] ) || ! empty( $item['lifeStages'] ) ) : ?>
 			<div class="cp-group-item--categories">
+				<?php if ( ! empty( $item['categories'] ) ) : ?>
+					<div class="cp-group-single--type">
+						<?php foreach( $item['categories'] as $slug => $label ) : ?>
+							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_category' ); ?>"><?php echo $label; ?></a>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+				
 				<?php if ( ! empty( $item['types'] ) ) : ?>
 					<div class="cp-group-item--type">
 						<?php foreach( $item['types'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>

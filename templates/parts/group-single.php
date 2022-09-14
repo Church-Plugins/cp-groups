@@ -29,12 +29,20 @@ try {
 			</div>
 		<?php endif; ?>		
 
-		<?php if ( ! empty( $item['types'] ) || ! empty( $item['lifeStages'] ) ) : // for mobile ?>
+		<?php if ( ! empty( $item['types'] ) || ! empty( $item['categories'] ) || ! empty( $item['lifeStages'] ) ) : // for mobile ?>
 			<div class="cp-group-single--categories">
+				<?php if ( ! empty( $item['categories'] ) ) : ?>
+					<div class="cp-group-single--type">
+						<?php foreach( $item['categories'] as $slug => $label ) : ?>
+							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_category' ); ?>"><?php echo $label; ?></a>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+				
 				<?php if ( ! empty( $item['types'] ) ) : ?>
 					<div class="cp-group-single--type">
 						<?php foreach( $item['types'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
