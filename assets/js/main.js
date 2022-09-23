@@ -12,11 +12,15 @@ jQuery(function ($) {
 			return;
 		}
 
-		$groupItem.on('click', '.cp-group-item--title a, .cp-group-item--thumb', function (e) {
+		$groupItem.on('click', function (e) {
+			if ($(e.target).hasClass('cp-button')) {
+				return true;
+			}
+			
 			e.preventDefault();
 
 			let $this = $(this);
-			let $modalElem = $this.parents('.cp-group-item').find('.cp-group-modal').clone();
+			let $modalElem = $this.find('.cp-group-modal').clone();
 
 			$modalElem.dialog({
 				title        : '',
