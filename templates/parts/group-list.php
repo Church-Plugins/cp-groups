@@ -35,7 +35,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
-				
+
 				<?php if ( ! empty( $item['types'] ) ) : ?>
 					<div class="cp-group-item--type">
 						<?php foreach( $item['types'] as $slug => $label ) : ?>
@@ -43,7 +43,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
-				
+
 				<?php if ( ! empty( $item['lifeStages'] ) ) : ?>
 					<div class="cp-group-item--life-stage">
 						<?php foreach( $item['lifeStages'] as $slug => $label ) : ?>
@@ -55,17 +55,17 @@ $is_location_page = get_query_var( 'cp_location_id' );
 		<?php endif; ?>
 
 		<h3 class="cp-group-item--title"><a href="<?php the_permalink(); ?>"><?php echo $item['title']; ?></a></h3>
-		
+
 		<div class="cp-group-item--meta">
 			<?php if ( ! empty( $item['startTime'] ) ) : ?>
 				<div class="cp-group--item--meta--start-time"><?php echo Helpers::get_icon( 'date' ); ?> <?php echo esc_html( $item['startTime'] ); ?></div>
 			<?php endif; ?>
-			
+
 			<?php if ( ! empty( $item['location'] ) ) : ?>
 				<div class="cp-group--item--meta--location"><?php echo Helpers::get_icon( 'location' ); ?> <?php echo esc_html( $item['location'] ); ?></div>
 			<?php endif; ?>
 		</div>
-		
+
 		<div class="cp-group-item--content"><?php echo wp_kses_post( $item['excerpt'] ); ?></div>
 
 		<?php if ( empty( $is_location_page ) && ! empty( $item['locations'] ) ) : ?>
@@ -76,10 +76,10 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			</div>
 		<?php endif; ?>
 	</div>
-	
+
 	<div style="display:none;">
-		<?php Templates::get_template_part( "parts/group-modal" ); ?>	
+		<?php Templates::get_template_part( "parts/group-modal" ); ?>
 	</div>
-	
+
 
 </div>

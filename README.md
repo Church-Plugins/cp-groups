@@ -19,5 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.0.1
+* Update stying for archive page
+* Add settings page and default thumbnail
+
 #### 1.0.0
 * Initial release

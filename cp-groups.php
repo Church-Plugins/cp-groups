@@ -3,12 +3,18 @@
  * Plugin Name: Church Plugins - Groups
  * Plugin URL: https://churchplugins.com
  * Description: Church Groups plugin for managing groups
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Church Plugins
  * Author URI: https://churchplugins.com
  * Text Domain: cp-groups
  * Domain Path: languages
  */
+
+if( !defined( 'CP_GROUPS_PLUGIN_VERSION' ) ) {
+	 define ( 'CP_GROUPS_PLUGIN_VERSION',
+	 	'1.0.1'
+	);
+}
 
 require_once( dirname( __FILE__ ) . "/includes/Constants.php" );
 

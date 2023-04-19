@@ -2,16 +2,17 @@
 
 namespace CP_Groups\Controllers;
 
+use CP_Groups\Admin\Settings;
 use ChurchPlugins\Controllers\Controller;
 use ChurchPlugins\Helpers;
 use CP_Groups\Exception;
 
 class Group extends Controller{
-	
+
 	public function get_excerpt() {
 		return $this->filter( get_the_excerpt( $this->post->ID ), __FUNCTION__ );
 	}
-	
+
 	public function get_content( $raw = false ) {
 		$content = get_the_content( null, false, $this->post );
 		if ( ! $raw ) {
@@ -68,7 +69,8 @@ class Group extends Controller{
 	 * @author Tanner Moushey
 	 */
 	public function get_default_thumb() {
-		return $this->filter( '', __FUNCTION__ );
+		$img = Settings::get( 'default_thumbnail', '' );
+		return $this->filter( $img, __FUNCTION__ );
 	}
 
 	/**
@@ -163,7 +165,7 @@ class Group extends Controller{
 
 		return $this->filter( $return, __FUNCTION__ );
 	}
-	
+
 	public function get_api_data() {
 		try {
 			$data = [
@@ -183,11 +185,11 @@ class Group extends Controller{
 				'locations'   => $this->get_locations(),
 				'types'       => $this->get_types(),
 				'lifeStages'  => $this->get_life_stages(),
-				'startTime'   => $this->time_desc,
-				'leader'      => $this->leader,
-				'location'    => $this->location,
-				'handicap'    => $this->handicap_accessible,
-				'kidFriendly' => $this->kid_friendly,
+				'startTime'   => trim( $this->time_desc ),
+				'leader'      => trim( $this->leader ),
+				'location'    => trim( $this->location ),
+				'handicap'    => trim( $this->handicap_accessible ),
+				'kidFriendly' => trim( $this->kid_friendly ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );

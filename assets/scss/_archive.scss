@@ -1,5 +1,5 @@
 .cp-groups-archive {
-	
+
 	.cp-groups-filter {
 		padding: var(--cp-gap--md);
 		background: var(--cp-color-ui-inverted-light);
@@ -9,7 +9,7 @@
 		@include media-breakpoint-up(md) {
 			display: flex;
 		}
-		
+
 		&--filters {
 			@include media-breakpoint-up(md) {
 				flex-basis: 30%;
@@ -17,8 +17,12 @@
 				margin-right: var(--cp-gap--lg);
 			}
 		}
+
+		&--list {
+			flex-grow: 1;
+		}
 	}
-	
+
 	&--item-switcher {
 		@include media-breakpoint-up(md) {
 			float: right;

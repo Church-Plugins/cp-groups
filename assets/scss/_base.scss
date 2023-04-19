@@ -1,10 +1,11 @@
-.cpl-pg-template {
+.cp-pg-template {
 	width: 100%;
-	padding-top: 2rem;
-	padding-bottom: 2rem;
-	color: var(--cpl--text-color);
+	padding-top: var(--cp-gap--lg);
+	padding-bottom: var(--cp-gap--lg);
+	//color: var(--cpl--text-color);
+	flex-grow: 1;
 
-	.cpl-pagination {
+	.cp-pagination {
 		ul {
 			display: flex;
 			justify-content: center;
@@ -14,9 +15,9 @@
 			}
 		}
 
-		button, div {
-			color: var(--cpl--text-color);
-		}
+		//button, div {
+		//	color: var(--cpl--text-color);
+		//}
 
 	}
 }

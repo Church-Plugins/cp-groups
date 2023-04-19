@@ -4,7 +4,6 @@ namespace CP_Groups\Setup\PostTypes;
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-use ChurchPlugins\Setup\Tables\SourceMeta;
 use CP_Groups\Admin\Settings;
 
 use ChurchPlugins\Setup\PostTypes\PostType;
@@ -16,7 +15,7 @@ use ChurchPlugins\Setup\PostTypes\PostType;
  * @since 1.0
  */
 class Groups extends PostType {
-	
+
 	/**
 	 * Child class constructor. Punts to the parent.
 	 *
@@ -25,7 +24,7 @@ class Groups extends PostType {
 	protected function __construct() {
 		$this->post_type = "cp_group";
 
-		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Groups' ) );
+		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
 		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
 
 		parent::__construct();
@@ -37,20 +36,20 @@ class Groups extends PostType {
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		parent::add_actions();
 	}
-	
+
 	public function groups_query( $query ) {
 		if ( $this->post_type !== $query->get( 'post_type' ) ) {
 			return;
 		}
-		
+
 		$query->set( 'orderby', 'post_title' );
 		$query->set( 'order', 'ASC' );
 //		$query->set( 'meta_key', 'meta_value' );
 	}
 
 	/**
-	 * Update title placeholder in edit page 
-	 * 
+	 * Update title placeholder in edit page
+	 *
 	 * @param $title
 	 * @param $post
 	 *
@@ -63,13 +62,13 @@ class Groups extends PostType {
 		if ( get_post_type( $post ) != $this->post_type ) {
 			return $title;
 		}
-		
+
 		return __( 'Group name', 'cp-groups' );
 	}
 
 	/**
 	 * Add Groups to locations taxonomy if it exists
-	 * 
+	 *
 	 * @param $types
 	 *
 	 * @return mixed
@@ -84,7 +83,7 @@ class Groups extends PostType {
 
 	/**
 	 * Get the slug for this taxonomy
-	 * 
+	 *
 	 * @return false|mixed
 	 * @since  1.0.0
 	 *
@@ -94,14 +93,14 @@ class Groups extends PostType {
 		if ( ! $type = get_post_type_object( $this->post_type ) ) {
 			return false;
 		}
-		
+
 		if ( isset( $type->rewrite['slug'] ) ) {
 			return $type->rewrite['slug'];
 		}
-		
+
 		return false;
-	}	
-	
+	}
+
 	/**
 	 * Setup arguments for this CPT
 	 *
@@ -112,14 +111,14 @@ class Groups extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
-		
+
 		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
 			$args['has_archive'] = false;
 		}
-		
+
 		return $args;
 	}
-	
+
 	public function register_metaboxes() {
 		$this->meta_details();
 	}
@@ -184,5 +183,5 @@ class Groups extends PostType {
 		] );
 
 	}
-	
+
 }
