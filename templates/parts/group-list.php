@@ -68,7 +68,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 		<div class="cp-group-item--content"><?php echo wp_kses_post( $item['excerpt'] ); ?></div>
 
-		<?php if ( empty( $is_location_page ) && ! empty( $item['locations'] ) ) : ?>
+		<?php if ( ! empty( $item['locations'] ) ) : ?>
 			<div class="cp-group-item--locations">
 				<?php foreach( $item['locations'] as $id => $location ) : ?>
 					<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( 'location_' . $id, 'cp_location' ); ?>"><?php echo $location['title']; ?></a>
