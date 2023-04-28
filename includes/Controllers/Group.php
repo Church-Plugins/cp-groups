@@ -190,6 +190,7 @@ class Group extends Controller{
 				'location'    => trim( $this->location ),
 				'handicap'    => trim( $this->handicap_accessible ),
 				'kidFriendly' => trim( $this->kid_friendly ),
+				'isFull'      => boolval( $this->is_group_full ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );

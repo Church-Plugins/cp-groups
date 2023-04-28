@@ -75,6 +75,20 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
+
+		<div class="cp-group-item--attributes">
+			<?php if ( $item['handicap'] ) : ?>
+				<span class="cp-group-item--attributes--accessible"><?php echo Helpers::get_icon( 'accessible' ); ?> <?php _e( 'Accessible', 'cp-groups' ); ?></span>
+			<?php endif; ?>
+
+			<?php if ( $item['kidFriendly'] ) : ?>
+				<span class="cp-group-item--attributes--kid-friendly"><?php echo Helpers::get_icon( 'child' ); ?> <?php _e( 'Kid Friendly', 'cp-groups' ); ?></span>
+			<?php endif; ?>
+
+			<?php if ( $item['isFull'] ) : ?>
+				<span class="cp-group-item--attributes--is-full"><?php echo Helpers::get_icon( 'report' ); ?> <?php _e( 'Full', 'cp-groups' ); ?></span>
+			<?php endif; ?>
+		</div>
 	</div>
 
 	<div style="display:none;">
