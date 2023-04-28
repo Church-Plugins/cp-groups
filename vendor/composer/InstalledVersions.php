@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '36175c10e658b2b383d86808502415bfa0688f41',
+    'reference' => '980dd620de5192440d6423cc36e4866f5162e40d',
     'name' => 'churchplugins/cp-groups',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '36175c10e658b2b383d86808502415bfa0688f41',
+      'reference' => '980dd620de5192440d6423cc36e4866f5162e40d',
     ),
     'composer/installers' => 
     array (
@@ -54,12 +54,12 @@ private static $installed = array (
     ),
     'wpackio/enqueue' => 
     array (
-      'pretty_version' => '3.4.0',
-      'version' => '3.4.0.0',
+      'pretty_version' => '3.5.0',
+      'version' => '3.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8a5604f5ab3bd5f000e503dda02603e15e534d47',
+      'reference' => '944dd17df10e2e534e62ca3f5f20e550c2058a63',
     ),
   ),
 );
