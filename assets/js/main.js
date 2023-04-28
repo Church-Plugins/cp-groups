@@ -16,7 +16,7 @@ jQuery(function ($) {
 			if ($(e.target).hasClass('cp-button')) {
 				return true;
 			}
-			
+
 			e.preventDefault();
 
 			let $this = $(this);
@@ -24,10 +24,10 @@ jQuery(function ($) {
 
 			$modalElem.dialog({
 				title        : '',
-				dialogClass  : 'groups-modal-popup',
+				dialogClass  : 'cp-groups-modal-popup',
 				autoOpen     : false,
 				draggable    : false,
-				width        : 'auto',
+				width        : 500,
 				modal        : true,
 				resizable    : false,
 				closeOnEscape: true,
@@ -41,6 +41,10 @@ jQuery(function ($) {
 					$('.ui-widget-overlay').bind('click', function () {
 						$modalElem.dialog('close');
 					});
+
+					$(event.target).dialog('widget')
+						.css({position: 'fixed'})
+						.position({my: 'center', at: 'center', of: window});
 
 				},
 			});
