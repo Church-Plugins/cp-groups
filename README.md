@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.0.2
+* Add facets for "Child Friendly", "Wheelchair Accessible", and "Group is Full"
+
 #### 1.0.1
 * Update stying for archive page
 * Add settings page and default thumbnail
