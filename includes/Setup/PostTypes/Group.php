@@ -5,16 +5,15 @@ namespace CP_Groups\Setup\PostTypes;
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 use CP_Groups\Admin\Settings;
-
+use ChurchPlugins\Helpers;
 use ChurchPlugins\Setup\PostTypes\PostType;
 
 /**
- * Setup for custom post type: Speaker
+ * Setup for custom post type: Group
  *
- * @author costmo
  * @since 1.0
  */
-class Groups extends PostType {
+class Group extends PostType {
 
 	/**
 	 * Child class constructor. Punts to the parent.
@@ -28,23 +27,78 @@ class Groups extends PostType {
 		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
 
 		parent::__construct();
+
+		// the model for this class is not compatible with CP core
+		$this->model = false;
 	}
 
 	public function add_actions() {
 		add_filter( 'enter_title_here', [ $this, 'add_title' ], 10, 2 );
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
+		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
+
 		parent::add_actions();
 	}
 
+	/**
+	 *
+	 *
+	 * @since  1.0.0
+	 * @updated 1.0.2 | Updated query for attribute parameters
+	 *
+	 * @param $query \WP_Query
+	 *
+	 * @author Tanner Moushey, 5/2/23
+	 */
 	public function groups_query( $query ) {
 		if ( $this->post_type !== $query->get( 'post_type' ) ) {
 			return;
 		}
 
+		if ( is_admin() ) {
+			return;
+		}
+
 		$query->set( 'orderby', 'post_title' );
 		$query->set( 'order', 'ASC' );
-//		$query->set( 'meta_key', 'meta_value' );
+
+		$meta_query = $query->get( 'meta_query', [] );
+
+		if ( Helpers::get_param( $_GET, 'child-friendly' ) ) {
+			$meta_query[] = [
+				'key' => 'kid_friendly',
+				'value' => 'on',
+			];
+		}
+
+		if ( Helpers::get_param( $_GET, 'accessible' ) ) {
+			$meta_query[] = [
+				'key' => 'handicap_accessible',
+				'value' => 'on',
+			];
+		}
+
+		if ( $is_full_enabled = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) {
+			$is_full_param = Helpers::get_param( $_GET, 'is-full', false );
+			$show_full = ( 'show' == $is_full_enabled );
+
+			// if the is-full parameter is set, do the opposite of the default action
+			if ( $is_full_param ) {
+				$show_full = ! $show_full;
+			}
+
+			if ( ! $show_full ) {
+				$meta_query[] = [
+					'key'   => 'is_group_full',
+					'value' => 0,
+				];
+			}
+
+		}
+
+		$query->set( 'meta_query', $meta_query );
+
 	}
 
 	/**
@@ -155,6 +209,13 @@ class Groups extends PostType {
 		] );
 
 		$cmb->add_field( [
+			'name' => __( 'Group is Full', 'cp-groups' ),
+			'desc' => __( 'This group is full and not accepting new registrations.', 'cp-groups' ),
+			'id'   => 'is_group_full',
+			'type' => 'checkbox',
+		] );
+
+		$cmb->add_field( [
 			'name' => __( 'Kid Friendly', 'cp-groups' ),
 			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
 			'id'   => 'kid_friendly',
@@ -182,6 +243,26 @@ class Groups extends PostType {
 			'type' => 'text',
 		] );
 
+	}
+
+	/**
+	 * Actions to run whenever a group is saved
+	 *
+	 * @since  1.0.2
+	 *
+	 * @param $group_id
+	 *
+	 * @return bool|\ChurchPlugins\Models\Item|\ChurchPlugins\Models\ItemType|\ChurchPlugins\Models\Source|void
+	 * @author Tanner Moushey, 5/2/23
+	 */
+	public function save_post( $group_id ) {
+
+		// make sure `is_group_full` is always set for better querying
+		if ( ! get_post_meta( $group_id, 'is_group_full', true ) ) {
+			update_post_meta( $group_id, 'is_group_full', 0 );
+		}
+
+		parent::save_post( $group_id );
 	}
 
 }

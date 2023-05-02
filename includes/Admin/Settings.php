@@ -54,6 +54,10 @@ class Settings {
 		return self::get( $key, $default, 'cp_groups_group_options' );
 	}
 
+	public static function get_advanced( $key, $default = '' ) {
+		return self::get( $key, $default, 'cp_groups_advanced_options' );
+	}
+
 	/**
 	 * Class constructor. Add admin hooks and actions
 	 *
@@ -100,14 +104,19 @@ class Settings {
 		) );
 
 		$this->group_options();
-//		$this->advanced_options();
+		$this->advanced_options();
+		$this->license_fields();
+	}
+
+	protected function license_fields() {
+		$license = new \ChurchPlugins\Setup\Admin\License( 'cp_groups_license', 440, CP_GROUPS_STORE_URL, CP_GROUPS_PLUGIN_FILE, get_admin_url( null, 'admin.php?page=cp_groups_license' ) );
 
 		/**
-		 * Registers tertiary options page, and set main item as parent.
+		 * Registers settings page, and set main item as parent.
 		 */
 		$args = array(
-			'id'           => 'cp_groups_license_options_page',
-			'title'        => 'Settings',
+			'id'           => 'cp_groups_options_page',
+			'title'        => 'CP Group Settings',
 			'object_types' => array( 'options-page' ),
 			'option_key'   => 'cp_groups_license',
 			'parent_slug'  => 'cp_groups_main_options',
@@ -116,13 +125,8 @@ class Settings {
 			'display_cb'   => [ $this, 'options_display_with_tabs' ]
 		);
 
-		$tertiary_options = new_cmb2_box( $args );
-
-		$tertiary_options->add_field( array(
-			'name' => 'License Key',
-			'id'   => 'license',
-			'type' => 'text',
-		) );
+		$options = new_cmb2_box( $args );
+		$license->license_field( $options );
 	}
 
 	protected function group_options() {
@@ -183,14 +187,14 @@ class Settings {
 		$advanced_options = new_cmb2_box( $args );
 
 		$advanced_options->add_field( array(
-			'name' => __( 'Modules' ),
-			'id'   => 'modules_enabled',
+			'name' => __( 'Facets' ),
+			'id'   => 'facets_enabled',
 			'type' => 'title',
 		) );
 
 		$advanced_options->add_field( array(
-			'name'    => __( 'Enable' ) . ' ' . cp_groups()->setup->post_types->groups_type->plural_label,
-			'id'      => 'item_type_enabled',
+			'name'    => __( 'Kid Friendly', 'cp-groups' ),
+			'id'      => 'kid_friendly_enabled',
 			'type'    => 'radio_inline',
 			'default' => 1,
 			'options' => [
@@ -200,12 +204,24 @@ class Settings {
 		) );
 
 		$advanced_options->add_field( array(
-			'name'    => __( 'Enable' ) . ' ' . cp_groups()->setup->post_types->speaker->plural_label,
-			'id'      => 'speaker_enabled',
+			'name'    => __( 'Wheelchair Accessible', 'cp-groups' ),
+			'id'      => 'accessible_enabled',
 			'type'    => 'radio_inline',
 			'default' => 1,
 			'options' => [
 				1 => __( 'Enable', 'cp-groups' ),
+				0 => __( 'Disable', 'cp-groups' ),
+			]
+		) );
+
+		$advanced_options->add_field( array(
+			'name'    => __( 'Group is Full', 'cp-groups' ),
+			'id'      => 'is_full_enabled',
+			'type'    => 'radio',
+			'default' => 'hide',
+			'options' => [
+				'hide' => __( 'Enabled - Default: Hide Full', 'cp-groups' ),
+				'show' => __( 'Enabled - Default: Show Full', 'cp-groups' ),
 				0 => __( 'Disable', 'cp-groups' ),
 			]
 		) );

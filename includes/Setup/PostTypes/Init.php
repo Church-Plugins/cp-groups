@@ -11,11 +11,11 @@ class Init {
 	 * @var Init
 	 */
 	protected static $_instance;
-	
+
 	/**
 	 * Setup Groups CPT
 	 *
-	 * @var Groups
+	 * @var Group
 	 */
 	public $groups;
 
@@ -57,7 +57,7 @@ class Init {
 	public function get_post_types() {
 		return [ $this->groups->post_type ];
 	}
-	
+
 	/**
 	 * Plugin init actions
 	 *
@@ -71,14 +71,14 @@ class Init {
 
 	public function register_post_types() {
 
-		$this->groups = Groups::get_instance();
-		
+		$this->groups = Group::get_instance();
+
 		if ( cp_groups()->enabled() ) {
 			$this->groups->add_actions();
 			do_action( 'cp_register_post_types' );
 		}
 	}
-	
+
 	public function disable_gutenberg( $status, $post_type ) {
 		if ( $this->in_post_types( $post_type ) ) {
 			return false;
@@ -86,6 +86,6 @@ class Init {
 
 		return $status;
 	}
-	
+
 
 }
