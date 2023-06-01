@@ -68,6 +68,7 @@
 	&--search--box,
 	&--dropdown-button {
 		width: 100%;
+		justify-content: space-between;
 
 		&.cp-button {
 			--cp-button--bg: white;
@@ -137,6 +138,7 @@
 			height: 100%;
 
 			svg, button {
+				border: none;
 				padding: 0;
 				margin: 0 .5em 0 0;
 				background: transparent;
