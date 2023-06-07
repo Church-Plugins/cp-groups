@@ -29,7 +29,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 		<?php if ( ! empty( $item['types'] ) || ! empty( $item['categories'] ) || ! empty( $item['lifeStages'] ) ) : ?>
 			<div class="cp-group-item--categories">
 				<?php if ( ! empty( $item['categories'] ) ) : ?>
-					<div class="cp-group-single--type">
+					<div class="cp-group-item--category">
 						<?php foreach( $item['categories'] as $slug => $label ) : ?>
 							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_category' ); ?>"><?php echo $label; ?></a>
 						<?php endforeach; ?>

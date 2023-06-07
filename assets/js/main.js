@@ -36,15 +36,13 @@ jQuery(function ($) {
 					at: 'center',
 					of: window
 				},
-				open         : function () {
+				open         : function (event) {
 					// close dialog by clicking the overlay behind it
 					$('.ui-widget-overlay').bind('click', function () {
 						$modalElem.dialog('close');
 					});
 
-					$(event.target).dialog('widget')
-						.css({position: 'fixed'})
-						.position({my: 'center', at: 'center', of: window});
+					$(event.target).dialog('widget');
 
 				},
 			});
