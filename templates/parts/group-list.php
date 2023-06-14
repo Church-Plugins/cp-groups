@@ -90,10 +90,21 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			<?php endif; ?>
 		</div>
 	</div>
+	
+	<?php $contact_url = get_post_meta( $item['id'], 'action_contact', true ); ?>
+	<?php $register_url = get_post_meta( $item['id'], 'action_register', true ); ?>
+	<?php $group_leader = get_post_meta( $item['id'], 'leader', true ) ?>
 
 	<div style="display:none;">
-		<?php Templates::get_template_part( "parts/group-modal" ); ?>
+		<?php
+			Templates::get_template_part( "parts/group-modal" );
+
+			if( is_email( $contact_url ) ) {
+				cp_groups()->build_email_modal( 'action_contact', $contact_url, $group_leader );
+			}
+			if( is_email( $register_url ) ) {
+				cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'] );
+			}
+		?>
 	</div>
-
-
 </div>
