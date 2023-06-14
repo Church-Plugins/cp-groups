@@ -84,9 +84,9 @@ class Settings {
 			'display_cb'   => [ $this, 'options_display_with_tabs'],
 		);
 
-		$main_options = new_cmb2_box( $args );
+		$options = new_cmb2_box( $args );
 
-		$main_options->add_field( array(
+		$options->add_field( array(
 			'name'         => __( 'Default Thumbnail', 'cp-groups' ),
 			'desc'         => sprintf( __( 'The default thumbnail image to use for %s.', 'cp-groups' ), cp_groups()->setup->post_types->groups->plural_label ),
 			'id'           => 'default_thumbnail',
@@ -105,6 +105,7 @@ class Settings {
 
 		$this->group_options();
 		$this->advanced_options();
+		$this->contact_options();
 		$this->license_fields();
 	}
 
@@ -228,6 +229,114 @@ class Settings {
 
 	}
 
+	protected function contact_options() {
+		$post_type = cp_groups()->setup->post_types->groups->post_type;
+
+		/**
+		 * Registers main options page menu item and form.
+		 */
+		$args = array(
+			'id'           => 'cp_groups_contact_options_page',
+			'title'        => 'Contact Options',
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'cp_groups_contact_options',
+			'tab_group'    => 'cp_groups_main_options',
+			'tab_title'    => 'Contact Options',
+			'parent_slug'  => 'edit.php?post_type=' . $post_type,
+			'display_cb'   => [ $this, 'options_display_with_tabs'],
+		);
+
+		$options = new_cmb2_box( $args );
+
+		$options->add_field( array(
+			'name'         => __( 'Display contact modal', 'cp-groups' ),
+			'desc'         => __( 'If active, when a the register or contact action has an email address, a contact form will display inside of a modal (in-browser window popup).', 'cp-groups' ),
+			'id'           => 'use_email_modal',
+			'type'         => 'checkbox',
+			'default'      => 'on'
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Display group leader\'s email address', 'cp-groups' ),
+			'desc' => __( 'If checked, the group leader\'s email address will be visible inside the contact form', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id' => 'show_leader_email',
+			'attributes' => array(
+				'data-conditional-id' => 'use_email_modal',
+				'data-conditionl-value' => 'on'
+			)
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Enable contact form throttling', 'cp-groups' ),
+			'desc' => __( 'Will prevent users and bots from sending large amounts of emails', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'throttle_emails'
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Max submissions per day from same user', 'cp-groups' ),
+			'type' => 'select',
+			'id'   => 'throttle_amount',
+			'options' => $this->range_options(2, 10),
+			'default' => '3',
+			'attributes' => array(
+				'data-conditional-id' => 'throttle_emails',
+				'data-conditional-value' => 'on'
+			)
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Prevent staff from sending emails', 'cp-groups' ),
+			'description' => __( 'Blocks messages from email addresses that contain the site domain', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'block_staff_emails',
+			'default' => 'on'
+		) );
+
+
+		$options->add_field( array(
+			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'enable_captcha',
+			'default' => 'off'
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Recaptcha site key', 'cp-groups' ),
+			'type' => 'text',
+			'id'   => 'captcha_site_key',
+			'attributes' => array(
+				'data-conditional-id' => 'enable_captcha',
+				'data-conditional-value' => 'on'
+			)
+		) );
+
+		$options->add_field( array(
+			'name' => __( 'Recaptcha secret key', 'cp-groups' ),
+			'type' => 'text',
+			'id'   => 'captcha_secret_key',
+			'attributes' => array(
+				'data-conditional-id' => 'enable_captcha',
+				'data-conditional-value' => 'on'
+			)
+		) );
+
+		$options->add_field( array(
+			'name'         => __( 'From Address', 'cp-groups' ),
+			'desc'         => __( 'The from email address to use when sending staff emails. Will use the site admin email if this is blank.', 'cp-groups' ),
+			'id'           => 'from_email',
+			'type'         => 'text',
+		) );
+
+		$options->add_field( array(
+			'name'         => __( 'From Name', 'cp-groups' ),
+			'desc'         => __( 'The from name to use when sending staff emails. Will use the site title if this is blank.', 'cp-groups' ),
+			'id'           => 'from_name',
+			'type'         => 'text',
+		) );
+
+	}
 	/**
 	 * A CMB2 options-page display callback override which adds tab navigation among
 	 * CMB2 options pages which share this same display callback.
@@ -256,6 +365,17 @@ class Settings {
 			</form>
 		</div>
 		<?php
+	}
+
+	protected function range_options( $min, $max ) {
+		$range = array();
+
+		for ( $val = $min; $val <= $max; $val++ ) {
+			$val_str = strval( $val );
+			$range[$val_str] = $val_str;
+		}
+
+		return $range;
 	}
 
 	/**
