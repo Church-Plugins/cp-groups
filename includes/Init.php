@@ -85,12 +85,12 @@ class Init {
 	 */
 	public function app_enqueue() {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
+		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
-		$path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
+		// loads main.js script without needing to build
+		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
+		// wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
 
-		// $this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
-		wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
-	
 		if( Settings::get( 'enable_captcha', 'on', 'cp_groups_contact_options' ) == 'on' ) {
 			$site_key = Settings::get( 'captcha_site_key', '', 'cp_groups_contact_options' );
 			if( ! empty( $site_key ) ) {
@@ -347,7 +347,14 @@ class Init {
 
 		return $response['success'] == '1' && $response['action'] == $action && $response['score'] > 0.5;
 	}
-
+	
+	/**
+	 * Get meta tag for populating form data
+	 * 
+	 * @since 1.0.2
+	 * 
+	 * @author Jonathan Roley, 6/14/23
+	 */
 	public function get_modal_meta_tag( string $name, string $email, string $title ) {
 		$email = base64_encode( $email );
 		?>
