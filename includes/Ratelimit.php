@@ -50,7 +50,7 @@ class Ratelimit {
     update_option( $this->key, $this->data );
 
     if ($data_today[ $key ] > $limit ) {
-      throw new RuntimeException( esc_html__( 'You have made too many requests', 'cp-staff' ), 429 );
+      throw new RuntimeException( esc_html__( 'You have made too many requests', 'cp-groups' ), 429 );
       return false;
     }
 

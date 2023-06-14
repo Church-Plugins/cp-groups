@@ -231,16 +231,16 @@ class Init {
 		}
 
 		if( $this->is_address_blocked( $reply_to ) ) {
-			wp_send_json_error( array( 'error' => __( 'You are not allowed to send a message as a staff member', 'cp-staff' ), 'request' => $_REQUEST ) );
+			wp_send_json_error( array( 'error' => __( 'You are not allowed to send a message as a staff member', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
 		if( ! $this->is_verified_captcha() ) {
-			wp_send_json_error( array( 'error' => __( 'Your captcha score is too low', 'cp-staff' ), 'request' => $_REQUEST ) );
+			wp_send_json_error( array( 'error' => __( 'Your captcha score is too low', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
-		$subject = apply_filters( 'cp_staff_email_subject', __( '[Web Inquiry]', 'cp-staff' ) . ' ' . $subject, $subject );
+		$subject = apply_filters( 'cp_staff_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
 
-		$message_suffix = apply_filters( 'cp_staff_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Staff Web Inquiry form. Simply click Reply to respond to them directly.', 'cp-staff' ), $name ) );
+		$message_suffix = apply_filters( 'cp_staff_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Staff Web Inquiry form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ) );
 		$message        = apply_filters( 'cp_staff_email_message', $message . $message_suffix );
 
 		$from_email = Settings::get( 'from_email', get_bloginfo( 'admin_email' ), 'cp_groups_contact_options' );
