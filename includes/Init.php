@@ -129,7 +129,7 @@ class Init {
 		$is_hidden_att = Settings::get( 'show_leader_email', 'off', 'cp_groups_contact_options' ) == 'on' ? 'false' : 'true'
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
-			<button class='cp-back-btn cp-button'>Back</button>
+			<button class='cp-back-btn cp-button is-small is-transparent'>Back</button>
 			<?php $this->get_modal_meta_tag( $name, $email, $title ) ?>
 			<form
 					action="<?php echo esc_url( add_query_arg( 'cp_action', 'cp_send_email', admin_url( 'admin-ajax.php' ) ) ); ?>"
