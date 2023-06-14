@@ -2,78 +2,257 @@
 
 window.cpGroupsFilter = window.cpGroupsFilter || {};
 
-jQuery(function ($) {
+// $modalElem.on('click', '.group-copy-email', function (e) {
+//   let response = navigator.clipboard.writeText(data.email);
+//   response.finally(() => $(this).addClass('is-copied'));
+// });
 
-	$(document).ready(function () {
 
-		let $groupItem = $('.cp-group-item');
 
-		if (!$groupItem.length) {
-			return;
+jQuery(($) => {
+
+	let modals = []
+
+	function openModal( $modal ) {
+
+		console.log("Before opening modal: ", modals.length)
+
+		console.log("modals yo", modals[0], $modal, modals[0] === $modal)
+
+
+		modals[0]?.dialog('close')
+		
+		modals = [ $modal, ...modals ]
+
+		$modal.dialog('open')
+
+
+		console.log("Opened modal: ", $modal, modals.length)
+	}
+
+	function closeCurrentModal() {
+		console.log("Closing current modal")
+
+		if( !modals.length ) return
+
+		// console.log(modals[0])
+
+		modals[0].dialog('close')
+		modals.shift()
+		modals[0]?.dialog('open')
+	}
+
+	function populateModal($modal) {
+		const $data = $modal.find('[itemprop=groupDetails]')
+		if( !$data.data('email') ) {
+			return
 		}
 
-		$groupItem.on('click', function (e) {
+		let email;
+		try {
+			email = atob( $data.data('email') )
+		}
+		catch(err) {
+			
+		}
+
+		console.log("Email: ", email)
+
+		$modal.find('.email-to').val(email)
+	}
+
+	const modalConfig = {
+		title        : '',
+		autoOpen     : false,
+		draggable    : false,
+		width        : 500,
+		modal        : true,
+		resizable    : false,
+		closeOnEscape: true,
+		position     : {
+			my: 'center',
+			at: 'bottom center',
+			of: window
+		},
+		open() {
+			$('.ui-widget-overlay').unbind('click', closeCurrentModal);
+			$('.ui-widget-overlay').bind('click', closeCurrentModal);
+
+			$(this).find('.cp-back-btn').unbind('click', closeCurrentModal);
+			$(this).find('.cp-back-btn').bind('click', closeCurrentModal)
+		},
+		beforeClose: function() {
+			console.log(this)
+		}
+	}
+
+	const $groupItems = $('.cp-group-item')
+
+	if( !$groupItems.length ) return
+
+	$groupItems.each(function() {
+		const $this = $(this)
+		const $contactModal  = $this.find('.cp-email-modal.action_contact')
+		const $registerModal = $this.find('.cp-email-modal.action_register')
+		const $detailsModal  = $this.find('.cp-group-modal')
+
+		populateModal($contactModal)
+		populateModal($registerModal)
+
+		new CP_Groups_Mail().init($contactModal)
+		new CP_Groups_Mail().init($registerModal)
+
+		if( $contactModal.length ) {
+			$contactModal.dialog({
+				...modalConfig,
+				dialogClass: 'cp-email-modal-action-contact cp-groups-modal-popup',
+			})
+		}
+
+		if( $registerModal.length ) {
+			$registerModal.dialog({
+				...modalConfig,
+				dialogClass: 'cp-email-modal-action-register cp-groups-modal-popup',
+			})
+		}
+		
+		$detailsModal.dialog({
+			...modalConfig,
+			dialogClass: 'cp-groups-modal-popup'
+		})
+
+		const $registerButton = $detailsModal.find('.cp-group-single--registration-url')
+		const $contactButton  = $detailsModal.find('.cp-group-single--contact-url')
+
+		$registerButton.on('click', (e) => {
+			if( $registerModal.length ) {
+				e.preventDefault()
+				openModal( $registerModal )
+			}
+		})
+
+		$contactButton.on('click', (e) => {
+			if( $contactModal.length ) {
+				e.preventDefault()
+				openModal( $contactModal )
+			}
+		})
+
+		$this.on('click', (e) => {
 			if ($(e.target).hasClass('cp-button')) {
 				return true;
 			}
 
-			e.preventDefault();
+			e.preventDefault()
 
-			let $this = $(this);
-			let $modalElem = $this.find('.cp-group-modal').clone();
+			openModal( $detailsModal )
+		})
+	})
+})
 
-			$modalElem.dialog({
-				title        : '',
-				dialogClass  : 'cp-groups-modal-popup',
-				autoOpen     : false,
-				draggable    : false,
-				width        : 500,
-				modal        : true,
-				resizable    : false,
-				closeOnEscape: true,
-				position     : {
-					my: 'center',
-					at: 'center',
-					of: window
-				},
-				open         : function () {
-					// close dialog by clicking the overlay behind it
-					$('.ui-widget-overlay').bind('click', function () {
-						$modalElem.dialog('close');
-					});
+class CP_Groups_Mail {
+	constructor() {
+		this.$modal = null
+		this.$form  = null
 
-					$(event.target).dialog('widget')
-						.css({position: 'fixed'})
-						.position({my: 'center', at: 'center', of: window});
+		// this.success = this.success.bind(this)
+		this.requestError = this.requestError.bind(this)
+		this.complete = this.complete.bind(this)
+	}
 
-				},
-			});
+	init($modal) {
+		this.$modal = $modal
+		this.submit()
+	}
 
-			$modalElem.dialog('open');
+	submit() {
+		this.$form = this.$modal.find('form');
 
-		});
+		this.$form.on('submit', async (e) => {
+			e.preventDefault()
 
-		$(document).click(function (e) {
-			var $dropdown = $('.cp-groups-filter--has-dropdown');
+			const form = this.$form
 
-			if (!$(e.target).closest($dropdown).length) {
-				$dropdown.removeClass('open');
+			try {
+				await this.before_submit( form )
 			}
-		});
+			catch(err) {
+				this.message(err.message, 'error')
+				return false;
+			}
+		
+			form.ajaxSubmit({
+				success     : this.success,
+				complete    : this.complete,
+				dataType    : 'json',
+				error       : this.requestError,
+			})
+		})
+	}
 
-		$('.cp-groups-filter--toggle--button').on('click', function (e) {
-			e.preventDefault();
-			$('.cp-groups-filter--has-dropdown').toggle();
-		});
+	before_submit = (form) => {
+		form.find('.notice-wrap').remove();
+		form.append('<div class="notice-wrap"><div class="update success"><p>Sending message.</p></div>');
 
-		$('.cp-groups-filter--form input[type=checkbox]').on('change', function () {
-			$('.cp-groups-filter--form').submit();
-		});
+		if(!window.recaptchaSiteKey) {
+			return true
+		}
 
-		$('.cp-groups-filter--has-dropdown a').on('click', function (e) {
-			e.preventDefault();
-			$(this).parent().toggleClass('open');
-		});
-	});
+		return new Promise((resolve, reject) => {
+			grecaptcha.ready(() => {
+				grecaptcha.execute(window.recaptchaSiteKey, { action: 'contact_group' } ).then((token) => {
+					this.$form.prepend('<input type="hidden" name="token" value="' + token + '">');
+					this.$form.prepend('<input type="hidden" name="action" value="contact_group">');
+					resolve(true)
+				})
+				.catch(err => {
+					reject(err)
+				}) 
+			})
+		})
+	}
 
-});
+	complete(xhr) {
+		const self = jQuery(this),
+			response = jQuery.parseJSON(xhr.responseText);
+
+		if (response.success) {
+			this.message(response.data.success, 'success')
+		} else {
+			this.requestError(xhr);
+		}
+	}
+
+	clearFields() {
+		this.$form.find('.from-name'    ).val('')
+		this.$form.find('.email-from'   ).val('')
+		this.$form.find('.subject'      ).val('')
+		this.$form.find('[name=message]').val('')
+	}
+
+	success() {}
+
+	requestError(xhr) {
+		// Something went wrong. This will display error on form
+		const response = jQuery.parseJSON(xhr.responseText);
+		
+		if (response.data.error) {
+			this.message(response.data.error, 'error')
+		} else {
+			this.clearNotice
+		}
+	}
+
+	
+
+	message(text, type) {
+		const import_form = this.$form;
+		const notice_wrap = import_form.find('.notice-wrap');
+		notice_wrap.html(`<div class="update ${type}"><p>${text}</p></div>`);
+	}
+
+	clearNotice() {
+		const notice_wrap = this.$form.find('.notice-wrap');
+		notice_wrap.remove()
+	}
+}
