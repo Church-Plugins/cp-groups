@@ -145,8 +145,9 @@ class Init {
 						<?php _e( 'To:', 'cp-groups' ); ?>
 						<input type="hidden" name="email-to" class="email-to" />
 						<input type="text" <?php echo 'hidden="' . $is_hidden_att . '"' ?> disabled="disabled" class="email-to" />
-						<div class="copy-email"
-							title="Copy email address">copy</div>
+						<div class="group-copy-email" title="Copy email address">
+							<span class="material-icons-outlined">content_copy</span>
+						</div>
 					</label>
 				</div>
 	

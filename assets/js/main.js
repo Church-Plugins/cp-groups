@@ -2,10 +2,7 @@
 
 window.cpGroupsFilter = window.cpGroupsFilter || {};
 
-// $modalElem.on('click', '.group-copy-email', function (e) {
-//   let response = navigator.clipboard.writeText(data.email);
-//   response.finally(() => $(this).addClass('is-copied'));
-// });
+
 
 
 
@@ -14,28 +11,15 @@ jQuery(($) => {
 	let modals = []
 
 	function openModal( $modal ) {
-
-		console.log("Before opening modal: ", modals.length)
-
-		console.log("modals yo", modals[0], $modal, modals[0] === $modal)
-
-
 		modals[0]?.dialog('close')
 		
 		modals = [ $modal, ...modals ]
 
 		$modal.dialog('open')
-
-
-		console.log("Opened modal: ", $modal, modals.length)
 	}
 
 	function closeCurrentModal() {
-		console.log("Closing current modal")
-
 		if( !modals.length ) return
-
-		// console.log(modals[0])
 
 		modals[0].dialog('close')
 		modals.shift()
@@ -43,29 +27,14 @@ jQuery(($) => {
 	}
 
 	function populateModal($modal) {
-		const $data = $modal.find('[itemprop=groupDetails]')
-		if( !$data.data('email') ) {
-			return
-		}
-
-		let email;
-		try {
-			email = atob( $data.data('email') )
-		}
-		catch(err) {
-			
-		}
-
-		console.log("Email: ", email)
-
-		$modal.find('.email-to').val(email)
+		
 	}
 
 	const modalConfig = {
 		title        : '',
 		autoOpen     : false,
 		draggable    : false,
-		width        : 500,
+		width        : 'min(calc(100vw - var(--cp-gap--lg)), 500px)',
 		modal        : true,
 		resizable    : false,
 		closeOnEscape: true,
@@ -80,9 +49,6 @@ jQuery(($) => {
 
 			$(this).find('.cp-back-btn').unbind('click', closeCurrentModal);
 			$(this).find('.cp-back-btn').bind('click', closeCurrentModal)
-		},
-		beforeClose: function() {
-			console.log(this)
 		}
 	}
 
@@ -96,11 +62,13 @@ jQuery(($) => {
 		const $registerModal = $this.find('.cp-email-modal.action_register')
 		const $detailsModal  = $this.find('.cp-group-modal')
 
-		populateModal($contactModal)
-		populateModal($registerModal)
+		const contact  = new CP_Groups_Mail()
+		const register = new CP_Groups_Mail()
 
-		new CP_Groups_Mail().init($contactModal)
-		new CP_Groups_Mail().init($registerModal)
+		contact.init( $contactModal )
+		register.init( $registerModal )
+		contact.populate()
+		register.populate()
 
 		if( $contactModal.length ) {
 			$contactModal.dialog({
@@ -167,6 +135,15 @@ class CP_Groups_Mail {
 
 	submit() {
 		this.$form = this.$modal.find('form');
+
+		const $form = this.$form
+
+		this.$modal.on('click', '.group-copy-email', function (e) {
+			const email = $form.find('.email-to').val()
+
+			let response = navigator.clipboard.writeText(email);
+			response.finally(() => $(this).addClass('is-copied'));
+		});
 
 		this.$form.on('submit', async (e) => {
 			e.preventDefault()
@@ -243,7 +220,23 @@ class CP_Groups_Mail {
 		}
 	}
 
-	
+	populate() {
+		const $data = this.$modal.find('[itemprop=groupDetails]')
+		if( !$data.data('email') ) {
+			return
+		}
+
+		let email;
+		try {
+			email = atob( $data.data('email') )
+			email = atob( '$@#R@#$(8' );
+		}
+		catch(err) {
+			this.message( "An unexpected error occured" , "error")
+		}
+
+		this.$modal.find('.email-to').val(email)
+	}
 
 	message(text, type) {
 		const import_form = this.$form;
