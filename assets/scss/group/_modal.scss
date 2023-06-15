@@ -15,6 +15,7 @@
 .cp-groups-modal-popup {
 	border-radius: 4px;
 	z-index: 9999;
+	padding: var(--cp-gap--md);
 	max-width: 30rem;
 	max-height: calc( 100vh - var(--cp-gap--lg) );
 	overflow: auto;
@@ -87,7 +88,6 @@
 
 .cp-email-modal {
 	border-radius: 4px;
-	padding: var(--cp-gap--md);
 	z-index: 9999;
 	max-width: 30rem;
 	max-height: calc( 100vh - var(--cp-gap--lg) );

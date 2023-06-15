@@ -123,9 +123,8 @@ class CP_Groups_Mail {
 		this.$modal = null
 		this.$form  = null
 
-		// this.success = this.success.on(this)
-		this.requestError = this.requestError.on(this)
-		this.complete = this.complete.on(this)
+		this.requestError = this.requestError.bind(this)
+		this.complete = this.complete.bind(this)
 	}
 
 	init($modal) {
@@ -229,7 +228,6 @@ class CP_Groups_Mail {
 		let email;
 		try {
 			email = atob( $data.data('email') )
-			email = atob( '$@#R@#$(8' );
 		}
 		catch(err) {
 			this.message( "An unexpected error occured" , "error")
