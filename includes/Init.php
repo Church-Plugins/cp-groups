@@ -13,6 +13,8 @@ use RuntimeException;
  */
 class Init {
 
+	// TODO: Add missing DocBlock comments for methods of this class
+
 	/**
 	 * @var
 	 */
@@ -110,11 +112,11 @@ class Init {
 		Admin\Init::get_instance();
 		$this->setup = Setup\Init::get_instance();
 	}
-	
+
 	protected function actions() {
 		add_action( 'cp_send_email', [ $this, 'maybe_send_email' ] );
 	}
-	
+
 	/**
 	 * Required Plugins notice
 	 *
@@ -124,7 +126,15 @@ class Init {
 		printf( '<div class="error"><p>%s</p></div>', __( 'Your system does not meet the requirements for Church Plugins - Groups', 'cp-groups' ) );
 	}
 
-
+	/**
+	 * Render email modal
+	 *
+	 * @param string $name
+	 * @param string $email
+	 * @param string $title
+	 * @return void
+	 * @author Jonathan Roley
+	 */
 	public function build_email_modal( string $name, string $email, string $title ) {
 		$is_hidden_att = Settings::get( 'show_leader_email', 'off', 'cp_groups_contact_options' ) == 'on' ? 'false' : 'true'
 		?>
@@ -135,11 +145,11 @@ class Init {
 					action="<?php echo esc_url( add_query_arg( 'cp_action', 'cp_send_email', admin_url( 'admin-ajax.php' ) ) ); ?>"
 					method="post" enctype="multipart/form-data">
 				<?php wp_nonce_field( 'cp_send_email', 'cp_send_email_nonce' ); ?>
-	
+
 				<div>
 					<h4><?php _e( 'Send a message to ', 'cp-groups' ); ?><span class="reciever-name"><?php echo $title ?></span></h4>
 				</div>
-	
+
 				<div>
 					<label>
 						<?php _e( 'To:', 'cp-groups' ); ?>
@@ -150,49 +160,57 @@ class Init {
 						</div>
 					</label>
 				</div>
-	
+
 				<div class="cp-email-form--name">
 					<label>
 						<?php _e( 'Your Full Name:', 'cp-groups' ); ?>
 						<input type="text" name="from-name" />
 					</label>
 				</div>
-	
+
 				<div class="cp-email-form--email-from">
 					<label>
 						<?php _e( 'Your Email:', 'cp-groups' ); ?>
 						<input type="text" name="email-from" class="cp-email-from"/>
 					</label>
 				</div>
-	
+
 				<div class='cp-email-form--email-verify'>
 					<label>
 						<?php _e( 'Email Verify', 'cp-groups' ) ?>
 						<input type='text' name='email-verify'>
 					</label>
 				</div>
-	
+
 				<div class="cp-email-form--subject">
 					<label>
 						<?php _e( 'Email Subject:', 'cp-groups' ); ?>
 						<input type="text" name="subject"/>
 					</label>
 				</div>
-	
+
 				<div class="cp-email-form--message">
 					<label>
 						<?php _e( 'Email Message:', 'cp-groups' ); ?>
 						<textarea name="message" rows="3"></textarea>
 					</label>
 				</div>
-	
+
 				<input class="cp-button is-large" type="submit" value="Send"/>
-	
+
 			</form>
 		</div>
 		<?php
 	}
 
+	/**
+	 * Send an email message via AJAX request after validating input
+	 *
+	 * Responds to browser request with 200 for success or 503 on error. Script execution is halted without function return in either case.
+	 *
+	 * @return void
+	 * @author Jonathan Roley
+	 */
 	public function maybe_send_email() {
 		$email_to = Helpers::get_post( 'email-to' );
 		$reply_to = Helpers::get_post( 'email-from' );
@@ -222,7 +240,7 @@ class Init {
 		if( ! empty( $honeypot ) ) {
 			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
-		
+
 		if( empty( $subject ) ) {
 			wp_send_json_error( array( 'error' => __( 'Please add an Email Subject.', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
@@ -348,19 +366,19 @@ class Init {
 
 		return $response['success'] == '1' && $response['action'] == $action && $response['score'] > 0.5;
 	}
-	
+
 	/**
 	 * Get meta tag for populating form data
-	 * 
+	 *
 	 * @since 1.0.2
-	 * 
+	 *
 	 * @author Jonathan Roley, 6/14/23
 	 */
 	public function get_modal_meta_tag( string $name, string $email, string $title ) {
 		$email = base64_encode( $email );
 		?>
-		<meta 
-			itemprop="groupDetails" 
+		<meta
+			itemprop="groupDetails"
 			data-name="<?php echo esc_attr( $name ) ?>"
 			data-email="<?php echo $email ?>"
 			data-title="<?php echo esc_attr( $title ) ?>"

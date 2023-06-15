@@ -12,7 +12,7 @@ jQuery(($) => {
 
 	function openModal( $modal ) {
 		modals[0]?.dialog('close')
-		
+
 		modals = [ $modal, ...modals ]
 
 		$modal.dialog('open')
@@ -27,7 +27,7 @@ jQuery(($) => {
 	}
 
 	function populateModal($modal) {
-		
+
 	}
 
 	const modalConfig = {
@@ -44,11 +44,11 @@ jQuery(($) => {
 			of: window
 		},
 		open() {
-			$('.ui-widget-overlay').unbind('click', closeCurrentModal);
-			$('.ui-widget-overlay').bind('click', closeCurrentModal);
+			$('.ui-widget-overlay').off('click');
+			$('.ui-widget-overlay').on('click', closeCurrentModal);
 
-			$(this).find('.cp-back-btn').unbind('click', closeCurrentModal);
-			$(this).find('.cp-back-btn').bind('click', closeCurrentModal)
+			$(this).find('.cp-back-btn').off('click');
+			$(this).find('.cp-back-btn').on('click', closeCurrentModal)
 		}
 	}
 
@@ -83,7 +83,7 @@ jQuery(($) => {
 				dialogClass: 'cp-email-modal-action-register cp-groups-modal-popup',
 			})
 		}
-		
+
 		$detailsModal.dialog({
 			...modalConfig,
 			dialogClass: 'cp-groups-modal-popup'
@@ -123,9 +123,9 @@ class CP_Groups_Mail {
 		this.$modal = null
 		this.$form  = null
 
-		// this.success = this.success.bind(this)
-		this.requestError = this.requestError.bind(this)
-		this.complete = this.complete.bind(this)
+		// this.success = this.success.on(this)
+		this.requestError = this.requestError.on(this)
+		this.complete = this.complete.on(this)
 	}
 
 	init($modal) {
@@ -157,7 +157,7 @@ class CP_Groups_Mail {
 				this.message(err.message, 'error')
 				return false;
 			}
-		
+
 			form.ajaxSubmit({
 				success     : this.success,
 				complete    : this.complete,
@@ -184,7 +184,7 @@ class CP_Groups_Mail {
 				})
 				.catch(err => {
 					reject(err)
-				}) 
+				})
 			})
 		})
 	}
@@ -212,7 +212,7 @@ class CP_Groups_Mail {
 	requestError(xhr) {
 		// Something went wrong. This will display error on form
 		const response = jQuery.parseJSON(xhr.responseText);
-		
+
 		if (response.data.error) {
 			this.message(response.data.error, 'error')
 		} else {

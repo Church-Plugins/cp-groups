@@ -8,6 +8,8 @@ namespace CP_Groups\Admin;
  */
 class Settings {
 
+	// TODO: Add missing DocBlock comments for methods of this class
+
 	/**
 	 * @var
 	 */
@@ -367,6 +369,14 @@ class Settings {
 		<?php
 	}
 
+	/**
+	 * Get groups from the options able
+	 *
+	 * @param int $min
+	 * @param int $max
+	 * @return mixed|void
+	 * @author Jonathan Roley
+	 */
 	protected function range_options( $min, $max ) {
 		$range = array();
 
