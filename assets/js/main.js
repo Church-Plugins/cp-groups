@@ -34,7 +34,7 @@ jQuery(($) => {
 		title        : '',
 		autoOpen     : false,
 		draggable    : false,
-		width        : 'min(calc(100vw - var(--cp-gap--lg)), 500px)',
+		width        : 500,
 		modal        : true,
 		resizable    : false,
 		closeOnEscape: true,
