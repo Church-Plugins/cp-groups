@@ -93,10 +93,16 @@ try {
 			<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
 		<?php endif; ?>
 
-		<?php if ( $registration_url = get_post_meta( $item['id'], 'registration_url', true ) ) : ?>
-			<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $registration_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
-		<?php endif; ?>
+		<div class="cp-group-single--actions">
+			<?php if ( $registration_url = get_post_meta( $item['id'], 'action_register', true ) ) : ?>
+				<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $registration_url ); ?>" class="cp-button" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
+			<?php endif; ?>
 
+			<?php if ( $contact_url = get_post_meta( $item['id'], 'action_contact', true ) ) : ?>
+				<div class="cp-group-single--contact-url"><a href="<?php echo  $contact_url ; ?>" class="cp-button is-light" target="_blank"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
+			<?php endif; ?>
+		</div>
+		
 		<?php do_action( 'cp_group_single_after_content', $item ); ?>
 	</div>
 

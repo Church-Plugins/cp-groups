@@ -69,8 +69,9 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 		margin-bottom: var(--cp-gap-base);
 	}
 
-	&--registration-url {
-		margin-top: var(--cp-gap--sm);
+	&--actions {
+		display: flex;
+		gap: var(--cp-gap-base);
 	}
 
 	@include media-breakpoint-down(md) {
