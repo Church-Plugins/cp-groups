@@ -3,5 +3,5 @@
 
 	<?php \CP_Groups\Templates::get_template_part( "parts/group-single" ); ?>
 
-	<?php do_action( 'cp_after_group_modal' ); ?>	
+	<?php do_action( 'cp_after_group_modal' ); ?>
 </div>

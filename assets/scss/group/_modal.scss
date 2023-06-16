@@ -26,6 +26,8 @@
 	max-height: calc( 100vh - var(--cp-gap--lg) );
 	overflow: auto;
 	background: #f5f5fa;
+	top: calc( var(--cp-gap--lg) / 2 ) !important;
+	position: fixed !important;
 
 	.cp-group-single {
 		&--title {
