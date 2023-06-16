@@ -12,6 +12,12 @@
 	margin: auto;
 }
 
+@include media-breakpoint-down(sm) {
+	.cp-staff-email-form {
+		padding: var(--cp-gap--md);
+	}
+}
+
 .cp-groups-modal-popup {
 	border-radius: 4px;
 	z-index: 9999;
@@ -79,7 +85,7 @@
     bottom: 0;
     cursor: pointer;
 	}
-	
+
 }
 
 .cp-email-popup {
@@ -94,13 +100,13 @@
 	overflow: auto;
 	//max-width: 60%;
 	background: #f5f5fa;
-	
+
 	.notice-wrap {
-		
+
 		p:last-child {
 			margin-bottom: 0;
 		}
-		
+
 		.update {
 			margin-top: var(--cp-gap--sm);
 			background: var(--cp-color-canvas-main);
@@ -110,19 +116,19 @@
 			&.success {
 				border-color: var(--cp-color-ui-success);
 			}
-			
+
 			&.error {
 				border-color: var(--cp-color-ui-danger);
 			}
 		}
-		
+
 	}
 	.cp-email-modal {}
 
 	.cp-back-btn {
 		margin-bottom: var(--cp-gap--md);
 	}
-	
+
 	.cp-email-form--email-to {
 		position: relative;
 	}
@@ -132,31 +138,31 @@
 		overflow: hidden !important;
 		margin: 0 !important;
 	}
-	
+
 	.copy-email {
 		position: absolute;
 		right: var(--cp-gap-base);
 		bottom: 0;
 		cursor: pointer;
-		
+
 		&.is-copied {
 			color: var(--cp-color-ui-success);
 		}
 	}
-	
+
 	label {
 		position: relative;
 		display: block;
 		margin: var(--cp-gap--sm) auto;
 	}
-	
+
 	input, textarea {
 		display: block;
 		width: 100%;
 	}
-	
+
 	input[type=submit] {
-		margin-top: var(--cp-gap--sm);		
+		margin-top: var(--cp-gap--sm);
 		padding: var(--cp-button--padding);
 	}
 
@@ -164,15 +170,15 @@
 		&--title {
 			font-size: min(3.75vw, var(--cp-font-size-h5)) !important;
 		}
-		
+
 		&--leader {
 			margin: var(--cp-gap-base) 0 0;
 		}
-		
+
 		&--meta {
 			margin: var(--cp-gap-base) 0;
 		}
-		
+
 		&--content:last-child {
 			p:last-child {
 				margin-bottom: 0;
@@ -184,7 +190,7 @@
 		height: 0;
 		display: block;
 	}
-	
+
 	.ui-dialog-titlebar-close {
 		background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' %3F%3E%3Csvg height='33px' version='1.1' viewBox='0 0 33 33' width='33px' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle/%3E%3Cdesc/%3E%3Cg fill='none' fill-rule='evenodd' id='stroke-4px' stroke='none' stroke-width='1'%3E%3Cg fill='%23000000' id='The-Icons' transform='translate(-256.000000, -3708.000000)'%3E%3Cg id='9.12' transform='translate(248.000000, 3700.000000)'%3E%3Cg id='Combined-Shape'%3E%3Cpath d='M26.9737493,24.1431645 L39.6996371,11.4187238 C40.4818344,10.6366155 40.4842562,9.36786393 39.7031188,8.58681534 C38.9165355,7.80032143 37.6539486,7.80732541 36.8708883,8.59029667 L24.1450005,21.3147374 L11.4191126,8.59029667 C10.6369153,7.80818833 9.36801949,7.80576676 8.58688208,8.58681534 C7.80029872,9.37330926 7.80730349,10.6357525 8.59036381,11.4187238 L21.3162517,24.1431645 L8.59036381,36.8676053 C7.80816651,37.6497136 7.80574467,38.9184651 8.58688208,39.6995137 C9.37346544,40.4860076 10.6360523,40.4790037 11.4191126,39.6960324 L24.1450005,26.9715917 L36.8708883,39.6960324 C37.6530856,40.4781407 38.9219814,40.4805623 39.7031188,39.6995137 C40.4897022,38.9130198 40.4826974,37.6505765 39.6996371,36.8676053 L26.9737493,24.1431645 L26.9737493,24.1431645 Z'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 		background-color: transparent;
