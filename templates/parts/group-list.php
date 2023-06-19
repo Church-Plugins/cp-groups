@@ -1,5 +1,6 @@
 <?php
 use ChurchPlugins\Helpers;
+use CP_Groups\Admin\Settings;
 use CP_Groups\Templates;
 
 try {
@@ -100,7 +101,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			Templates::get_template_part( "parts/group-modal" );
 			
 			if( Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' ) ) {
-				if( is_email( $contact_url ) &&  ) {
+				if( is_email( $contact_url ) ) {
 					cp_groups()->build_email_modal( 'action_contact', $contact_url, $group_leader );
 				}
 				if( is_email( $register_url ) ) {
