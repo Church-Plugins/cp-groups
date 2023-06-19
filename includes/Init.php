@@ -48,7 +48,7 @@ class Init {
 	protected function __construct() {
 		$this->enqueue = new \WPackio\Enqueue( 'cpGroups', 'dist', $this->get_version(), 'plugin', CP_GROUPS_PLUGIN_FILE );
 		$this->limiter = new Ratelimit( "send_group_email" );
-		add_action( 'plugins_loaded', [ $this, 'maybe_setup' ], - 9999 );
+		add_action( 'cp_core_loaded', [ $this, 'maybe_setup' ], - 9999 );
 		add_action( 'init', [ $this, 'maybe_init' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
 	}
