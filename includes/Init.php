@@ -86,11 +86,7 @@ class Init {
 	 */
 	public function app_enqueue() {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
-
-		$thing = Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' );
-		if ( Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' ) ) {
-			$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
-		}
+		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
 
 		// loads main.js script without needing to build
