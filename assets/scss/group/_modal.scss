@@ -12,12 +12,6 @@
 	margin: auto;
 }
 
-@include media-breakpoint-down(sm) {
-	.cp-staff-email-form {
-		padding: var(--cp-gap--md);
-	}
-}
-
 .cp-groups-modal-popup {
 	border-radius: 4px;
 	z-index: 9999;
