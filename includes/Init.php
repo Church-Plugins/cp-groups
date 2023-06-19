@@ -3,7 +3,6 @@ namespace CP_Groups;
 
 use CP_Groups\Admin\Settings;
 use CP_Groups\Ratelimit;
-use ChurchPlugins\Helpers;
 use RuntimeException;
 
 /**
@@ -212,12 +211,12 @@ class Init {
 	 * @author Jonathan Roley
 	 */
 	public function maybe_send_email() {
-		$email_to = Helpers::get_post( 'email-to' );
-		$reply_to = Helpers::get_post( 'email-from' );
-		$honeypot = Helpers::get_post( 'email-verify' );
-		$name     = Helpers::get_post( 'from-name' );
-		$subject  = Helpers::get_post( 'subject' );
-		$message  = Helpers::get_post( 'message' );
+		$email_to = \ChurchPlugins\Helpers::get_post( 'email-to' );
+		$reply_to = \ChurchPlugins\Helpers::get_post( 'email-from' );
+		$honeypot = \ChurchPlugins\Helpers::get_post( 'email-verify' );
+		$name     = \ChurchPlugins\Helpers::get_post( 'from-name' );
+		$subject  = \ChurchPlugins\Helpers::get_post( 'subject' );
+		$message  = \ChurchPlugins\Helpers::get_post( 'message' );
 		$limit    = intval( Settings::get( 'throttle_amount', 3, 'cp_groups_contact_options' ) );
 
 
@@ -341,8 +340,8 @@ class Init {
 	 * @author Jonathan Roley, 6/6/23
 	 */
 	public function is_verified_captcha() {
-		$token      = Helpers::get_post( 'token' );
-		$action     = Helpers::get_post( 'action' );
+		$token      = \ChurchPlugins\Helpers::get_post( 'token' );
+		$action     = \ChurchPlugins\Helpers::get_post( 'action' );
 		$secret_key = Settings::get( 'captcha_secret_key', '', 'cp_groups_contact_options' );
 
 		if( empty( $secret_key ) ) {
