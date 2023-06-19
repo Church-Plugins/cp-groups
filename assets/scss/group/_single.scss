@@ -72,6 +72,7 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 	&--actions {
 		display: flex;
 		gap: var(--cp-gap-base);
+		margin-top: var(--cp-gap--sm);
 	}
 
 	@include media-breakpoint-down(md) {
@@ -82,6 +83,12 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 			justify-content: space-evenly;
 		}
 
+	}
+
+	@include media-breakpoint-down(sm) {
+		&--actions {
+			flex-direction: column;
+		}
 	}
 
 	.cp-group-item--attributes {
