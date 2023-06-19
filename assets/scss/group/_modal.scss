@@ -22,7 +22,7 @@
 	border-radius: 4px;
 	z-index: 9999;
 	padding: var(--cp-gap--md);
-	max-width: 30rem;
+	max-width: calc( 100vw - var(--cp-gap--lg) );
 	max-height: calc( 100vh - var(--cp-gap--lg) );
 	overflow: auto;
 	background: #f5f5fa;
