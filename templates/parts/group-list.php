@@ -98,12 +98,14 @@ $is_location_page = get_query_var( 'cp_location_id' );
 	<div style="display:none;">
 		<?php
 			Templates::get_template_part( "parts/group-modal" );
-
-			if( is_email( $contact_url ) ) {
-				cp_groups()->build_email_modal( 'action_contact', $contact_url, $group_leader );
-			}
-			if( is_email( $register_url ) ) {
-				cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'] );
+			
+			if( Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' ) ) {
+				if( is_email( $contact_url ) &&  ) {
+					cp_groups()->build_email_modal( 'action_contact', $contact_url, $group_leader );
+				}
+				if( is_email( $register_url ) ) {
+					cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'] );
+				}
 			}
 		?>
 	</div>
