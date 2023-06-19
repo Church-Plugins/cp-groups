@@ -271,7 +271,7 @@ class Settings {
 
 		$options->add_field( array(
 			'name' => __( 'Enable contact form throttling', 'cp-groups' ),
-			'desc' => __( 'Will prevent users and bots from sending large amounts of emails', 'cp-groups' ),
+			'desc' => __( 'Limit the number of submissions an email or IP address can send in a day.', 'cp-groups' ),
 			'type' => 'checkbox',
 			'id'   => 'throttle_emails'
 		) );
