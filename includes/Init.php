@@ -87,7 +87,12 @@ class Init {
 	 */
 	public function app_enqueue() {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
-		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
+
+		$thing = Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' );
+		if ( Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' ) ) {
+			$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
+		}
+
 
 		// loads main.js script without needing to build
 		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
