@@ -255,7 +255,7 @@ class Settings {
 			'desc'         => __( 'If active, when a the register or contact action has an email address, a contact form will display inside of a modal (in-browser window popup).', 'cp-groups' ),
 			'id'           => 'use_email_modal',
 			'type'         => 'checkbox',
-			'default'      => 'on'
+			'default_cb'   => [ $this, 'default_checked' ]
 		) );
 
 		$options->add_field( array(
@@ -293,15 +293,14 @@ class Settings {
 			'description' => __( 'Blocks messages from email addresses that contain the site domain', 'cp-groups' ),
 			'type' => 'checkbox',
 			'id'   => 'block_staff_emails',
-			'default' => 'on'
+			'default_cb' => [ $this, 'default_checked' ]
 		) );
 
 
 		$options->add_field( array(
 			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
 			'type' => 'checkbox',
-			'id'   => 'enable_captcha',
-			'default' => 'off'
+			'id'   => 'enable_captcha'
 		) );
 
 		$options->add_field( array(
@@ -339,6 +338,14 @@ class Settings {
 		) );
 
 	}
+
+	/**
+	 * Setting a checkbox to be on by default doesn't work in CMB2, this is a way to get around that
+	 */
+	public function default_checked() {
+		return isset( $_GET['page'] ) ? '' : true;
+	}
+
 	/**
 	 * A CMB2 options-page display callback override which adds tab navigation among
 	 * CMB2 options pages which share this same display callback.
