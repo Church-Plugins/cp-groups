@@ -136,7 +136,7 @@ class Init {
 	 * @author Jonathan Roley
 	 */
 	public function build_email_modal( string $name, string $email, string $title ) {
-		$is_hidden_att = Settings::get( 'show_leader_email', 'off', 'cp_groups_contact_options' ) == 'on' ? 'false' : 'true'
+		$is_hidden_att = Settings::get( 'show_leader_email', 'off', 'cp_groups_contact_options' ) == 'on' ? '' : 'hidden';
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
 			<button class='cp-back-btn cp-button is-small is-transparent'>Back</button>
@@ -150,11 +150,11 @@ class Init {
 					<h4><?php _e( 'Send a message to ', 'cp-groups' ); ?><span class="reciever-name"><?php echo $title ?></span></h4>
 				</div>
 
-				<div>
+				<div <?php echo $is_hidden_att ?>>
 					<label>
 						<?php _e( 'To:', 'cp-groups' ); ?>
 						<input type="hidden" name="email-to" class="email-to" />
-						<input type="text" <?php echo 'hidden="' . $is_hidden_att . '"' ?> disabled="disabled" class="email-to" />
+						<input type="text" disabled="disabled" class="email-to" />
 						<div class="group-copy-email" title="Copy email address">
 							<span class="material-icons-outlined">content_copy</span>
 						</div>
