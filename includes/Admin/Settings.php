@@ -107,7 +107,6 @@ class Settings {
 
 		$this->group_options();
 		$this->advanced_options();
-		$this->contact_options();
 		$this->license_fields();
 	}
 
@@ -229,28 +228,45 @@ class Settings {
 			]
 		) );
 
-	}
+		$advanced_options->add_field( array(
+			'name'         => __( 'Buttons', 'cp-groups' ),
+			'desc'         => __( 'Customize the buttons to show for the Group.', 'cp-groups' ),
+			'id'           => 'buttons_title',
+			'type'         => 'title',
+		) );
 
-	protected function contact_options() {
-		$post_type = cp_groups()->setup->post_types->groups->post_type;
+		$advanced_options->add_field( array(
+			'name' => __( 'Hide Registration Button', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'hide_registration'
+		) );
 
-		/**
-		 * Registers main options page menu item and form.
-		 */
-		$args = array(
-			'id'           => 'cp_groups_contact_options_page',
-			'title'        => 'Contact Options',
-			'object_types' => array( 'options-page' ),
-			'option_key'   => 'cp_groups_contact_options',
-			'tab_group'    => 'cp_groups_main_options',
-			'tab_title'    => 'Contact Options',
-			'parent_slug'  => 'edit.php?post_type=' . $post_type,
-			'display_cb'   => [ $this, 'options_display_with_tabs'],
-		);
+		$advanced_options->add_field( array(
+			'name' => __( 'Hide Details Button', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'hide_details'
+		) );
 
-		$options = new_cmb2_box( $args );
+		$advanced_options->add_field( array(
+			'name'    => __( 'Contact Button', 'cp-groups' ),
+			'type'    => 'radio',
+			'id'      => 'contact_action',
+			'default' => 'action',
+			'options' => [
+				'action' => __( 'Use Contact Action (Links to Contact Action field)', 'cp-groups' ),
+				'form'   => __( 'Use Contact Form', 'cp-groups' ),
+				'hide'   => __( 'Hide Contact button', 'cp-groups' ),
+			],
+		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
+			'name'         => __( 'Contact Form Options', 'cp-groups' ),
+			'desc'         => __( 'Customize the contact form if "Use Contact Form" is selected for the Contact Button or if the Registration Action is an email.', 'cp-groups' ),
+			'id'           => 'contact_form_title',
+			'type'         => 'title',
+		) );
+
+		$advanced_options->add_field( array(
 			'name'         => __( 'Display contact modal', 'cp-groups' ),
 			'desc'         => __( 'If active, when a the register or contact action has an email address, a contact form will display inside of a modal (in-browser window popup).', 'cp-groups' ),
 			'id'           => 'use_email_modal',
@@ -258,7 +274,7 @@ class Settings {
 			'default_cb'   => [ $this, 'default_checked' ]
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Display group leader\'s email address', 'cp-groups' ),
 			'desc' => __( 'If checked, the group leader\'s email address will be visible inside the contact form', 'cp-groups' ),
 			'type' => 'checkbox',
@@ -269,14 +285,14 @@ class Settings {
 			)
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Enable contact form throttling', 'cp-groups' ),
 			'desc' => __( 'Limit the number of submissions an email or IP address can send in a day.', 'cp-groups' ),
 			'type' => 'checkbox',
 			'id'   => 'throttle_emails'
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Max submissions per day from same user', 'cp-groups' ),
 			'type' => 'select',
 			'id'   => 'throttle_amount',
@@ -288,22 +304,22 @@ class Settings {
 			)
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Prevent staff from sending emails', 'cp-groups' ),
 			'description' => __( 'Blocks messages from email addresses that contain the site domain', 'cp-groups' ),
 			'type' => 'checkbox',
-			'id'   => 'block_staff_emails',
+			'id'   => 'block_emails',
 			'default_cb' => [ $this, 'default_checked' ]
 		) );
 
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
 			'type' => 'checkbox',
 			'id'   => 'enable_captcha'
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Recaptcha site key', 'cp-groups' ),
 			'type' => 'text',
 			'id'   => 'captcha_site_key',
@@ -313,7 +329,7 @@ class Settings {
 			)
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name' => __( 'Recaptcha secret key', 'cp-groups' ),
 			'type' => 'text',
 			'id'   => 'captcha_secret_key',
@@ -323,16 +339,16 @@ class Settings {
 			)
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name'         => __( 'From Address', 'cp-groups' ),
-			'desc'         => __( 'The from email address to use when sending staff emails. Will use the site admin email if this is blank.', 'cp-groups' ),
+			'desc'         => __( 'The from email address to use when sending group contact emails. Will use the site admin email if this is blank.', 'cp-groups' ),
 			'id'           => 'from_email',
 			'type'         => 'text',
 		) );
 
-		$options->add_field( array(
+		$advanced_options->add_field( array(
 			'name'         => __( 'From Name', 'cp-groups' ),
-			'desc'         => __( 'The from name to use when sending staff emails. Will use the site title if this is blank.', 'cp-groups' ),
+			'desc'         => __( 'The from name to use when sending group contact emails. Will use the site title if this is blank.', 'cp-groups' ),
 			'id'           => 'from_name',
 			'type'         => 'text',
 		) );

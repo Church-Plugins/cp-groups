@@ -61,6 +61,46 @@ class Group extends Controller{
 	}
 
 	/**
+	 * Return the registration URL
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return mixed|void
+	 * @author Tanner Moushey, 6/20/23
+	 */
+	public function get_registration_url() {
+		$url = $this->registration_url;
+
+		if ( is_email( $url ) ) {
+			$url = 'mailto:' . $url;
+		}
+
+		return $this->filter( $url, __FUNCTION__ );
+	}
+
+	/**
+	 * Return the registration URL
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return mixed|void
+	 * @author Tanner Moushey, 6/20/23
+	 */
+	public function get_contact_url() {
+		if ( Settings::get_advanced( 'contact_action' ) == 'form' ) {
+			$url = $this->leader_email;
+		} else {
+			$url = $this->action_contact;
+		}
+
+		if ( is_email( $url ) ) {
+			$url = 'mailto:' . $url;
+		}
+
+		return $this->filter( $url, __FUNCTION__ );
+	}
+
+	/**
 	 * Get default thumbnail for items
 	 *
 	 * @return mixed|void
@@ -169,28 +209,30 @@ class Group extends Controller{
 	public function get_api_data() {
 		try {
 			$data = [
-				'id'          => $this->post->ID,
-				'originID'    => $this->post->ID,
-				'permalink'   => $this->get_permalink(),
-				'slug'        => $this->post->post_name,
-				'thumb'       => $this->get_thumbnail(),
-				'title'       => htmlspecialchars_decode( $this->get_title(), ENT_QUOTES | ENT_HTML401 ),
-				'desc'        => $this->get_content(),
-				'excerpt'     => $this->get_excerpt(),
-				'date'        => [
+				'id'               => $this->post->ID,
+				'originID'         => $this->post->ID,
+				'permalink'        => $this->get_permalink(),
+				'slug'             => $this->post->post_name,
+				'thumb'            => $this->get_thumbnail(),
+				'title'            => htmlspecialchars_decode( $this->get_title(), ENT_QUOTES | ENT_HTML401 ),
+				'desc'             => $this->get_content(),
+				'excerpt'          => $this->get_excerpt(),
+				'date'             => [
 					'desc'      => Helpers::relative_time( $this->get_publish_date() ),
 					'timestamp' => $this->get_publish_date()
 				],
-				'categories'  => $this->get_categories(),
-				'locations'   => $this->get_locations(),
-				'types'       => $this->get_types(),
-				'lifeStages'  => $this->get_life_stages(),
-				'startTime'   => trim( $this->time_desc ),
-				'leader'      => trim( $this->leader ),
-				'location'    => trim( $this->location ),
-				'handicap'    => trim( $this->handicap_accessible ),
-				'kidFriendly' => trim( $this->kid_friendly ),
-				'isFull'      => boolval( $this->is_group_full ),
+				'contact_url'      => $this->get_contact_url(),
+				'registration_url' => $this->get_registration_url(),
+				'categories'       => $this->get_categories(),
+				'locations'        => $this->get_locations(),
+				'types'            => $this->get_types(),
+				'lifeStages'       => $this->get_life_stages(),
+				'startTime'        => trim( $this->time_desc ),
+				'leader'           => trim( $this->leader ),
+				'location'         => trim( $this->location ),
+				'handicap'         => trim( $this->handicap_accessible ),
+				'kidFriendly'      => trim( $this->kid_friendly ),
+				'isFull'           => boolval( $this->is_group_full ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );

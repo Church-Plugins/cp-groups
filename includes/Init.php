@@ -93,8 +93,8 @@ class Init {
 		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
 		// wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
 
-		if( Settings::get( 'enable_captcha', 'on', 'cp_groups_contact_options' ) == 'on' ) {
-			$site_key = Settings::get( 'captcha_site_key', '', 'cp_groups_contact_options' );
+		if( Settings::get_advanced( 'enable_captcha', 'on' ) == 'on' ) {
+			$site_key = Settings::get_advanced( 'captcha_site_key', '' );
 			if( ! empty( $site_key ) ) {
 				wp_localize_script( 'grecaptcha-site-key', 'recaptchaSiteKey', $site_key );
 				wp_enqueue_script( 'grecaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $site_key );
@@ -136,10 +136,10 @@ class Init {
 	 * @author Jonathan Roley
 	 */
 	public function build_email_modal( string $name, string $email, string $title ) {
-		$is_hidden_att = Settings::get( 'show_leader_email', 'off', 'cp_groups_contact_options' ) == 'on' ? '' : 'hidden';
+		$is_hidden_att = Settings::get_advanced( 'show_leader_email', 'off' ) == 'on' ? '' : 'hidden';
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
-			<button class='cp-back-btn cp-button is-small is-transparent'>Back</button>
+			<button class='cp-back-btn cp-button is-small is-text'>&larr; <?php _e( 'Back', 'cp-groups' ); ?></button>
 			<?php $this->get_modal_meta_tag( $name, $email, $title ) ?>
 			<form
 					action="<?php echo esc_url( add_query_arg( 'cp_action', 'cp_send_email', admin_url( 'admin-ajax.php' ) ) ); ?>"
@@ -218,7 +218,7 @@ class Init {
 		$name     = \ChurchPlugins\Helpers::get_post( 'from-name' );
 		$subject  = \ChurchPlugins\Helpers::get_post( 'subject' );
 		$message  = \ChurchPlugins\Helpers::get_post( 'message' );
-		$limit    = intval( Settings::get( 'throttle_amount', 3, 'cp_groups_contact_options' ) );
+		$limit    = intval( Settings::get_advanced( 'throttle_amount', 3 ) );
 
 
 		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
@@ -250,20 +250,20 @@ class Init {
 		}
 
 		if( $this->is_address_blocked( $reply_to ) ) {
-			wp_send_json_error( array( 'error' => __( 'You are not allowed to send a message as a staff member', 'cp-groups' ), 'request' => $_REQUEST ) );
+			wp_send_json_error( array( 'error' => __( 'You are not allowed to send a message as a group leader.', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
 		if( ! $this->is_verified_captcha() ) {
 			wp_send_json_error( array( 'error' => __( 'Your captcha score is too low', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
-		$subject = apply_filters( 'cp_staff_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
+		$subject = apply_filters( 'cp_groups_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
 
-		$message_suffix = apply_filters( 'cp_staff_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Staff Web Inquiry form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ) );
-		$message        = apply_filters( 'cp_staff_email_message', $message . $message_suffix );
+		$message_suffix = apply_filters( 'cp_groups_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Group Contact Form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ) );
+		$message        = apply_filters( 'cp_groups_email_message', $message . $message_suffix );
 
-		$from_email = Settings::get( 'from_email', get_bloginfo( 'admin_email' ), 'cp_groups_contact_options' );
-		$from_name  = Settings::get( 'from_name', get_bloginfo( 'name' ), 'cp_groups_contact_options' );
+		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
+		$from_name  = Settings::get_advanced( 'from_name', get_bloginfo( 'name' ) );
 
 		wp_mail( $email_to, stripslashes( $subject ), stripslashes( wpautop( $message ) ), [
 			'Content-Type: text/html; cahrset=UTF-8',
@@ -293,7 +293,7 @@ class Init {
 	 * @author Jonathan Roley, 6/6/23
 	 */
 	public function check_if_ratelimited( $email, $limit ) {
-		if( Settings::get( 'throttle_staff_emails', 'off', 'cp_groups_contact_options' ) == 'off' ) {
+		if( Settings::get_advanced( 'throttle_emails', 'off' ) == 'off' ) {
 			return false;
 		}
 
@@ -323,7 +323,7 @@ class Init {
 		 * @author Jonathan Roley, 6/6/23
 		 */
 	public function is_address_blocked( $email ) {
-		if( Settings::get( 'block_staff_emails', 'on', 'cp_groups_contact_options' ) == 'off' ) {
+		if( Settings::get_advanced( 'block_emails', 'on' ) == 'off' ) {
 			return false;
 		}
 
@@ -343,7 +343,7 @@ class Init {
 	public function is_verified_captcha() {
 		$token      = \ChurchPlugins\Helpers::get_post( 'token' );
 		$action     = \ChurchPlugins\Helpers::get_post( 'action' );
-		$secret_key = Settings::get( 'captcha_secret_key', '', 'cp_groups_contact_options' );
+		$secret_key = Settings::get_advanced( 'captcha_secret_key', '' );
 
 		if( empty( $secret_key ) ) {
 			return true;

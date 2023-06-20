@@ -195,6 +195,13 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
+			'name' => __( 'Group Leader Email', 'cp-groups' ),
+			'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
+			'id'   => 'leader_email',
+			'type' => 'text',
+		] );
+
+		$cmb->add_field( [
 			'name' => __( 'Meeting Time Desc', 'cp-groups' ),
 			'desc' => __( 'The Day / Time of the meeting. Ex "Thursdays at 6pm"', 'cp-groups' ),
 			'id'   => 'time_desc',
@@ -230,9 +237,16 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
+			'name' => __( 'Group Details', 'cp-groups' ),
+			'desc' => __( 'The link for the View Details button.', 'cp-groups' ),
+			'id'   => 'public_url',
+			'type' => 'text',
+		] );
+
+		$cmb->add_field( [
 			'name' => __( 'Registration Action', 'cp-groups' ),
 			'desc' => __( 'The action for the group register button (email address, registration page, etc).', 'cp-groups' ),
-			'id'   => 'action_register',
+			'id'   => 'registration_url',
 			'type' => 'text',
 		] );
 

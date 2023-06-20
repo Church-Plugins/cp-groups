@@ -91,19 +91,23 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			<?php endif; ?>
 		</div>
 	</div>
-	
-	<?php $contact_url = get_post_meta( $item['id'], 'action_contact', true ); ?>
-	<?php $register_url = get_post_meta( $item['id'], 'action_register', true ); ?>
-	<?php $group_leader = get_post_meta( $item['id'], 'leader', true ) ?>
 
 	<div style="display:none;">
 		<?php
 			Templates::get_template_part( "parts/group-modal" );
-			
-			if( Settings::get( 'use_email_modal', false, 'cp_groups_contact_options' ) ) {
-				if( is_email( $contact_url ) ) {
-					cp_groups()->build_email_modal( 'action_contact', $contact_url, $group_leader );
+
+			if( Settings::get_advanced( 'contact_action', 'action' ) == 'form' ) {
+				$leader_email = get_post_meta( $item['id'], 'leader_email', true );
+				$group_leader = get_post_meta( $item['id'], 'leader', true );
+
+				if( is_email( $leader_email ) ) {
+					cp_groups()->build_email_modal( 'action_contact', $leader_email, $group_leader );
 				}
+			}
+
+			if( Settings::get_advanced( 'hide_registration', 'off' ) == 'off' ) {
+				$register_url = get_post_meta( $item['id'], 'registration_url', true );
+
 				if( is_email( $register_url ) ) {
 					cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'] );
 				}

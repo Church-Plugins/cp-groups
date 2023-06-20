@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.0
+* Add contact form for Group Leaders and Registration
+
 #### 1.0.2
 * Add facets for "Child Friendly", "Wheelchair Accessible", and "Group is Full"
 
