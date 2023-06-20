@@ -267,22 +267,10 @@ class Settings {
 		) );
 
 		$advanced_options->add_field( array(
-			'name'         => __( 'Display contact modal', 'cp-groups' ),
-			'desc'         => __( 'If active, when a the register or contact action has an email address, a contact form will display inside of a modal (in-browser window popup).', 'cp-groups' ),
-			'id'           => 'use_email_modal',
-			'type'         => 'checkbox',
-			'default_cb'   => [ $this, 'default_checked' ]
-		) );
-
-		$advanced_options->add_field( array(
 			'name' => __( 'Display group leader\'s email address', 'cp-groups' ),
 			'desc' => __( 'If checked, the group leader\'s email address will be visible inside the contact form', 'cp-groups' ),
 			'type' => 'checkbox',
 			'id' => 'show_leader_email',
-			'attributes' => array(
-				'data-conditional-id' => 'use_email_modal',
-				'data-conditionl-value' => 'on'
-			)
 		) );
 
 		$advanced_options->add_field( array(
