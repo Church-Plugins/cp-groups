@@ -94,7 +94,8 @@ module.exports = {
 	// Supports glob matching from minimatch
 	// @link <https://github.com/isaacs/minimatch#usage>
 	packageFiles: [
-		'inc/**',
+		'assets/images/**',
+		'includes/**',
 		'vendor/**',
 		'dist/**',
 		'*.php',
@@ -102,6 +103,7 @@ module.exports = {
 		'readme.txt',
 		'languages/**',
 		'layouts/**',
+		'templates/**',
 		'LICENSE',
 		'*.css',
 	],
