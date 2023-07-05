@@ -88,6 +88,9 @@ class Init {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
 		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
+		global $wp_styles;
+
+		wp_enqueue_style( 'material-icons' );
 
 		// loads main.js script without needing to build
 		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
