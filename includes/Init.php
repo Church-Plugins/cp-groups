@@ -24,6 +24,11 @@ class Init {
 	 */
 	public $setup;
 
+	/**
+	 * @var Integrations\_Init
+	 */
+	public $integrations;
+
 	public $enqueue;
 
 	protected $limiter;
@@ -110,6 +115,7 @@ class Init {
 	protected function includes() {
 		Templates::init();
 		Admin\Init::get_instance();
+		$this->integrations = Integrations\_Init::get_instance();
 		$this->setup = Setup\Init::get_instance();
 	}
 
@@ -135,7 +141,7 @@ class Init {
 	 * @return void
 	 * @author Jonathan Roley
 	 */
-	public function build_email_modal( string $name, string $email, string $title ) {
+	public function build_email_modal( string $name, string $email, string $title, int $id = 0 ) {
 		$is_hidden_att = Settings::get_advanced( 'show_leader_email', 'off' ) == 'on' ? '' : 'hidden';
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
@@ -196,6 +202,7 @@ class Init {
 					</label>
 				</div>
 
+				<input type="hidden" name="group-id" value="<?php echo absint( $id ); ?>" />
 				<input class="cp-button is-large" type="submit" value="Send"/>
 
 			</form>
@@ -212,6 +219,7 @@ class Init {
 	 * @author Jonathan Roley
 	 */
 	public function maybe_send_email() {
+		$group_id = \ChurchPlugins\Helpers::get_post( 'group-id' );
 		$email_to = \ChurchPlugins\Helpers::get_post( 'email-to' );
 		$reply_to = \ChurchPlugins\Helpers::get_post( 'email-from' );
 		$honeypot = \ChurchPlugins\Helpers::get_post( 'email-verify' );
@@ -259,17 +267,26 @@ class Init {
 
 		$subject = apply_filters( 'cp_groups_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
 
-		$message_suffix = apply_filters( 'cp_groups_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Group Contact Form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ) );
-		$message        = apply_filters( 'cp_groups_email_message', $message . $message_suffix );
+		$message_suffix = apply_filters( 'cp_groups_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Group Contact Form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ), $group_id );
+		$message        = apply_filters( 'cp_groups_email_message', $message . $message_suffix, $group_id );
 
 		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
 		$from_name  = Settings::get_advanced( 'from_name', get_bloginfo( 'name' ) );
 
-		wp_mail( $email_to, stripslashes( $subject ), stripslashes( wpautop( $message ) ), [
+		$bcc        = apply_filters( 'cp_groups_email_bcc', Settings::get_advanced( 'bcc' ), $group_id );
+		$headers    =  [
 			'Content-Type: text/html; cahrset=UTF-8',
 			"From: $from_name <$from_email>",
 			sprintf( 'Reply-To: %s <%s>', $name, $reply_to )
-		] );
+		];
+
+		if ( ! empty( $bcc ) ) {
+			$headers[] = 'Bcc: ' . $bcc;
+		}
+
+		$headers = apply_filters( 'cp_groups_email_headers', $headers, $group_id );
+
+		wp_mail( $email_to, stripslashes( $subject ), stripslashes( wpautop( $message ) ), $headers );
 
 		wp_send_json_success( array( 'success' => __( 'Email sent!', 'church-plugins' ), 'request' => $_REQUEST ) );
 	}
