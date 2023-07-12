@@ -89,7 +89,7 @@ jQuery(($) => {
 			openModal( $detailsModal )
 		})
 
-		initContactModals($this.find('.cp-group-single'))
+		initContactModals($detailsModal.find('.cp-group-single'))
 	})
 
 	// for a single group page
