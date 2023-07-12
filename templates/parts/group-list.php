@@ -103,7 +103,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				}
 
 				if( is_email( $email ) ) {
-					cp_groups()->build_email_modal( 'action_contact', $email, $group_leader );
+					cp_groups()->build_email_modal( 'action_contact', $email, $group_leader, $item['id'] );
 				}
 			}
 
@@ -111,7 +111,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				$register_url = get_post_meta( $item['id'], 'registration_url', true );
 
 				if( is_email( $register_url ) ) {
-					cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'] );
+					cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'], $item['id'] );
 				}
 			}
 		?>
