@@ -4,7 +4,7 @@ window.cpGroupsFilter = window.cpGroupsFilter || {};
 
 jQuery(($) => {
 
-	$(document).click(function (e) {
+	$(document).on('click', function (e) {
 		var $dropdown = $('.cp-groups-filter--has-dropdown');
 
 		if (!$(e.target).closest($dropdown).length) {
