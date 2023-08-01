@@ -37,7 +37,7 @@ class Group extends PostType {
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
-
+		add_action( 'rest_api_init', [ $this, 'rest_api_data' ] );
 		parent::add_actions();
 	}
 
@@ -185,6 +185,7 @@ class Group extends PostType {
 			'context' => 'normal',
 			'priority' => 'high',
 			'show_names' => true,
+			'show_in_rest' => \WP_REST_Server::READABLE
 		] );
 
 		$cmb->add_field( [
@@ -279,4 +280,15 @@ class Group extends PostType {
 		parent::save_post( $group_id );
 	}
 
+	/**
+	 * Registers needed data in REST API so it can be accessed via the block editor
+	 */
+	public function rest_api_data() {
+		// register_meta( $this->post_type, 'time_desc', array(
+		// 	'type'         => 'string',
+		// 	'description'  => esc_html__( 'What time the group meets at', 'cp-groups' ),
+		// 	'single'       => true,
+		// 	'show_in_rest' => true
+		// ) );
+	}
 }
