@@ -4,12 +4,7 @@ namespace CP_Groups\Setup\PostTypes;
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-use CP_Groups\Admin\Settings;
-use ChurchPlugins\Helpers;
 use ChurchPlugins\Setup\PostTypes\PostType;
-use CP_Groups\Templates;
-use WP_Block_Editor_Context;
-use WP_Post;
 
 /**
  * Setup for custom post type: Group
@@ -46,24 +41,23 @@ class Shortcode extends PostType {
 		parent::add_actions();
 	}
 
-  public function register_metaboxes() {
+  /**
+   * Create CMB2 metaboxes
+   */
+  public function register_metaboxes() {}
 
-    $cmb = new_cmb2_box( [
-			'id' => 'shortcode_meta',
-			'title' => $this->single_label . ' ' . __( 'Details', 'cp-groups' ),
-			'object_types' => [ $this->post_type ],
-			'context' => 'normal',
-			'priority' => 'high',
-			'show_names' => true,
-      'show_in_rest' => true
-		] );
-
-  }
-
+  /**
+   * Adds a meta box titled "Shortcode" when editing
+   */
   public function init_post_menu_item() {
     add_meta_box( 'shortcode', 'Shortcode', [ $this, 'shortcode_meta_box' ], $this->post_type, 'side', 'high' );
   }
 
+  /**
+   * Adds a disabled text field for copying the shortcode
+   * 
+   * @param \WP_Post $post
+   */
   public function shortcode_meta_box( $post ) {
     $shortcode = "[cp_group_list id={$post->ID}]";
     ?>
@@ -72,6 +66,11 @@ class Shortcode extends PostType {
     <?php
   }
 
+  /**
+   * Displays the shortcode based on its content
+   * 
+   * @param array $atts the shortcode attributes
+   */
   public function group_list( $atts ) {
     $atts = shortcode_atts( array(
       'id' => 0
@@ -92,7 +91,13 @@ class Shortcode extends PostType {
     return apply_filters( 'the_content', $post->post_content );
   }
 
-  public function allowed_block_types( $allowed, WP_Block_Editor_Context $context ) {
+  /**
+   * The allowed Gutenberg blocks when building a Shortcode post
+   * 
+   * @param array $allowed the allowed blocks
+   * @param \WP_Block_Editor_Context $context the block context
+   */
+  public function allowed_block_types( $allowed, $context ) {
     if( false && $context->post->post_type === $this->post_type ) {
       return apply_filters( 'cp_groups_shortcodes_block_types', array( 
         'core/group',
@@ -109,7 +114,13 @@ class Shortcode extends PostType {
     return $allowed;
   }
 
-  public function populate_content( $content, WP_Post $post ) {
+  /**
+   * Checks if a post is a Shortcode and populates it with an HTML template
+   * 
+   * @param string $content the default content for a Shortcode
+   * @param \WP_Post $post the post to check
+   */
+  public function populate_content( $content, $post ) {
     if( $post->post_type !== $this->post_type ) {
       return $content;
     }
@@ -117,6 +128,9 @@ class Shortcode extends PostType {
     return file_get_contents( $html_file );
   }
 
+  /**
+   * Display this menu item in the CP Groups menu item
+   */
   public function show_in_submenu() {
     return 'edit.php?post_type=cp_group';
   }
