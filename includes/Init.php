@@ -55,6 +55,8 @@ class Init {
 		add_action( 'cp_core_loaded', [ $this, 'maybe_setup' ], - 9999 );
 		add_action( 'init', [ $this, 'maybe_init' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'block_editor_enqueue' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'block_variations' ] );
 	}
 
 	/**
@@ -93,10 +95,8 @@ class Init {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
 		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
-
-		// loads main.js script without needing to build
-		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
-		// wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
+		wp_enqueue_style( 'material-icons' );
+		wp_enqueue_script( 'feather-icons' );
 
 		if( Settings::get_advanced( 'enable_captcha', 'on' ) == 'on' ) {
 			$site_key = Settings::get_advanced( 'captcha_site_key', '' );
@@ -105,6 +105,16 @@ class Init {
 				wp_enqueue_script( 'grecaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $site_key );
 			}
 		}
+	}
+
+	/**
+	 * Enqueues the styles for the block editor
+	 * 
+	 * @return void
+	 */
+	public function block_editor_enqueue() {
+		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
+		wp_enqueue_style( 'material-icons' );
 	}
 
 	/**
@@ -422,6 +432,12 @@ class Init {
 		add_action( 'admin_notices', array( $this, 'required_plugins' ) );
 
 		return false;
+	}
+
+
+	public function block_variations() {
+		$path = CP_GROUPS_PLUGIN_URL . 'assets/js/block-variations.js';
+		wp_enqueue_script( 'cp-groups-block-variations', $path, array( 'wp-blocks' ) );
 	}
 
 	/**
