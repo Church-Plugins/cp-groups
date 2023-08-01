@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cp-groups/group-tags",
+	"title": "Group Tags",
+	"category": "theme",
+	"description": "Displays the tags for a group",
+	"textdomain": "cp-groups",
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"attributes": {
+		"primaryTagType": {
+			"type": "string",
+			"default": "cp_group_life_stage"
+		},
+		"highlightStyle": {
+			"type": "string",
+			"default": "solid"
+		},
+		"additionalTagTypes": {
+			"type": "array",
+			"default": []
+		}
+	},
+	"supports": {
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"style": "file:style-index.css",
+	"editorScript": "file:index.js"
+}
