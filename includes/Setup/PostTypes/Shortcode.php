@@ -42,6 +42,7 @@ class Shortcode extends PostType {
     add_filter( 'allowed_block_types_all', [ $this, 'allowed_block_types' ], 10, 2 );
     add_filter( 'default_content', [ $this, 'populate_content' ], 10, 2 );
     add_filter( "{$this->post_type}_show_in_menu", [ $this, 'show_in_submenu' ] );
+    add_filter("{$this->post_type}_slug", [ $this, 'custom_slug' ] );
 		parent::add_actions();
 	}
 
@@ -118,5 +119,12 @@ class Shortcode extends PostType {
 
   public function show_in_submenu() {
     return 'edit.php?post_type=cp_group';
+  }
+
+  /**
+   * Needs a custom slug so it won't be overridden by shortcodes for other plugins
+   */
+  public function custom_slug( $slug ) {
+    return 'cp_groups_shortcodes';
   }
 }
