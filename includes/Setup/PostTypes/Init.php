@@ -20,6 +20,11 @@ class Init {
 	public $groups;
 
 	/**
+	 * Setup Shortcode CPT
+	 */
+	public $shortcodes;
+
+	/**
 	 * Only make one instance of Init
 	 *
 	 * @return Init
@@ -72,11 +77,15 @@ class Init {
 	public function register_post_types() {
 
 		$this->groups = Group::get_instance();
+		$this->shortcodes = Shortcode::get_instance();
 
 		if ( cp_groups()->enabled() ) {
 			$this->groups->add_actions();
-			do_action( 'cp_register_post_types' );
 		}
+
+		$this->shortcodes->add_actions();
+
+		do_action( 'cp_register_post_types' );
 	}
 
 	public function disable_gutenberg( $status, $post_type ) {
@@ -86,6 +95,4 @@ class Init {
 
 		return $status;
 	}
-
-
 }
