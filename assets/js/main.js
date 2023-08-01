@@ -6,7 +6,7 @@ jQuery(($) => {
 
 	$(document).ready(function () {
 
-		let $groupItem = $('.cp-group-item');
+		let $groupItem = $('.cp-group-item-wrapper');
 
 		if (!$groupItem.length) {
 			return;
