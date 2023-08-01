@@ -71,8 +71,6 @@ abstract class Block {
       throw new Exception( "Invalid block configuration. No build directory found for " . $this->name );
     }
 
-    // $this->register_files();
-
     add_action( 'init', [ $this, 'register_block' ] );
   }
 
@@ -88,7 +86,7 @@ abstract class Block {
   }
 
   /**
-   * Registers a Gutenberg block
+   * Registers block on the server
    */
   public function register_block() {
     if( $this->is_dynamic ) {
@@ -98,61 +96,5 @@ abstract class Block {
     else {
       register_block_type( $this->block_dir );
     }
-  }
-
-  /**
-   * Handles rendering a dynamic block
-   */
-  protected function register_dynamic_block() {
-    // $asset_file = include( $this->block_dir . '/index.asset.php');
-    // $script_name = 'cp-groups-block-script-' . $this->name;
-    // $style_name  = 'cp-groups-block-style-'  . $this->name;
-    // $editor_style_name = 'cp-groups-block-editor-style-'  . $this->name;
-
-    // wp_register_script(
-    //   $script_name,
-    //   $this->block_url . '/index.js',
-    //   $asset_file['dependencies'],
-    //   $asset_file['version']
-    // );
-
-    // wp_register_style(
-    //   $style_name,
-    //   $this->block_url . '/style-' . $this->name . '.css'
-    // );
-
-    // wp_register_style(
-    //   $editor_style_name,
-    //   $this->block_url . '/' . $this->name . '.css'
-    // );
-
-    // register_block_type( $this->block_name, array(
-    //   'api_version' => 3,
-    //   'editor_script_handles' => array( $script_name ),
-    //   'editor_style_handles' => array( $editor_style_name ),
-    //   'style_handles' => array( $style_name ),
-    //   'render_callback' => [ $this, 'render' ]
-    // ) );
-
-    // register_block_type_from_metadata( $this->block_dir, array(
-    //   'render_callback' => [ $this, 'render' ] 
-    // ) );
-  }
-
-  protected function register_files() {
-    // $editor_style = "/{$this->name}.css";
-    // if( file_exists( $this->block_dir . $editor_style ) ) {
-    //   wp_register_style( 'cp-groups-block-editor-style-' . $this->name, $this->block_url . $editor_style );
-    // }
-
-    // $style = "/style-{$this->name}.css";
-    // if( file_exists( $this->block_dir . $style ) ) {
-    //   wp_register_style( 'cp-groups-block-style-' . $this->name, $this->block_url . $style );
-    // }
-
-    // $editor_script = "/index.js";
-    // if( file_exists( $this->block_dir . $editor_script ) ) {
-    //   wp_register_script( 'cp-groups-block-script-' . $this->name,  $this->block_url . $editor_script );
-    // }
   }
 }

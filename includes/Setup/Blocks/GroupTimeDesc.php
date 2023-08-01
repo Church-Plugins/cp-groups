@@ -2,7 +2,6 @@
 
 namespace CP_Groups\Setup\Blocks;
 use CP_Groups\Setup\Blocks\Block;
-use WP_Block;
 
 class GroupTimeDesc extends Block {
     public $name = 'group-time-desc';
@@ -12,7 +11,15 @@ class GroupTimeDesc extends Block {
       parent::__construct();
     }
 
-    public function render( $attributes, $content, WP_Block $block ) {
+    /**
+     * Renders the `cp-groups/group-time-desc` block on the server.
+     *
+     * @param array    $attributes Block attributes.
+     * @param string   $content    Block default content.
+     * @param \WP_Block $block      Block instance.
+     * @return string Returns the description of when this group meets.
+     */
+    public function render( $attributes, $content, $block ) {
       $time_desc = get_post_meta( $block->context['postId'], 'time_desc', true );
 
       $wrapper_attributes = get_block_wrapper_attributes();

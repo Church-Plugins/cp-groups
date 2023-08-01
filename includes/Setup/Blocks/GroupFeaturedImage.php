@@ -12,6 +12,14 @@ class GroupFeaturedImage extends Block {
     parent::__construct();
   }
 
+  /**
+   * Renders the `cp-groups/group-featured-image` block on the server.
+   *
+   * @param array    $attributes Block attributes.
+   * @param string   $content    Block default content.
+   * @param \WP_Block $block      Block instance.
+   * @return string Returns the HTML for the group featured image.
+   */
   public function render( $attributes, $content, $block ) {
     if ( ! isset( $block->context['postId'] ) ) {
       return '';

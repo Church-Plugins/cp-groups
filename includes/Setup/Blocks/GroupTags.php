@@ -13,6 +13,14 @@ class GroupTags extends Block {
       parent::__construct();
     }
 
+    /**
+     * Renders the `cp-groups/group-tags` block on the server.
+     *
+     * @param array    $attributes Block attributes.
+     * @param string   $content    Block default content.
+     * @param WP_Block $block      Block instance.
+     * @return string Returns HTML for the group tags block.
+     */
     public function render( $attributes, $content, $block ) {
       $post = get_post( $block->context['postId'] );
       $taxonomies = get_taxonomies( array( 'object_type' => ['cp_group'] ) );

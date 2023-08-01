@@ -7,8 +7,6 @@
 namespace CP_Groups\Setup\Blocks;
 use CP_Groups\Setup\Blocks\Block;
 use CP_Groups\Templates;
-use WP_Query;
-use WP_Block;
 
 class GroupTemplate extends Block {
   public $name = 'group-template';
@@ -24,7 +22,7 @@ class GroupTemplate extends Block {
    *
    * @param array    $attributes Block attributes.
    * @param string   $content    Block default content.
-   * @param WP_Block $block      Block instance.
+   * @param \WP_Block $block      Block instance.
    *
    * @return string Returns the output of the query, structured using the layout defined by the block's inner blocks.
    */
@@ -39,7 +37,7 @@ class GroupTemplate extends Block {
       $query = clone $wp_query;
     } else {
       $query_args = build_query_vars_from_query_block( $block, $page );
-      $query      = new WP_Query( $query_args );
+      $query      = new \WP_Query( $query_args );
     }
 
     if ( ! $query->have_posts() ) {
@@ -76,7 +74,7 @@ class GroupTemplate extends Block {
       // Render the inner blocks of the Post Template block with `dynamic` set to `false` to prevent calling
       // `render_callback` and ensure that no wrapper markup is included.
       $block_content = (
-        new WP_Block(
+        new \WP_Block(
           $block_instance,
           array(
             'postType' => get_post_type(),
