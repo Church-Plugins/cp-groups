@@ -118,6 +118,7 @@ class Init {
 
 	protected function actions() {
 		add_action( 'cp_send_email', [ $this, 'maybe_send_email' ] );
+		add_filter( 'cp_resources_output_resources_check_object', [ $this, 'allow_resources_for_group_modals' ], 50, 1 );
 	}
 
 	/**
@@ -485,4 +486,13 @@ class Init {
 		return true;
 	}
 
+	/**
+	 * CP Resources only appends resources onto single objects. This makes sure the resources are added to groups content in an archive context.
+	 */
+	public function allow_resources_for_group_modals( $check ) {
+		if( get_post_type() === cp_groups()->setup->post_types->groups->post_type ) {
+			return false;
+		}
+		return $check;
+	}
 }
