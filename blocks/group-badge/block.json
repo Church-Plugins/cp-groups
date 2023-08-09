@@ -9,7 +9,8 @@
 	"usesContext": [ "postId", "postType", "queryId" ],
 	"attributes": {
 		"badgeType": {
-			"type": "string"
+			"type": "string",
+			"default": "kid_friendly"
 		}
 	},
 	"supports": {

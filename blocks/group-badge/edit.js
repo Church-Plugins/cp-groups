@@ -40,25 +40,30 @@ export default function GroupBadge( {
 		}
 	]
 
+	const currentBadge = badgeType ? badgeTypes.find(badge => badge.value === badgeType) : badgeTypes[0]
+	const showBadge = Boolean(badgeType && meta[badgeType] && currentBadge)
+
 	const blockProps = useBlockProps({
-		className: 'cp-groups-badge'
+		className: 'cp-groups-badge',
+		style: {
+			opacity: showBadge ? '1' : '0.5'
+		}
 	})
 
-	const currentBadge = badgeTypes.find(badge => badge.value === badgeType)
-	const showBadge = Boolean(badgeType && meta[badgeType] && currentBadge)
+
 
 	return (
 		<>
 			<div {...blockProps}>
 				{
-					showBadge ?
+					!badgeType ?
+					<div>{ __( 'Select a badge', 'cp-library' ) }</div> :
 					<>
 						<span className='material-icons' dangerouslySetInnerHTML={{__html: currentBadge.icon}}></span>
-						<div>{currentBadge.label}</div>
+						<div>{showBadge ? currentBadge.label : __( 'No badge', 'cp-library' ) }</div>
 					</>
-					:
-					__( `This group is not ${currentBadge.label}` )
 				}
+				
 			</div>
 			<InspectorControls>
 				<PanelBody title={ __( 'Badge Settings', 'cp-groups' ) }>
