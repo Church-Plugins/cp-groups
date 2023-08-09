@@ -63,7 +63,7 @@ class Templates {
 	 * @author Tanner Moushey
 	 */
 	public static function get_facet_link( $slug, $facet ) {
-		$uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+		$uri = get_post_type_archive_link( cp_groups()->setup->post_types->groups->post_type );
 		$get = $_GET;
 
 		if ( empty( $get ) ) {
