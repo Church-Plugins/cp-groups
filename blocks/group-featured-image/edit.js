@@ -43,7 +43,7 @@ function getMediaSourceUrlBySizeSlug( media, slug ) {
 	);
 }
 
-export default function PostFeaturedImageEdit( {
+export default function GroupFeaturedImageEdit( {
 	clientId,
 	attributes,
 	setAttributes,
@@ -81,7 +81,7 @@ export default function PostFeaturedImageEdit( {
 		},
 		[ featuredImage, postTypeSlug ]
 	);
-	const mediaUrl = getMediaSourceUrlBySizeSlug( media, sizeSlug ) || window.cp_groups_admin_vars?.['default_thumbnail'];
+	const mediaUrl = getMediaSourceUrlBySizeSlug( media, sizeSlug );
 
 	const imageSizes = useSelect(
 		( select ) => select( blockEditorStore ).getSettings().imageSizes,
@@ -248,7 +248,15 @@ export default function PostFeaturedImageEdit( {
 		);
 	} else {
 		// We have a Featured image so show a Placeholder if is loading.
-		image = ! media ? (
+		image = ! media && window.cp_groups_admin_vars?.default_thumbnail ? (
+			<img
+				className={ borderProps.className }
+				src={ window.cp_groups_admin_vars.default_thumbnail }
+				alt={ __( 'Featured image' ) }
+				style={ imageStyles }
+			/>
+		) :
+		! media ? (
 			placeholder()
 		) : (
 			<img

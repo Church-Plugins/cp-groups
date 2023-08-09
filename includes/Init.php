@@ -108,13 +108,19 @@ class Init {
 	}
 
 	/**
-	 * Enqueues the styles for the block editor
+	 * Enqueues assets for the block editor
 	 * 
 	 * @return void
 	 */
 	public function block_editor_enqueue() {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
 		wp_enqueue_style( 'material-icons' );
+
+		wp_register_script( 'cp-groups-admin', CP_GROUPS_PLUGIN_URL . 'assets/js/admin.js', [], $this->get_version() );
+		wp_localize_script( 'cp-groups-admin', 'cp_groups_admin_vars', array(
+			'default_thumbnail' => Settings::get( 'default_thumbnail', $this->get_default_thumb() )
+		) );
+		wp_enqueue_script( 'cp-groups-admin' );
 	}
 
 	/**
