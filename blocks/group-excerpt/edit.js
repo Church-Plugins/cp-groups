@@ -27,7 +27,7 @@ import { useCanEditEntity } from '../utils/hooks';
 
 const ELLIPSIS = '…';
 
-export default function PostExcerptEditor( {
+export default function GroupExcerptEdit( {
 	attributes: { textAlign, moreText, showMoreOnNewLine, excerptLength },
 	setAttributes,
 	isSelected,
@@ -114,11 +114,6 @@ export default function PostExcerptEditor( {
 							'This is the Group Excerpt block, it will display the excerpt from single groups.'
 						) }
 					</p>
-					<p>
-						{ __(
-							'If there are any Custom Post Types with support for excerpts, the Group Excerpt block can display the excerpts of those entries as well.'
-						) }
-					</p>
 				</div>
 			</>
 		);
@@ -136,7 +131,7 @@ export default function PostExcerptEditor( {
 	}
 	const readMoreLink = (
 		<RichText
-			className="wp-block-post-excerpt__more-link"
+			className="wp-block-cp-groups-group-excerpt__more-link"
 			tagName="a"
 			aria-label={ __( '“Read more” link text' ) }
 			placeholder={ __( 'Add "read more" link text' ) }
@@ -147,7 +142,7 @@ export default function PostExcerptEditor( {
 			withoutInteractiveFormatting={ true }
 		/>
 	);
-	const excerptClassName = classnames( 'wp-block-post-excerpt__excerpt', {
+	const excerptClassName = classnames( 'wp-block-cp-groups-group-excerpt__excerpt', {
 		'is-inline': ! showMoreOnNewLine,
 	} );
 
@@ -251,7 +246,7 @@ export default function PostExcerptEditor( {
 				{ excerptContent }
 				{ ! showMoreOnNewLine && ' ' }
 				{ showMoreOnNewLine ? (
-					<p className="wp-block-post-excerpt__more-text">
+					<p className="wp-block-cp-groups-group-excerptt__more-text">
 						{ readMoreLink }
 					</p>
 				) : (
