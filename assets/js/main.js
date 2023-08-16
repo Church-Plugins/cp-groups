@@ -4,76 +4,26 @@ window.cpGroupsFilter = window.cpGroupsFilter || {};
 
 jQuery(($) => {
 
-	$(document).ready(function () {
+	$(document).on('click', function (e) {
+		var $dropdown = $('.cp-groups-filter--has-dropdown');
 
-		let $groupItem = $('.cp-group-item');
-
-		if (!$groupItem.length) {
-			return;
+		if (!$(e.target).closest($dropdown).length) {
+			$dropdown.removeClass('open');
 		}
+	});
 
-		$groupItem.on('click', function (e) {
-			if ($(e.target).hasClass('cp-button')) {
-				return true;
-			}
+	$('.cp-groups-filter--toggle--button').on('click', function (e) {
+		e.preventDefault();
+		$('.cp-groups-filter--has-dropdown').toggle();
+	});
 
-			e.preventDefault();
+	$('.cp-groups-filter--form input[type=checkbox]').on('change', function () {
+		$('.cp-groups-filter--form').submit();
+	});
 
-			let $this = $(this);
-			let $modalElem = $this.find('.cp-group-modal').clone();
-
-			$modalElem.dialog({
-				title        : '',
-				dialogClass  : 'cp-groups-modal-popup',
-				autoOpen     : false,
-				draggable    : false,
-				width        : 500,
-				modal        : true,
-				resizable    : false,
-				closeOnEscape: true,
-				position     : {
-					my: 'center',
-					at: 'center',
-					of: window
-				},
-				open         : function () {
-					// close dialog by clicking the overlay behind it
-					$('.ui-widget-overlay').bind('click', function () {
-						$modalElem.dialog('close');
-					});
-
-					$(event.target).dialog('widget')
-						.css({position: 'fixed'})
-						.position({my: 'center', at: 'center', of: window});
-
-				},
-			});
-
-			$modalElem.dialog('open');
-
-		});
-
-		$(document).click(function (e) {
-			var $dropdown = $('.cp-groups-filter--has-dropdown');
-
-			if (!$(e.target).closest($dropdown).length) {
-				$dropdown.removeClass('open');
-			}
-		});
-
-		$('.cp-groups-filter--toggle--button').on('click', function (e) {
-			e.preventDefault();
-			$('.cp-groups-filter--has-dropdown').toggle();
-		});
-
-		$('.cp-groups-filter--form input[type=checkbox]').on('change', function () {
-			$('.cp-groups-filter--form').submit();
-		});
-
-		$('.cp-groups-filter--has-dropdown a').on('click', function (e) {
-			e.preventDefault();
-			$(this).parent().toggleClass('open');
-		});
+	$('.cp-groups-filter--has-dropdown a').on('click', function (e) {
+		e.preventDefault();
+		$(this).parent().toggleClass('open');
 	});
 
 	let modals = []
@@ -92,10 +42,6 @@ jQuery(($) => {
 		modals[0].dialog('close')
 		modals.shift()
 		modals[0]?.dialog('open')
-	}
-
-	function populateModal($modal) {
-
 	}
 
 	const modalConfig = {
@@ -120,15 +66,42 @@ jQuery(($) => {
 		}
 	}
 
+	// init for all items in group list
 	const $groupItems = $('.cp-group-item')
-
-	if( !$groupItems.length ) return
 
 	$groupItems.each(function() {
 		const $this = $(this)
-		const $contactModal  = $this.find('.cp-email-modal.action_contact')
-		const $registerModal = $this.find('.cp-email-modal.action_register')
+
 		const $detailsModal  = $this.find('.cp-group-modal')
+
+		$detailsModal.dialog({
+			...modalConfig,
+			dialogClass: 'cp-groups-modal-popup'
+		})
+
+		$this.on('click', (e) => {
+			if ($(e.target).hasClass('cp-button')) {
+				return true;
+			}
+
+			e.preventDefault()
+
+			openModal( $detailsModal )
+		})
+
+		initContactModals($detailsModal.find('.cp-group-single'))
+	})
+
+	// for a single group page
+	const $groupSingle = $('.cp-pg-template .cp-group-single');
+
+	$groupSingle.each(function() {
+		initContactModals($(this))
+	})
+
+	function initContactModals($parent) {
+		const $contactModal  = $parent.find('.cp-email-modal.action_contact')
+		const $registerModal = $parent.find('.cp-email-modal.action_register')
 
 		const contact  = new CP_Groups_Mail()
 		const register = new CP_Groups_Mail()
@@ -152,13 +125,8 @@ jQuery(($) => {
 			})
 		}
 
-		$detailsModal.dialog({
-			...modalConfig,
-			dialogClass: 'cp-groups-modal-popup'
-		})
-
-		const $registerButton = $detailsModal.find('.cp-group-single--registration-url')
-		const $contactButton  = $detailsModal.find('.cp-group-single--contact-url')
+		const $registerButton = $parent.find('.cp-group-single--registration-url')
+		const $contactButton  = $parent.find('.cp-group-single--contact-url')
 
 		$registerButton.on('click', (e) => {
 			if( $registerModal.length ) {
@@ -174,16 +142,7 @@ jQuery(($) => {
 			}
 		})
 
-		$this.on('click', (e) => {
-			if ($(e.target).hasClass('cp-button')) {
-				return true;
-			}
-
-			e.preventDefault()
-
-			openModal( $detailsModal )
-		})
-	})
+	}
 })
 
 class CP_Groups_Mail {
