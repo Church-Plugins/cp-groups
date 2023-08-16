@@ -93,10 +93,7 @@ class Init {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
 		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
-
-		// loads main.js script without needing to build
-		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
-		// wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
+		wp_enqueue_style( 'material-icons' );
 
 		if( Settings::get_advanced( 'enable_captcha', 'on' ) == 'on' ) {
 			$site_key = Settings::get_advanced( 'captcha_site_key', '' );
@@ -121,6 +118,7 @@ class Init {
 
 	protected function actions() {
 		add_action( 'cp_send_email', [ $this, 'maybe_send_email' ] );
+		add_filter( 'cp_resources_output_resources_check_object', [ $this, 'allow_resources_for_group_modals' ], 50, 1 );
 	}
 
 	/**
@@ -488,4 +486,13 @@ class Init {
 		return true;
 	}
 
+	/**
+	 * CP Resources only appends resources onto single objects. This makes sure the resources are added to groups content in an archive context.
+	 */
+	public function allow_resources_for_group_modals( $check ) {
+		if( get_post_type() === cp_groups()->setup->post_types->groups->post_type ) {
+			return false;
+		}
+		return $check;
+	}
 }
