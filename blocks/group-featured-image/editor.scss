@@ -1,13 +1,13 @@
 // Provide special styling for the placeholder.
 // @todo: this particular minimal style of placeholder could be componentized further.
-.wp-block-post-featured-image {
+.wp-block-cp-groups-group-featured-image {
 	.block-editor-media-placeholder {
 		z-index: 1; // Need to put it above the overlay so the upload button works.
 		backdrop-filter: none; // Removes background blur so the overlay's actual color is visible.
 	}
 
 	// Style the placeholder.
-	.wp-block-post-featured-image__placeholder,
+	.wp-block-cp-groups-group-featured-image__placeholder,
 	.components-placeholder {
 		justify-content: center;
 		align-items: center;
@@ -47,7 +47,7 @@
 	// its border so that a user selection for border color or width displays
 	// a visual border. They also override the `img { border: none; }` applied
 	// by core.
-	.wp-block-post-featured-image__placeholder,
+	.wp-block-cp-groups-group-featured-image__placeholder,
 	.components-placeholder,
 	img {
 		// The following is required to overcome WP Core applying styles that clear
@@ -98,7 +98,7 @@
 	}
 }
 
-div[data-type="core/post-featured-image"] {
+div[data-type="cp-groups/group-featured-image"] {
 	img {
 		max-width: 100%;
 		height: auto;

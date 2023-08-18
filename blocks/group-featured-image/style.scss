@@ -1,4 +1,4 @@
-.wp-block-post-featured-image {
+.wp-block-cp-groups-group-featured-image {
 	margin-left: 0;
 	margin-right: 0;
 	a {
@@ -18,13 +18,13 @@
 		width: 100%;
 	}
 
-	.wp-block-post-featured-image__overlay {
+	.wp-block-cp-groups-group-featured-image__overlay {
 		&.has-background-dim {
 			position: absolute;
 			inset: 0;
 			background-color: $black;
 
-			@at-root .wp-block-post-featured-image {
+			@at-root .wp-block-cp-groups-group-featured-image {
 				position: relative;
 			}
 		}

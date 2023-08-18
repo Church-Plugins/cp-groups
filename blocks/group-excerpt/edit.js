@@ -246,7 +246,7 @@ export default function GroupExcerptEdit( {
 				{ excerptContent }
 				{ ! showMoreOnNewLine && ' ' }
 				{ showMoreOnNewLine ? (
-					<p className="wp-block-cp-groups-group-excerptt__more-text">
+					<p className="wp-block-cp-groups-group-excerpt__more-text">
 						{ readMoreLink }
 					</p>
 				) : (

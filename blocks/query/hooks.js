@@ -15,7 +15,7 @@ const CreateNewPostLink = ( {
 		post_type: postType,
 	} );
 	return (
-		<div className="wp-block-query__create-new-link">
+		<div className="wp-block-cp-groups-query__create-new-link">
 			{ createInterpolateElement(
 				__( '<a>Create a new post</a> for this feed.' ),
 				// eslint-disable-next-line jsx-a11y/anchor-has-content

@@ -51,7 +51,7 @@ const Overlay = ( {
 				<span
 					aria-hidden="true"
 					className={ classnames(
-						'wp-block-post-featured-image__overlay',
+						'wp-block-cp-groups-group-featured-image__overlay',
 						dimRatioToClass( dimRatio ),
 						{
 							[ overlayColor.class ]: overlayColor.class,

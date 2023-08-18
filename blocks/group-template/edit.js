@@ -27,7 +27,7 @@ const TEMPLATE = [
 
 function PostTemplateInnerBlocks() {
 	const innerBlocksProps = useInnerBlocksProps(
-		{ className: 'wp-block-post' },
+		{ className: 'wp-block-cp-groups-group-template' },
 		{ template: TEMPLATE, __unstableDisableLayoutClassNames: true }
 	);
 	return <li { ...innerBlocksProps } />;
@@ -42,7 +42,7 @@ function PostTemplateBlockPreview( {
 	const blockPreviewProps = useBlockPreview( {
 		blocks,
 		props: {
-			className: 'wp-block-post',
+			className: 'wp-block-cp-groups-group-template',
 		},
 	} );
 
