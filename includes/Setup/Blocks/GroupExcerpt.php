@@ -46,7 +46,7 @@ class GroupExcerpt extends Block {
         $excerpt = wp_trim_words( $excerpt, $excerpt_length );
       }
     
-      $more_text           = ! empty( $attributes['moreText'] ) ? '<a class="wp-block-post-excerpt__more-link" href="' . esc_url( get_the_permalink( $block->context['postId'] ) ) . '">' . wp_kses_post( $attributes['moreText'] ) . '</a>' : '';
+      $more_text           = ! empty( $attributes['moreText'] ) ? '<a class="wp-block-cp-groups-group-excerpt__more-link" href="' . esc_url( get_the_permalink( $block->context['postId'] ) ) . '">' . wp_kses_post( $attributes['moreText'] ) . '</a>' : '';
       $filter_excerpt_more = function( $more ) use ( $more_text ) {
         return empty( $more_text ) ? $more : '';
       };
@@ -69,10 +69,10 @@ class GroupExcerpt extends Block {
       }
       $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
     
-      $content               = '<p class="wp-block-post-excerpt__excerpt">' . $excerpt;
+      $content               = '<p class="wp-block-cp-groups-group-excerpt__excerpt">' . $excerpt;
       $show_more_on_new_line = ! isset( $attributes['showMoreOnNewLine'] ) || $attributes['showMoreOnNewLine'];
       if ( $show_more_on_new_line && ! empty( $more_text ) ) {
-        $content .= '</p><p class="wp-block-post-excerpt__more-text">' . $more_text . '</p>';
+        $content .= '</p><p class="wp-block-cp-groups-group-excerpt__more-text">' . $more_text . '</p>';
       } else {
         $content .= " $more_text</p>";
       }

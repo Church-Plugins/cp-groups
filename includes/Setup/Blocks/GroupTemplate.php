@@ -99,7 +99,7 @@ class GroupTemplate extends Block {
       $block_content .= ob_get_clean();
       
       // Wrap the render inner blocks in a `li` element with the appropriate post classes.
-      $post_classes = implode( ' ', get_post_class( 'wp-block-post cp-group-item-wrapper' ) );
+      $post_classes = implode( ' ', get_post_class( 'wp-block-cp-groups-group-template cp-group-item-wrapper' ) );
       $content     .= '<li class="' . esc_attr( $post_classes ) . '">' . $block_content . '</li>';
     }
 
@@ -154,30 +154,3 @@ class GroupTemplate extends Block {
     return array_merge( $args, [ 'skip_inner_blocks' => true ] );
   }
 }
-
-
-
-
-
-
-
-/*
-try {
-  $item = new \CP_Groups\Controllers\Group( get_the_ID() );
-  $item = $item->get_api_data();
-} catch ( \ChurchPlugins\Exception $e ) {
-  error_log( $e );
-
-  return;
-}
-
-ob_start();
-
-Templates::get_template_part( 'parts/group-modals', array( 'item' => $item ) );
-
-$block_content .= ob_get_clean();
-
-// Wrap the render inner blocks in a `li` element with the appropriate post classes.
-$post_classes = implode( ' ', get_post_class( 'wp-block-post cp-group-item' ) );
-$content     .= '<li class="' . esc_attr( $post_classes ) . '">' . $block_content . '</li>';
-*/
