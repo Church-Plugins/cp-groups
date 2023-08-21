@@ -97,6 +97,22 @@ class Group extends PostType {
 
 		}
 
+		// if we have a custom meta mapping, add those to the query
+		$cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
+		foreach( $cp_connect_custom_meta as $meta_mapping ) {
+			$meta_key = $meta_mapping['slug'];
+			$meta_value = Helpers::get_param( $_GET, $meta_key, false );
+
+			if( ! $meta_value ) {
+				continue;
+			}
+
+			$meta_query[] = [
+				'key' => $meta_key,
+				'value' => $meta_value,
+			];
+		}
+
 		$query->set( 'meta_query', $meta_query );
 
 	}
@@ -257,6 +273,7 @@ class Group extends PostType {
 			'type' => 'text',
 		] );
 
+		$this->register_cp_connect_fields( $cmb );
 	}
 
 	/**
@@ -279,4 +296,28 @@ class Group extends PostType {
 		parent::save_post( $group_id );
 	}
 
+	/**
+	 * Register custom meta fields based on the mapping from CP Connect
+	 * 
+	 * @param \CMB2 $cmb the metabox to add the custom fields to
+	 * @return void
+	 */
+	public function register_cp_connect_fields( $cmb ) {
+		$option = get_option( 'cp_group_custom_meta_mapping' );
+
+		if( ! $option ) {
+			return;
+		}
+
+		foreach( $option as $key => $data ) {
+			$cmb->add_field( [
+				'name' => $data['display_name'],
+				'desc' => __( 'The ' . $data['display_name'] . ' for the group.', 'cp-groups' ),
+				'id'   => $data['slug'],
+				'type' => 'select',
+				'options' => $data['options'],
+				'show_option_none' => true
+			] );
+		}
+	}
 }
