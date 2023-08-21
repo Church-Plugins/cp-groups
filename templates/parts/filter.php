@@ -49,6 +49,7 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 		<?php endforeach; ?>
 
 		<?php foreach( $cp_connect_custom_meta as $meta_mapping ) : ?>
+			<?php if( Settings::get_advanced( $meta_mapping['slug'], false ) ) continue; ?>
 			<div class="cp-groups-filter--facet cp-groups-filter--has-dropdown">
 				<a href="#" class="cp-groups-filter--dropdown-button cp-button is-light"><?php echo $meta_mapping['display_name'] ?></a>
 				<div class="cp-groups-filter--dropdown">
@@ -66,7 +67,7 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			</div>
 		<?php endforeach; ?>
-		
+
 		<div class="cp-groups-filter--attributes">
 
 			<?php if ( Settings::get_advanced( 'kid_friendly_enabled', true ) ) : ?>
