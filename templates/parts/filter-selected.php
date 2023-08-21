@@ -39,17 +39,6 @@ unset( $get['groups-paged'] );
 		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></a>
 	<?php endif; ?>
 
-	<?php /* if ( ! empty( $_GET[ $gender_param ] ) ) : $get = $_GET; unset( $get[ $gender_param ] ); ?>
-		<?php $options = array(
-			'male'   => __( 'Male', 'cp-groups' ),
-			'female' => __( 'Female', 'cp-groups' )
-		); ?>
-		<?php $selected_option = isset( $options[ $_GET[ $gender_param ] ] ) ? $options[ $_GET[ $gender_param ] ] : false; ?>
-		<?php if( $selected_option ): ?>
-			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( $selected_option, 'cp-groups' ); ?></a>
-		<?php endif; ?>
-	<?php endif; */ ?>
-
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>
 		<?php foreach( $_GET[ $tax->taxonomy ] as $slug ) :
 			if ( ! $term = get_term_by( 'slug', $slug, $tax->taxonomy ) ) {

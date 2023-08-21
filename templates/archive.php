@@ -1,7 +1,5 @@
 <?php
 use CP_Groups\Templates;
-
-global $wp_query;
 ?>
 
 
