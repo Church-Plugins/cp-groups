@@ -3,7 +3,7 @@
  * Plugin Name: Church Plugins - Groups
  * Plugin URL: https://churchplugins.com
  * Description: Church Groups plugin for managing groups
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Church Plugins
  * Author URI: https://churchplugins.com
  * Text Domain: cp-groups
@@ -12,7 +12,7 @@
 
 if( !defined( 'CP_GROUPS_PLUGIN_VERSION' ) ) {
 	 define ( 'CP_GROUPS_PLUGIN_VERSION',
-	 	'1.1.2'
+	 	'1.1.3'
 	);
 }
 
