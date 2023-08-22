@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.3
+* Add integration with CP Connect when pulling groups from Ministry Platform
+
 #### 1.1.0
 * Add contact form for Group Leaders and Registration
 
