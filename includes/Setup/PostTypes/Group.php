@@ -301,6 +301,8 @@ class Group extends PostType {
 	 * 
 	 * @param \CMB2 $cmb the metabox to add the custom fields to
 	 * @return void
+	 * @since 1.1.3
+	 * @author Jonathan Roley
 	 */
 	public function register_cp_connect_fields( $cmb ) {
 		$option = get_option( 'cp_group_custom_meta_mapping' );
