@@ -19,6 +19,10 @@ npm run build
 
 ### Change Log
 
+#### 1.1.2
+* Fix bug with single page contact action
+* Support resources in group modal
+
 #### 1.1.0
 * Add contact form for Group Leaders and Registration
 

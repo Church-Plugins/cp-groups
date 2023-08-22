@@ -11,8 +11,8 @@
  */
 
 if( !defined( 'CP_GROUPS_PLUGIN_VERSION' ) ) {
-	 define ( 'CP_GROUPS_PLUGIN_VERSION',
-	 	'1.1.3'
+	define ( 'CP_GROUPS_PLUGIN_VERSION',	 	
+		'1.1.3'
 	);
 }
 
