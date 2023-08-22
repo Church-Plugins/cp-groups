@@ -56,7 +56,21 @@ try {
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
+
+				<?php if( $cp_connect_tags = get_option( 'cp_group_custom_meta_mapping', false ) ) : ?>
+					<div class="cp-group-single--type">
+						<?php foreach( $cp_connect_tags as $tag ) : ?>
+							<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
+							<?php if( empty( $item_tag ) ) continue; ?>
+							<?php if( isset( $tag['options'][$item_tag] ) ) : ?>
+								<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $tag['slug'], $item_tag ) ?>"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
+
+			
 		<?php endif; ?>
 
 		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>

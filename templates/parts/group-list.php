@@ -58,7 +58,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 						<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
 						<?php if( empty( $item_tag ) ) continue; ?>
 						<?php if( isset( $tag['options'][$item_tag] ) ) : ?>
-							<a class="cp-button is-xsmall is-transparent" href="#"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $item_tag, $tag['slug'] ) ?>"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
 						<?php endif; ?>
 					<?php endforeach; ?>
 				<?php endif; ?>
