@@ -76,6 +76,10 @@
 		}
 	}
 
+	&--search--box > button[type=submit] {
+		background: none !important;
+	}
+
 	&--dropdown-button {
 		justify-content: space-between;
 
@@ -171,6 +175,7 @@
 			display: inline-flex;
 			padding: 0 .5em;
 			margin-right: .5em;
+			text-decoration: none;
 
 			&:before {
 				content: '\e5cd';

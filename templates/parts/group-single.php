@@ -107,7 +107,7 @@ try {
 
 		<div class="cp-group-single--actions">
 			<?php if ( Settings::get_advanced( 'hide_details' ) !== 'on' && $public_url = get_post_meta( $item['id'], 'public_url', true ) ) : ?>
-				<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
+				<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
 			<?php endif; ?>
 
 			<?php if ( $item['registration_url'] && Settings::get_advanced( 'hide_registration' ) !== 'on' ) : ?>
