@@ -72,7 +72,7 @@ class Init {
 				if( $image ) {
 					$image = attachment_url_to_postid( $image );
 				} 
-				return $image || $value;
+				return $image ? $image : $value;
 			}
 		}
 		return $value;
