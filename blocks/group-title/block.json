@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-title",
 	"title": "Group Title",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays the title of a group.",
 	"textdomain": "default",
 	"usesContext": [ "postId", "postType", "queryId" ],

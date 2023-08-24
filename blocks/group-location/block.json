@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-location",
 	"title": "Group Location",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays the location of a group.",
 	"textdomain": "cp-groups",
 	"usesContext": [ "postId", "postType", "queryId" ],

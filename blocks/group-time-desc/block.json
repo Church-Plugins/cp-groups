@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-time-desc",
 	"title": "Group Time Description",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays what time the group meets at.",
 	"textdomain": "cp-groups",
 	"usesContext": [ "postId", "postType", "queryId" ],

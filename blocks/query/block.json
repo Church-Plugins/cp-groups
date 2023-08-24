@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/query",
 	"title": "CP Groups",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays a list of groups",
 	"textdomain": "cp-groups",
 	"attributes": {

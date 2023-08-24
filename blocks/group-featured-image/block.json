@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-featured-image",
 	"title": "Group Featured Image",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Display a group's featured image.",
 	"textdomain": "cp-groups",
 	"attributes": {

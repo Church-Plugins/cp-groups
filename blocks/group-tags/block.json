@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-tags",
 	"title": "Group Tags",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays the tags for a group",
 	"textdomain": "cp-groups",
 	"usesContext": [ "postId", "postType", "queryId" ],

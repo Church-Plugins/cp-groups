@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-template",
 	"title": "Group Template",
-	"category": "theme",
+	"category": "cp-groups",
 	"parent": [ "cp-groups/query", "core/query" ],
 	"description": "Contains the block elements used to render a post, like the title, date, featured image, content or excerpt, and more.",
 	"textdomain": "default",

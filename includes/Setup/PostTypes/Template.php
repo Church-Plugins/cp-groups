@@ -38,6 +38,8 @@ class Template extends PostType {
 		add_filter( 'default_content', [ $this, 'populate_content' ], 10, 2 );
 		add_filter( "{$this->post_type}_show_in_menu", [ $this, 'show_in_submenu' ] );
 		add_filter("{$this->post_type}_slug", [ $this, 'custom_slug' ] );
+		add_filter( 'block_categories_all' , [ $this, 'block_categories' ] );
+
 		parent::add_actions();
 	}
 
@@ -153,5 +155,18 @@ class Template extends PostType {
 	 */
 	public function custom_slug( $slug ) {
 		return 'cp_groups_templates';
+	}
+
+	/**
+	 * Adds a custom block category to be used by custom Gutenberg blocks
+	 * @param array $categories the default block categories
+	 */
+	public function block_categories( $categories ) {
+		$categories[] = array(
+			'slug'  => 'cp-groups',
+			'title' => 'Church Plugins Groups'
+		);
+
+		return $categories;
 	}
 }

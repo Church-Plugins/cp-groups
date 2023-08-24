@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-badge",
 	"title": "Group Badge",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays a badge if it exists on the group.",
 	"textdomain": "cp-groups",
 	"usesContext": [ "postId", "postType", "queryId" ],

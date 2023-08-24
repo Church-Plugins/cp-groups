@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "cp-groups/group-content",
 	"title": "Group Content",
-	"category": "theme",
+	"category": "cp-groups",
 	"description": "Displays the group description.",
 	"textdomain": "default",
 	"usesContext": [ "postId", "postType", "queryId" ],
