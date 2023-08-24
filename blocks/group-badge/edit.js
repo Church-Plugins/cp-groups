@@ -24,7 +24,7 @@ export default function GroupBadge( {
 
 	const meta = useSelect(select => {
 		const { cmb2 } = select('core').getEntityRecord( 'postType', postType, postId )
-		return cmb2.groups_meta
+		return cmb2?.groups_meta || {}
 	})
 
 	const badgeTypes = [

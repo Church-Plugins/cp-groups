@@ -59,8 +59,6 @@ export default function GroupTagsEdit( {
 
 	const taxonomies = isDescendentOfQueryLoop ? useAllTaxonomyTerms({ postType, postId }) : {}
 
-	console.log("Taxes", Object.entries(taxonomies))
-
 	const primaryTags = taxonomies[primaryTagType]?.terms || []
 	const additionalTags = Object.keys(taxonomies)
 		.filter(termName => additionalTagTypes.includes(termName) && primaryTagType !== termName)
@@ -72,7 +70,7 @@ export default function GroupTagsEdit( {
 			<div {...blockProps}>
 				{
 					primaryTags.map(tag => (
-						<div key={`${tag.taxonomy}-${tag.id}`}>
+						<div key={`${tag.taxonomy}-${tag.slug}`}>
 							<a href="#" className={classnames('cp-button', 'is-xsmall', {
 							'is-transparent': highlightStyle === 'outline'
 						})}>{tag.name}</a>
@@ -82,12 +80,18 @@ export default function GroupTagsEdit( {
 
 				{
 					additionalTags.map(tag => (
-						<div key={`${tag.taxonomy}-${tag.id}`}>
+						<div key={`${tag.taxonomy}-${tag.slug}`}>
 							<a href="#" className={classnames('cp-button', 'is-xsmall', {
 							'is-transparent': highlightStyle !== 'outline'
 						})}>{tag.name}</a>
 						</div>
 					))
+				}
+
+				{
+					(primaryTags.length + additionalTags.length) === 0 && (
+						<div>{__( 'No tags found', 'cp-groups' )}</div>
+					)
 				}
 			</div>
 			<InspectorControls>
@@ -124,6 +128,7 @@ export default function GroupTagsEdit( {
 					{
 						Object.entries(taxonomies).map(([slug, taxonomy]) => (
 							<CheckboxControl
+								key={slug}
 								label={taxonomy.name}
 								checked={additionalTagTypes.includes(slug) || primaryTagType === slug}
 								disabled={primaryTagType === slug}

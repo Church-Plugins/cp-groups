@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
+import { __ } from '@wordpress/i18n';
 /**
  * WordPress dependencies
  */
@@ -22,23 +22,23 @@ export default function GroupLocationEdit( {
 } ) {
 	const isDescendentOfQueryLoop = Number.isFinite( queryId );
 
-	const blockProps = useBlockProps({
-		className: 'cp-groups-location'
-	})
-
 	const cmb2 = useSelect(select => {
 		const { cmb2 } = select('core').getEntityRecord( 'postType', postType, postId )
-
-		console.log(cmb2)
-
 		return cmb2
+	})
+
+	const blockProps = useBlockProps({
+		className: 'cp-groups-location',
+		style: {
+			opacity: cmb2?.groups_meta?.location ? '1' : '0.5'
+		}
 	})
 
 	return (
 		<>
 			<div {...blockProps}>
 				<span className='material-icons'>location_on</span>
-				<div>{cmb2?.groups_meta?.location}</div>
+				<div>{cmb2?.groups_meta?.location || __( 'No location specified', 'cp-groups' )}</div>
 			</div>
 		</>
 	);

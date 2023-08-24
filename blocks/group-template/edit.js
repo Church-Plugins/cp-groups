@@ -20,9 +20,9 @@ import { Spinner } from '@wordpress/components';
 import { store as coreStore } from '@wordpress/core-data';
 
 const TEMPLATE = [
-	[ 'core/post-title' ],
-	[ 'core/post-date' ],
-	[ 'core/post-excerpt' ],
+	[ 'cp-groups/group-title' ],
+	[ 'cp-groups/group-date' ],
+	[ 'cp-groups/group-excerpt' ],
 ];
 
 function PostTemplateInnerBlocks() {
