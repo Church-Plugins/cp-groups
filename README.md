@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.3
+* Add Cc field to contact form
+
 #### 1.1.2
 * Fix bug with single page contact action
 * Support resources in group modal

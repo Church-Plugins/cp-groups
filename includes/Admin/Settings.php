@@ -342,6 +342,13 @@ class Settings {
 		) );
 
 		$advanced_options->add_field( array(
+			'name'         => __( 'CC', 'cp-groups' ),
+			'desc'         => __( 'Enter the email address(es) to CC whenever a contact form is submitted. Comma separate multiple email addresses.', 'cp-groups' ),
+			'id'           => 'cc',
+			'type'         => 'text',
+		) );
+
+		$advanced_options->add_field( array(
 			'name'         => __( 'BCC', 'cp-groups' ),
 			'desc'         => __( 'Enter the email address(es) to BCC whenever a contact form is submitted. Comma separate multiple email addresses.', 'cp-groups' ),
 			'id'           => 'bcc',

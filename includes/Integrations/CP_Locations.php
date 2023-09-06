@@ -52,6 +52,13 @@ class CP_Locations {
 		] );
 
 		$cmb->add_field( array(
+			'name' => __( 'CC', 'cp-groups' ),
+			'desc' => __( 'Enter the email address(es) to CC whenever a contact form is submitted. Comma separate multiple email addresses.', 'cp-groups' ),
+			'id'   => 'cp_group_email_cc',
+			'type' => 'text',
+		) );
+
+		$cmb->add_field( array(
 			'name' => __( 'BCC', 'cp-groups' ),
 			'desc' => __( 'Enter the email address(es) to BCC whenever a contact form is submitted. Comma separate multiple email addresses.', 'cp-groups' ),
 			'id'   => 'cp_group_email_bcc',
@@ -84,6 +91,9 @@ class CP_Locations {
 
 		foreach ( $locations as $location ) {
 			if ( $location_id = cp_locations()->setup->taxonomies->location::get_id_from_term( $location->slug ) ) {
+				if ( $cc = get_post_meta( $location_id, 'cp_group_email_cc', true ) ) {
+					$headers[] = 'Cc: ' . $cc;
+				}
 				if ( $bcc = get_post_meta( $location_id, 'cp_group_email_bcc', true ) ) {
 					$headers[] = 'Bcc: ' . $bcc;
 				}

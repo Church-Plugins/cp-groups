@@ -271,12 +271,18 @@ class Init {
 		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
 		$from_name  = Settings::get_advanced( 'from_name', get_bloginfo( 'name' ) );
 
+		$cc         = apply_filters( 'cp_groups_email_cc', Settings::get_advanced( 'cc' ), $group_id );
 		$bcc        = apply_filters( 'cp_groups_email_bcc', Settings::get_advanced( 'bcc' ), $group_id );
+
 		$headers    =  [
 			'Content-Type: text/html; cahrset=UTF-8',
 			"From: $from_name <$from_email>",
 			sprintf( 'Reply-To: %s <%s>', $name, $reply_to )
 		];
+
+		if ( ! empty( $cc ) ) {
+			$headers[] = 'Cc: ' . $cc;
+		}
 
 		if ( ! empty( $bcc ) ) {
 			$headers[] = 'Bcc: ' . $bcc;
