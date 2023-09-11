@@ -317,6 +317,12 @@ class Settings {
 			'default_cb' => [ $this, 'default_checked' ]
 		) );
 
+		$advanced_options->add_field( array(
+			'name' => __( 'Enable honeypot field', 'cp-groups' ),
+			'description' => __( 'A honeypot is a hidden field for catching automated bots.', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'enable_honeypot'
+		) );
 
 		$advanced_options->add_field( array(
 			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
