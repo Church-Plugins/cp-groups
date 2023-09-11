@@ -175,14 +175,14 @@ class Init {
 				<div class="cp-email-form--email-from">
 					<label>
 						<?php _e( 'Your Email:', 'cp-groups' ); ?>
-						<input type="text" name="email-from" class="cp-email-from"/>
+						<input type="email" name="email-from" class="cp-email-from" />
 					</label>
 				</div>
 
 				<div class='cp-email-form--email-verify'>
 					<label>
 						<?php _e( 'Email Verify', 'cp-groups' ) ?>
-						<input type='text' name='email-verify'>
+						<input type='text' name='email-verify' autocomplete="do-not-autofill" id="verify-<?php echo time(); ?>">
 					</label>
 				</div>
 
@@ -243,7 +243,7 @@ class Init {
 			wp_send_json_error( array( 'error' => __( "Daily send limit of {$limit} submissions exceeded - Message blocked. Please try again later.", 'church-plugins' ) ) );
 		}
 
-		if( ! empty( $honeypot ) ) {
+		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
 			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
 
@@ -473,7 +473,7 @@ class Init {
 	 * @return string
 	 */
 	public function get_version() {
-		return '0.0.1';
+		return '1.1.3';
 	}
 
 	/**

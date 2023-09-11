@@ -228,6 +228,23 @@ class Settings {
 			]
 		) );
 
+		if( $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', false ) ) {
+			$advanced_options->add_field( array(
+				'name'         => __( 'CP Connect custom metadata', 'cp-groups' ),
+				'desc'         => __( 'Select which custom field filters to hide on the group archive page', 'cp-groups' ),
+				'id'           => 'custom_meta_filters',
+				'type'         => 'title',
+			) );
+
+			foreach( $cp_connect_custom_meta as $data ) {
+				$advanced_options->add_field( array(
+					'name'       => $data['display_name'],
+					'id'         => $data['slug'],
+					'type'       => 'checkbox'
+				) );
+			}
+		}
+
 		$advanced_options->add_field( array(
 			'name'         => __( 'Buttons', 'cp-groups' ),
 			'desc'         => __( 'Customize the buttons to show for the Group.', 'cp-groups' ),
@@ -300,6 +317,12 @@ class Settings {
 			'default_cb' => [ $this, 'default_checked' ]
 		) );
 
+		$advanced_options->add_field( array(
+			'name' => __( 'Enable honeypot field', 'cp-groups' ),
+			'description' => __( 'A honeypot is a hidden field for catching automated bots.', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'enable_honeypot'
+		) );
 
 		$advanced_options->add_field( array(
 			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
