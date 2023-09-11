@@ -88,6 +88,12 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			<?php endif; ?>
 
+			<?php if ( Settings::get_advanced( 'virtual_enabled', true ) ) : ?>
+				<div class="cp-groups-filter--facet">
+					<label><input type="checkbox" name="virtual" value="1" <?php checked( Helpers::get_param( $_GET, 'virtual' ) ); ?> /> <?php _e( 'Virtual', 'cp-groups' ); ?></label>
+				</div>
+			<?php endif; ?>
+
 		</div>
 
 	</form>

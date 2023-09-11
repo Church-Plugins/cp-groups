@@ -62,22 +62,24 @@ class Templates {
 	 *
 	 * @author Tanner Moushey
 	 */
-	public static function get_facet_link( $slug, $facet ) {
+	public static function get_facet_link( $slug, $facet, $single = false ) {
 		$uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
 		$get = $_GET;
 
 		if ( empty( $get ) ) {
 			$get = [];
 		}
-		
+
 		unset( $get['groups-paged'] );
-		
-		$get[ $facet ] = [ $slug ];
+
+		$get[ $facet ] = $single ? $slug : array( $slug );
 
 		return esc_url( add_query_arg( $get, $uri ) ) . '#cp-group-filters';
 	}
-	
+
 	/**
+	 * Get the global query object, either $wp_query or $wp_the_query
+	 *
 	 * @return \WP_Query|null
 	 * @since  1.0.0
 	 *

@@ -21,17 +21,20 @@ class Group extends PostType {
 	 * @author costmo
 	 */
 	protected function __construct() {
-		$this->post_type = "cp_group";
+		$this->post_type = 'cp_group';
 
 		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
 		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
 
 		parent::__construct();
 
-		// the model for this class is not compatible with CP core
+		// the model for this class is not compatible with CP core.
 		$this->model = false;
 	}
 
+	/**
+	 * Actions
+	 */
 	public function add_actions() {
 		add_filter( 'enter_title_here', [ $this, 'add_title' ], 10, 2 );
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
@@ -42,12 +45,12 @@ class Group extends PostType {
 	}
 
 	/**
-	 *
+	 * Customize WordPress query for groups
 	 *
 	 * @since  1.0.0
 	 * @updated 1.0.2 | Updated query for attribute parameters
 	 *
-	 * @param $query \WP_Query
+	 * @param \WP_Query $query The WordPress query.
 	 *
 	 * @author Tanner Moushey, 5/2/23
 	 */
@@ -66,51 +69,57 @@ class Group extends PostType {
 		$meta_query = $query->get( 'meta_query', [] );
 
 		if ( Helpers::get_param( $_GET, 'child-friendly' ) ) {
-			$meta_query[] = [
-				'key' => 'kid_friendly',
+			$meta_query[] = array(
+				'key'   => 'kid_friendly',
 				'value' => 'on',
-			];
+			);
 		}
 
 		if ( Helpers::get_param( $_GET, 'accessible' ) ) {
-			$meta_query[] = [
-				'key' => 'handicap_accessible',
+			$meta_query[] = array(
+				'key'   => 'handicap_accessible',
 				'value' => 'on',
-			];
+			);
+		}
+
+		if ( Helpers::get_param( $_GET, 'virtual' ) ) {
+			$meta_query[] = array(
+				'key'   => 'virtual',
+				'value' => 'on',
+			);
 		}
 
 		if ( $is_full_enabled = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) {
 			$is_full_param = Helpers::get_param( $_GET, 'is-full', false );
 			$show_full = ( 'show' == $is_full_enabled );
 
-			// if the is-full parameter is set, do the opposite of the default action
+			// if the is-full parameter is set, do the opposite of the default action.
 			if ( $is_full_param ) {
 				$show_full = ! $show_full;
 			}
 
 			if ( ! $show_full ) {
-				$meta_query[] = [
+				$meta_query[] = array(
 					'key'   => 'is_group_full',
 					'value' => 0,
-				];
+				);
 			}
-
 		}
 
-		// if we have a custom meta mapping, add those to the query
-		$cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
-		foreach( $cp_connect_custom_meta as $meta_mapping ) {
-			$meta_key = $meta_mapping['slug'];
+		// if we have a custom meta mapping, add those to the query.
+		$cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', array() );
+		foreach ( $cp_connect_custom_meta as $meta_mapping ) {
+			$meta_key   = $meta_mapping['slug'];
 			$meta_value = Helpers::get_param( $_GET, $meta_key, false );
 
-			if( ! $meta_value ) {
+			if ( ! $meta_value ) {
 				continue;
 			}
 
-			$meta_query[] = [
-				'key' => $meta_key,
+			$meta_query[] = array(
+				'key'   => $meta_key,
 				'value' => $meta_value,
-			];
+			);
 		}
 
 		$query->set( 'meta_query', $meta_query );
@@ -249,6 +258,13 @@ class Group extends PostType {
 			'name' => __( 'Handicap Accessible', 'cp-groups' ),
 			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
 			'id'   => 'handicap_accessible',
+			'type' => 'checkbox',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Virtual', 'cp-groups' ),
+			'desc' => __( 'This group is meets online.', 'cp-groups' ),
+			'id'   => 'virtual',
 			'type' => 'checkbox',
 		] );
 
