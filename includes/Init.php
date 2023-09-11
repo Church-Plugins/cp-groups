@@ -182,7 +182,7 @@ class Init {
 				<div class='cp-email-form--email-verify'>
 					<label>
 						<?php _e( 'Email Verify', 'cp-groups' ) ?>
-						<input type='text' name='email-verify' autocomplete="off" >
+						<input type='text' name='email-verify' autocomplete="do-not-autofill" id="verify-<?php echo time(); ?>">
 					</label>
 				</div>
 
