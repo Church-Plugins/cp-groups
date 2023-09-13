@@ -100,6 +100,10 @@ class Template extends PostType {
 	 * @param \WP_Block_Editor_Context $context the block context
 	 */
 	public function allowed_block_types( $allowed, $context ) {
+		if( ! $context->post ) {
+			return $allowed;
+		}
+
 		if( $context->post->post_type === $this->post_type ) {
 			return apply_filters( 'cp_groups_templates_block_types', array( 
 				'core/group',
