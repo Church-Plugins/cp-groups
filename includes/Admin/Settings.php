@@ -232,7 +232,7 @@ class Settings {
 			'name'    => __( 'Virtual', 'cp-groups' ),
 			'id'      => 'virtual_enabled',
 			'type'    => 'radio_inline',
-			'default' => 1,
+			'default' => 0,
 			'options' => [
 				1 => __( 'Enable', 'cp-groups' ),
 				0 => __( 'Disable', 'cp-groups' ),
