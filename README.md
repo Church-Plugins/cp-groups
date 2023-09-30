@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.5
+* Update core
+
 #### 1.1.4
 * Add improvements to the Honeypot
 
