@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.6
+* Update styles for archive page
+
 #### 1.1.5
 * Update core
 
