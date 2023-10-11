@@ -93,10 +93,7 @@ class Init {
 		$this->enqueue->enqueue( 'styles', 'main', [ 'css_dep' => [] ] );
 		$this->enqueue->enqueue( 'scripts', 'main', [ 'js_dep' => [ 'jquery', 'jquery-ui-dialog', 'jquery-form' ] ] );
 
-
-		// loads main.js script without needing to build
-		// $path = plugins_url( 'cp-groups/assets/js/main.js', 'cp-groups' );
-		// wp_enqueue_script( 'cp-groups-some-script', $path, array( 'jquery', 'jquery-ui-dialog', 'jquery-form' ) );
+		wp_enqueue_style( 'material-icons' );
 
 		if( Settings::get_advanced( 'enable_captcha', 'on' ) == 'on' ) {
 			$site_key = Settings::get_advanced( 'captcha_site_key', '' );
@@ -121,6 +118,7 @@ class Init {
 
 	protected function actions() {
 		add_action( 'cp_send_email', [ $this, 'maybe_send_email' ] );
+		add_filter( 'cp_resources_output_resources_check_object', [ $this, 'allow_resources_for_group_modals' ], 50, 1 );
 	}
 
 	/**
@@ -177,14 +175,14 @@ class Init {
 				<div class="cp-email-form--email-from">
 					<label>
 						<?php _e( 'Your Email:', 'cp-groups' ); ?>
-						<input type="text" name="email-from" class="cp-email-from"/>
+						<input type="email" name="email-from" class="cp-email-from" />
 					</label>
 				</div>
 
 				<div class='cp-email-form--email-verify'>
 					<label>
 						<?php _e( 'Email Verify', 'cp-groups' ) ?>
-						<input type='text' name='email-verify'>
+						<input type='text' name='email-verify' autocomplete="do-not-autofill" id="verify-<?php echo time(); ?>">
 					</label>
 				</div>
 
@@ -245,7 +243,7 @@ class Init {
 			wp_send_json_error( array( 'error' => __( "Daily send limit of {$limit} submissions exceeded - Message blocked. Please try again later.", 'church-plugins' ) ) );
 		}
 
-		if( ! empty( $honeypot ) ) {
+		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
 			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
 
@@ -273,12 +271,18 @@ class Init {
 		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
 		$from_name  = Settings::get_advanced( 'from_name', get_bloginfo( 'name' ) );
 
+		$cc         = apply_filters( 'cp_groups_email_cc', Settings::get_advanced( 'cc' ), $group_id );
 		$bcc        = apply_filters( 'cp_groups_email_bcc', Settings::get_advanced( 'bcc' ), $group_id );
+
 		$headers    =  [
 			'Content-Type: text/html; cahrset=UTF-8',
 			"From: $from_name <$from_email>",
 			sprintf( 'Reply-To: %s <%s>', $name, $reply_to )
 		];
+
+		if ( ! empty( $cc ) ) {
+			$headers[] = 'Cc: ' . $cc;
+		}
 
 		if ( ! empty( $bcc ) ) {
 			$headers[] = 'Bcc: ' . $bcc;
@@ -469,7 +473,7 @@ class Init {
 	 * @return string
 	 */
 	public function get_version() {
-		return '0.0.1';
+		return '1.1.3';
 	}
 
 	/**
@@ -488,4 +492,13 @@ class Init {
 		return true;
 	}
 
+	/**
+	 * CP Resources only appends resources onto single objects. This makes sure the resources are added to groups content in an archive context.
+	 */
+	public function allow_resources_for_group_modals( $check ) {
+		if( get_post_type() === cp_groups()->setup->post_types->groups->post_type ) {
+			return false;
+		}
+		return $check;
+	}
 }

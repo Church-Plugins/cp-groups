@@ -229,6 +229,34 @@ class Settings {
 		) );
 
 		$advanced_options->add_field( array(
+			'name'    => __( 'Virtual', 'cp-groups' ),
+			'id'      => 'virtual_enabled',
+			'type'    => 'radio_inline',
+			'default' => 0,
+			'options' => [
+				1 => __( 'Enable', 'cp-groups' ),
+				0 => __( 'Disable', 'cp-groups' ),
+			]
+		) );
+
+		if( $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', false ) ) {
+			$advanced_options->add_field( array(
+				'name'         => __( 'CP Connect custom metadata', 'cp-groups' ),
+				'desc'         => __( 'Select which custom field filters to hide on the group archive page', 'cp-groups' ),
+				'id'           => 'custom_meta_filters',
+				'type'         => 'title',
+			) );
+
+			foreach( $cp_connect_custom_meta as $data ) {
+				$advanced_options->add_field( array(
+					'name'       => $data['display_name'],
+					'id'         => $data['slug'],
+					'type'       => 'checkbox'
+				) );
+			}
+		}
+
+		$advanced_options->add_field( array(
 			'name'         => __( 'Buttons', 'cp-groups' ),
 			'desc'         => __( 'Customize the buttons to show for the Group.', 'cp-groups' ),
 			'id'           => 'buttons_title',
@@ -300,6 +328,12 @@ class Settings {
 			'default_cb' => [ $this, 'default_checked' ]
 		) );
 
+		$advanced_options->add_field( array(
+			'name' => __( 'Enable honeypot field', 'cp-groups' ),
+			'description' => __( 'A honeypot is a hidden field for catching automated bots.', 'cp-groups' ),
+			'type' => 'checkbox',
+			'id'   => 'enable_honeypot'
+		) );
 
 		$advanced_options->add_field( array(
 			'name' => __( 'Enable captcha on message form', 'cp-groups' ),
@@ -338,6 +372,13 @@ class Settings {
 			'name'         => __( 'From Name', 'cp-groups' ),
 			'desc'         => __( 'The from name to use when sending group contact emails. Will use the site title if this is blank.', 'cp-groups' ),
 			'id'           => 'from_name',
+			'type'         => 'text',
+		) );
+
+		$advanced_options->add_field( array(
+			'name'         => __( 'CC', 'cp-groups' ),
+			'desc'         => __( 'Enter the email address(es) to CC whenever a contact form is submitted. Comma separate multiple email addresses.', 'cp-groups' ),
+			'id'           => 'cc',
 			'type'         => 'text',
 		) );
 
