@@ -40,7 +40,6 @@ class Group extends PostType {
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
-		add_action( 'rest_api_init', [ $this, 'rest_api_data' ] );
 		parent::add_actions();
 	}
 
