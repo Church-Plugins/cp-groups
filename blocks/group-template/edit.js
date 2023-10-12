@@ -21,7 +21,7 @@ import { store as coreStore } from '@wordpress/core-data';
 
 const TEMPLATE = [
 	[ 'cp-groups/group-title' ],
-	[ 'cp-groups/group-date' ],
+	[ 'cp-groups/group-time-desc' ],
 	[ 'cp-groups/group-excerpt' ],
 ];
 
