@@ -66,9 +66,8 @@ jQuery(($) => {
 		}
 	}
 
+	// init for all items in group list
 	const $groupItems = $('.cp-group-item-wrapper')
-
-	if( !$groupItems.length ) return
 
 	$groupItems.each(function() {
 		const $this = $(this)
@@ -126,13 +125,8 @@ jQuery(($) => {
 			})
 		}
 
-		$detailsModal.dialog({
-			...modalConfig,
-			dialogClass: 'cp-groups-modal-popup'
-		})
-
-		const $registerButton = $detailsModal.find('.cp-group-single--registration-url > .cp-button')
-		const $contactButton  = $detailsModal.find('.cp-group-single--contact-url > .cp-button')
+		const $registerButton = $parent.find('.cp-group-single--registration-url')
+		const $contactButton  = $parent.find('.cp-group-single--contact-url')
 
 		$registerButton.on('click', (e) => {
 			if( $registerModal.length ) {
