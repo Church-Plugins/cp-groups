@@ -52,6 +52,22 @@ $is_location_page = get_query_var( 'cp_location_id' );
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
+
+				<?php if ( ! empty( $item['isVirtual'] ) ) : ?>
+					<div class="cp-group-item--is-virtual">
+						<a class="cp-button is-xsmall is-transparent" href="<?php echo esc_url( Templates::get_facet_link( 1, 'virtual', true ) ); ?>"><?php esc_html_e( 'Virtual', 'cp-groups' ); ?></a>
+					</div>
+				<?php endif; ?>
+
+				<?php if( $cp_connect_tags = get_option( 'cp_group_custom_meta_mapping', false ) ) : ?>
+					<?php foreach( $cp_connect_tags as $tag ) : ?>
+						<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
+						<?php if( empty( $item_tag ) ) continue; ?>
+						<?php if( isset( $tag['options'][$item_tag] ) ) : ?>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $item_tag, $tag['slug'] ) ?>"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 

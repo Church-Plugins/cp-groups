@@ -4,7 +4,7 @@ window.cpGroupsFilter = window.cpGroupsFilter || {};
 
 jQuery(($) => {
 
-	$(document).click(function (e) {
+	$(document).on('click', function (e) {
 		var $dropdown = $('.cp-groups-filter--has-dropdown');
 
 		if (!$(e.target).closest($dropdown).length) {
@@ -44,10 +44,6 @@ jQuery(($) => {
 		modals[0]?.dialog('open')
 	}
 
-	function populateModal($modal) {
-
-	}
-
 	const modalConfig = {
 		title        : '',
 		autoOpen     : false,
@@ -76,9 +72,37 @@ jQuery(($) => {
 
 	$groupItems.each(function() {
 		const $this = $(this)
-		const $contactModal  = $this.find('.cp-email-modal.action_contact')
-		const $registerModal = $this.find('.cp-email-modal.action_register')
+
 		const $detailsModal  = $this.find('.cp-group-modal')
+
+		$detailsModal.dialog({
+			...modalConfig,
+			dialogClass: 'cp-groups-modal-popup'
+		})
+
+		$this.on('click', (e) => {
+			if ($(e.target).hasClass('cp-button')) {
+				return true;
+			}
+
+			e.preventDefault()
+
+			openModal( $detailsModal )
+		})
+
+		initContactModals($detailsModal.find('.cp-group-single'))
+	})
+
+	// for a single group page
+	const $groupSingle = $('.cp-pg-template .cp-group-single');
+
+	$groupSingle.each(function() {
+		initContactModals($(this))
+	})
+
+	function initContactModals($parent) {
+		const $contactModal  = $parent.find('.cp-email-modal.action_contact')
+		const $registerModal = $parent.find('.cp-email-modal.action_register')
 
 		const contact  = new CP_Groups_Mail()
 		const register = new CP_Groups_Mail()
@@ -124,16 +148,7 @@ jQuery(($) => {
 			}
 		})
 
-		$this.on('click', (e) => {
-			if ($(e.target).hasClass('cp-button')) {
-				return true;
-			}
-
-			e.preventDefault()
-
-			openModal( $detailsModal )
-		})
-	})
+	}
 })
 
 class CP_Groups_Mail {

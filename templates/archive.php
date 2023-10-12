@@ -1,6 +1,8 @@
 <?php
 use CP_Groups\Templates;
 ?>
+
+
 <div class="cp-groups-archive cp-archive">
 	
 	<?php do_action( 'cp_groups_before_archive' ); ?>

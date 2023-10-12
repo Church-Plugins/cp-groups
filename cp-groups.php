@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Church Plugins - Groups
+ * Plugin Name: CP Groups
  * Plugin URL: https://churchplugins.com
  * Description: Church Groups plugin for managing groups
- * Version: 1.0.1
+ * Version: 1.1.6
  * Author: Church Plugins
  * Author URI: https://churchplugins.com
  * Text Domain: cp-groups
@@ -12,7 +12,7 @@
 
 if( !defined( 'CP_GROUPS_PLUGIN_VERSION' ) ) {
 	 define ( 'CP_GROUPS_PLUGIN_VERSION',
-	 	'1.1.1'
+	 	'1.1.6'
 	);
 }
 

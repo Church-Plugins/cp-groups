@@ -19,6 +19,23 @@ npm run build
 
 ### Change Log
 
+#### 1.1.6
+* Update styles for archive page
+
+#### 1.1.5
+* Update core
+
+#### 1.1.4
+* Add improvements to the Honeypot
+
+#### 1.1.3
+* Add integration with CP Connect when pulling groups from Ministry Platform
+* Add Cc field to contact form
+
+#### 1.1.2
+* Fix bug with single page contact action
+* Support resources in group modal
+
 #### 1.1.0
 * Add contact form for Group Leaders and Registration
 

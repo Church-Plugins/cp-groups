@@ -56,7 +56,21 @@ try {
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
+
+				<?php if( $cp_connect_tags = get_option( 'cp_group_custom_meta_mapping', false ) ) : ?>
+					<div>
+						<?php foreach( $cp_connect_tags as $tag ) : ?>
+							<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
+							<?php if( empty( $item_tag ) ) continue; ?>
+							<?php if( isset( $tag['options'][$item_tag] ) ) : ?>
+								<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $tag['slug'], $item_tag ) ?>"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
+
+			
 		<?php endif; ?>
 
 		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>
@@ -106,6 +120,27 @@ try {
 		</div>
 
 		<?php do_action( 'cp_group_single_after_content', $item ); ?>
+	</div>
+
+	<div style="display: none;">
+		<?php if( Settings::get_advanced( 'contact_action', 'action' ) == 'form' ) {
+			$group_leader = get_post_meta( $item['id'], 'leader', true );
+			if ( ! $email = get_post_meta( $item['id'], 'leader_email', true ) ) {
+				$email = get_post_meta( $item['id'], 'action_contact', true );
+			}
+
+			if( is_email( $email ) ) {
+				cp_groups()->build_email_modal( 'action_contact', $email, $group_leader, $item['id'] );
+			}
+		}
+
+		if( Settings::get_advanced( 'hide_registration', 'off' ) == 'off' ) {
+			$register_url = get_post_meta( $item['id'], 'registration_url', true );
+
+			if( is_email( $register_url ) ) {
+				cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'], $item['id'] );
+			}
+		} ?>
 	</div>
 
 </div>

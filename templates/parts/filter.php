@@ -8,6 +8,7 @@ $uri = explode( 'page', $uri )[0];
 $get = $_GET;
 
 $search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
+$cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 
 ?>
 <div id="cp-group-filters" class="cp-groups-filter">
@@ -47,6 +48,26 @@ $search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
 			</div>
 		<?php endforeach; ?>
 
+		<?php foreach( $cp_connect_custom_meta as $meta_mapping ) : ?>
+			<?php if( Settings::get_advanced( $meta_mapping['slug'], false ) ) continue; ?>
+			<div class="cp-groups-filter--facet cp-groups-filter--has-dropdown">
+				<a href="#" class="cp-groups-filter--dropdown-button cp-button is-light"><?php echo $meta_mapping['display_name'] ?></a>
+				<div class="cp-groups-filter--dropdown">
+					<?php foreach ( $meta_mapping['options'] as $option_slug => $option ) : ?>
+						<label>
+							<?php 
+							$existing_options = Helpers::get_param( $_GET, $meta_mapping['slug'], [] );
+							if( ! is_array( $existing_options ) ) {
+								$existing_options = [];
+							}
+							?>
+							<input type="checkbox" <?php checked( in_array( $option_slug, $existing_options ) ); ?> name="<?php echo esc_attr( $meta_mapping['slug'] ); ?>[]" value="<?php echo esc_attr( $option_slug ); ?>"/> <?php echo esc_html( $option ); ?>
+						</label>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		<?php endforeach; ?>
+
 		<div class="cp-groups-filter--attributes">
 
 			<?php if ( Settings::get_advanced( 'kid_friendly_enabled', true ) ) : ?>
@@ -64,6 +85,12 @@ $search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
 			<?php if ( Settings::get_advanced( 'accessible_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
 					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> /> <?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></label>
+				</div>
+			<?php endif; ?>
+
+			<?php if ( Settings::get_advanced( 'virtual_enabled', false ) ) : ?>
+				<div class="cp-groups-filter--facet">
+					<label><input type="checkbox" name="virtual" value="1" <?php checked( Helpers::get_param( $_GET, 'virtual' ) ); ?> /> <?php _e( 'Virtual', 'cp-groups' ); ?></label>
 				</div>
 			<?php endif; ?>
 
