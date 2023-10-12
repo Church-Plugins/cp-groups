@@ -62,6 +62,11 @@ class Group extends PostType {
 			return;
 		}
 
+		// don't modify rest API queries.
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
 		$query->set( 'orderby', 'post_title' );
 		$query->set( 'order', 'ASC' );
 
