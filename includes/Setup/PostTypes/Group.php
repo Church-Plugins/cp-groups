@@ -67,6 +67,10 @@ class Group extends PostType {
 			return;
 		}
 
+		if ( true === $query->get( 'cp_group_query' ) ) {
+			return;
+		}
+
 		$query->set( 'orderby', 'post_title' );
 		$query->set( 'order', 'ASC' );
 
