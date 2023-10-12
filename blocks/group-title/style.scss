@@ -4,8 +4,13 @@
 	// This block has customizable padding, border-box makes that more predictable.
 	box-sizing: border-box;
 
-	// &.wp-block-cp-groups-group-title > a {
-	// 	display: inline-block;
-	// 	text-decoration: none;
-	// }
+	&.wp-block-cp-groups-group-title > a {
+		text-decoration: inherit;
+		text-decoration-color: currentColor;
+	}
+}
+
+.block-editor .editor-styles-wrapper .wp-block-cp-groups-group-title > a {
+	text-decoration: inherit;
+	text-decoration-color: currentColor;
 }
