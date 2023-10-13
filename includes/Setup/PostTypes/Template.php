@@ -41,6 +41,7 @@ class Template extends PostType {
 		add_filter( "{$this->post_type}_show_in_menu", array( $this, 'show_in_submenu' ) );
 		add_filter( "{$this->post_type}_slug", array( $this, 'custom_slug' ) );
 		add_filter( 'block_categories_all', array( $this, 'block_categories' ) );
+		add_filter( 'block_editor_settings_all', array( $this, 'block_editor_supports' ), 10, 2 );
 
 		parent::add_actions();
 	}
@@ -121,19 +122,20 @@ class Template extends PostType {
 					'core/group',
 					'core/spacer',
 					'core/columns',
+					'core/column',
 					'core/seperator',
+					'core/heading',
+					'core/paragraph',
 					'cp-groups/group-badge',
 					'cp-groups/group-content',
 					'cp-groups/group-excerpt',
 					'cp-groups/group-featured-image',
-					'cp-groups/group-features',
 					'cp-groups/group-location',
 					'cp-groups/group-tags',
 					'cp-groups/group-template',
 					'cp-groups/group-time-desc',
 					'cp-groups/group-title',
 					'cp-groups/query',
-					'cp-groups/group-title',
 				)
 			);
 		}
@@ -186,5 +188,58 @@ class Template extends PostType {
 		);
 
 		return $categories;
+	}
+
+	/**
+	 * Adds support for certain Gutenberg features where themes may be lacking
+	 *
+	 * @param array                    $editor_settings the default editor settings.
+	 * @param \WP_Block_Editor_Context $context the block context.
+	 * @return array the modified editor settings
+	 */
+	public function block_editor_supports( $editor_settings, $context ) {
+		if ( ! $context->post || $context->post->post_type !== $this->post_type ) {
+			return $editor_settings;
+		}
+
+		$output = array(
+			'supports' => array(
+				'__experimentalFeatures' => array(
+					'spacing' => array(
+						'padding'  => true,
+						'margin'   => true,
+						'blockGap' => true,
+					),
+					'border'  => array(
+						'color'  => true,
+						'radius' => true,
+						'style'  => true,
+						'width'  => true,
+					),
+				),
+			),
+		);
+
+		return $this->array_merge_recursive( $output, $editor_settings );
+	}
+
+	/**
+	 * Like array_merge_recursive, but overwrites values instead of merging them into an array of values
+	 *
+	 * @param array $array1 the first array.
+	 * @param array $array2 the second array.
+	 */
+	private function array_merge_recursive( $array1, $array2 ) {
+		$output = $array1;
+
+		foreach ( $array2 as $key => $value ) {
+			if ( is_array( $value ) && isset( $output[ $key ] ) && is_array( $output[ $key ] ) ) {
+				$output[ $key ] = $this->array_merge_recursive( $output[ $key ], $value );
+			} else {
+				$output[ $key ] = $value;
+			}
+		}
+
+		return $output;
 	}
 }
