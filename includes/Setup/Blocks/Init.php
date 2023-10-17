@@ -82,7 +82,7 @@ class Init {
 	 * @param string $meta_type Type of object metadata is for (e.g., comment, post, or user).
 	 */
 	public function default_thumbnail( $value, $object_id, $meta_key, $single, $meta_type ) {
-		if ( 'thumbnail_id' === $meta_key && 'post' === $meta_type ) {
+		if ( '_thumbnail_id' === $meta_key && 'post' === $meta_type ) {
 			$post_type = get_post_type( $object_id );
 			if ( cp_groups()->setup->post_types->groups->post_type === $post_type ) {
 				$image = Settings::get( 'default_thumbnail' );
