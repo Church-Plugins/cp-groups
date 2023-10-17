@@ -85,10 +85,18 @@ class Init {
 		if ( '_thumbnail_id' === $meta_key && 'post' === $meta_type ) {
 			$post_type = get_post_type( $object_id );
 			if ( cp_groups()->setup->post_types->groups->post_type === $post_type ) {
-				$image = Settings::get( 'default_thumbnail' );
-				if ( $image ) {
-					$image = attachment_url_to_postid( $image );
+				$image     = Settings::get( 'default_thumbnail' );
+				$cache_key = 'default_thumbnail';
+				$cached_id = wp_cache_get( $cache_key, 'cp_groups' );
+
+				if ( $cached_id ) {
+					return $cached_id;
 				}
+
+				$image = attachment_url_to_postid( $image );
+
+				wp_cache_set( $cache_key, $image, 'cp_groups' );
+
 				return $image ? $image : $value;
 			}
 		}

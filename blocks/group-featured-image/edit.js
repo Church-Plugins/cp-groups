@@ -7,35 +7,26 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { useEntityProp, store as coreStore } from '@wordpress/core-data';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import {
-	MenuItem,
 	ToggleControl,
 	PanelBody,
 	Placeholder,
-	Button,
 	TextControl,
 } from '@wordpress/components';
 import {
 	InspectorControls,
-	BlockControls,
-	MediaPlaceholder,
-	MediaReplaceFlow,
 	useBlockProps,
 	store as blockEditorStore,
 	__experimentalUseBorderProps as useBorderProps,
 } from '@wordpress/block-editor';
 import { __, sprintf } from '@wordpress/i18n';
-import { upload } from '@wordpress/icons';
-import { store as noticesStore } from '@wordpress/notices';
 
 /**
  * Internal dependencies
  */
 import DimensionControls from './dimension-controls';
 import Overlay from './overlay';
-
-const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
 function getMediaSourceUrlBySizeSlug( media, slug ) {
 	return (
@@ -49,7 +40,6 @@ export default function GroupFeaturedImageEdit( {
 	setAttributes,
 	context: { postId, postType: postTypeSlug, queryId },
 } ) {
-	const isDescendentOfQueryLoop = Number.isFinite( queryId );
 	const {
 		isLink,
 		aspectRatio,
@@ -60,7 +50,7 @@ export default function GroupFeaturedImageEdit( {
 		rel,
 		linkTarget,
 	} = attributes;
-	const [ featuredImage, setFeaturedImage ] = useEntityProp(
+	const [ featuredImage ] = useEntityProp(
 		'postType',
 		postTypeSlug,
 		'featured_media',
@@ -119,17 +109,6 @@ export default function GroupFeaturedImageEdit( {
 		);
 	};
 
-	const onSelectImage = ( value ) => {
-		if ( value?.id ) {
-			setFeaturedImage( value.id );
-		}
-	};
-
-	const { createErrorNotice } = useDispatch( noticesStore );
-	const onUploadError = ( message ) => {
-		createErrorNotice( message, { type: 'snackbar' } );
-	};
-
 	const controls = (
 		<>
 			<DimensionControls
@@ -182,32 +161,6 @@ export default function GroupFeaturedImageEdit( {
 	);
 	let image;
 
-	/**
-	 * A Post Featured Image block should not have image replacement
-	 * or upload options in the following cases:
-	 * - Is placed in a Query Loop. This is a consious decision to
-	 * prevent content editing of different posts in Query Loop, and
-	 * this could change in the future.
-	 * - Is in a context where it does not have a postId (for example
-	 * in a template or template part).
-	 */
-	if ( ! featuredImage && ( isDescendentOfQueryLoop || ! postId ) ) {
-		return (
-			<>
-				{ controls }
-				<div { ...blockProps }>
-					{ placeholder() }
-					<Overlay
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						clientId={ clientId }
-					/>
-				</div>
-			</>
-		);
-	}
-
-	const label = __( 'Add a featured image' );
 	const imageStyles = {
 		...borderProps.style,
 		height: ( !! aspectRatio && '100%' ) || height,
@@ -215,48 +168,17 @@ export default function GroupFeaturedImageEdit( {
 		objectFit: !! ( height || aspectRatio ) && scale,
 	};
 
-	/**
-	 * When the post featured image block is placed in a context where:
-	 * - It has a postId (for example in a single post)
-	 * - It is not inside a query loop
-	 * - It has no image assigned yet
-	 * Then display the placeholder with the image upload option.
-	 */
-	if ( ! featuredImage ) {
+	if ( ! featuredImage && window.cp_groups_admin_vars.default_thumbnail ) {
 		image = (
-			<MediaPlaceholder
-				onSelect={ onSelectImage }
-				accept="image/*"
-				allowedTypes={ ALLOWED_MEDIA_TYPES }
-				onError={ onUploadError }
-				placeholder={ placeholder }
-				mediaLibraryButton={ ( { open } ) => {
-					return (
-						<Button
-							icon={ upload }
-							variant="primary"
-							label={ label }
-							showTooltip
-							tooltipPosition="top center"
-							onClick={ () => {
-								open();
-							} }
-						/>
-					);
-				} }
-			/>
-		);
-	} else {
-		// We have a Featured image so show a Placeholder if is loading.
-		image = ! media && window.cp_groups_admin_vars?.default_thumbnail ? (
 			<img
 				className={ borderProps.className }
 				src={ window.cp_groups_admin_vars.default_thumbnail }
 				alt={ __( 'Featured image' ) }
 				style={ imageStyles }
 			/>
-		) :
-		! media ? (
+		);
+	} else {
+		image = ! media ? (
 			placeholder()
 		) : (
 			<img
@@ -285,22 +207,6 @@ export default function GroupFeaturedImageEdit( {
 	return (
 		<>
 			{ controls }
-			{ !! media && ! isDescendentOfQueryLoop && (
-				<BlockControls group="other">
-					<MediaReplaceFlow
-						mediaId={ featuredImage }
-						mediaURL={ mediaUrl }
-						allowedTypes={ ALLOWED_MEDIA_TYPES }
-						accept="image/*"
-						onSelect={ onSelectImage }
-						onError={ onUploadError }
-					>
-						<MenuItem onClick={ () => setFeaturedImage( 0 ) }>
-							{ __( 'Reset' ) }
-						</MenuItem>
-					</MediaReplaceFlow>
-				</BlockControls>
-			) }
 			<figure { ...blockProps }>
 				{ image }
 				<Overlay
