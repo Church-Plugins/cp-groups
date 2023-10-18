@@ -66,7 +66,19 @@ class Settings {
 	 */
 	protected function __construct() {
 		add_action( 'cmb2_admin_init', [ $this, 'register_main_options_metabox' ] );
-		add_action( 'cmb2_save_options_page_fields', 'flush_rewrite_rules' );
+		add_action( 'cmb2_save_options-page_fields', [ $this, 'trigger_rewrite_flush' ] );
+		add_action( 'init', [ $this, 'maybe_flush_rules' ] );
+	}
+
+	public function trigger_rewrite_flush() {
+		update_option( '_cp_flush_rewrite', true );
+	}
+
+	public function maybe_flush_rules() {
+		if ( get_option( '_cp_flush_rewrite', false ) ) {
+			flush_rewrite_rules();
+			delete_option( '_cp_flush_rewrite' );
+		}
 	}
 
 	public function register_main_options_metabox() {
@@ -167,6 +179,13 @@ class Settings {
 			'desc'    => __( 'Caution: changing this value will also adjust the url structure and may affect your SEO.', 'cp-groups' ),
 			'type'    => 'text',
 			'default' => cp_groups()->setup->post_types->groups->plural_label,
+		) );
+
+		$options->add_field( array(
+			'name'    => __( 'Disable Archive Page', 'cp-groups' ),
+			'id'      => 'disable_archive',
+			'desc'    => sprintf( __( 'Check this box to disable the /%s/ archive page. Use this option if you want to use the %s shortcode on a page that you create.', 'cp-groups' ), strtolower( cp_groups()->setup->post_types->groups->plural_label ), cp_groups()->setup->post_types->groups->single_label ),
+			'type'    => 'checkbox',
 		) );
 
 	}
