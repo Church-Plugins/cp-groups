@@ -67,7 +67,7 @@ jQuery(($) => {
 	}
 
 	// init for all items in group list
-	const $groupItems = $('.cp-group-item')
+	const $groupItems = $('.cp-group-item-wrapper')
 
 	$groupItems.each(function() {
 		const $this = $(this)

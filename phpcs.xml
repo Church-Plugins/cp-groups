@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="MissionLab">
+	<description>Coding standard for MissionLab plugins, based on WordPress coding standards</description>
+	<rule ref="WordPress">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+	</rule>
+</ruleset>

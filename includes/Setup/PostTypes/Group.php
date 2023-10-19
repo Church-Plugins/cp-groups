@@ -40,7 +40,6 @@ class Group extends PostType {
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
-
 		parent::add_actions();
 	}
 
@@ -60,6 +59,15 @@ class Group extends PostType {
 		}
 
 		if ( is_admin() ) {
+			return;
+		}
+
+		// don't modify rest API queries.
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
+		if ( true === $query->get( 'cp_group_query' ) ) {
 			return;
 		}
 
@@ -190,6 +198,7 @@ class Group extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
+		$args['supports'][] = 'excerpt';
 
 		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
 			$args['has_archive'] = false;
@@ -210,6 +219,7 @@ class Group extends PostType {
 			'context' => 'normal',
 			'priority' => 'high',
 			'show_names' => true,
+			'show_in_rest' => \WP_REST_Server::READABLE
 		] );
 
 		$cmb->add_field( [

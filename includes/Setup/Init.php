@@ -21,6 +21,11 @@ class Init {
 	 * @var Taxonomies\Init;
 	 */
 	public $taxonomies;
+
+	/**
+	 * @var Blocks\Init;
+	 */
+	public $blocks;
 	
 	/**
 	 * Only make one instance of Init
@@ -51,6 +56,7 @@ class Init {
 	 */
 	protected function includes() {
 		ShortCodes::get_instance();
+		$this->blocks     = Blocks\Init::get_instance();
 		$this->post_types = PostTypes\Init::get_instance();
 		$this->taxonomies = Taxonomies\Init::get_instance();
 	}

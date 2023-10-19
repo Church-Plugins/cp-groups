@@ -15,7 +15,7 @@ try {
 $is_location_page = get_query_var( 'cp_location_id' );
 ?>
 
-<div class="cp-group-item">
+<div class="cp-group-item cp-group-item-wrapper">
 
 	<div class="cp-group-item--thumb">
 		<div class="cp-group-item--thumb--canvas" style="background: url(<?php echo esc_url( $item['thumb'] ); ?>) 0% 0% / cover;">
@@ -107,10 +107,5 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			<?php endif; ?>
 		</div>
 	</div>
-
-	<div style="display:none;">
-		<?php
-			Templates::get_template_part( "parts/group-modal" );
-		?>
-	</div>
+	<?php Templates::get_template_part( 'parts/group-modals', [ 'item' => $item ] ) ?>
 </div>
