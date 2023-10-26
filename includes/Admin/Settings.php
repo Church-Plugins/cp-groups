@@ -2,8 +2,6 @@
 
 namespace CP_Groups\Admin;
 
-use WP_REST_Server;
-
 /**
  * Plugin settings
  *
@@ -98,7 +96,6 @@ class Settings {
 			'tab_title'    => 'Main',
 			'parent_slug'  => 'edit.php?post_type=' . $post_type,
 			'display_cb'   => [ $this, 'options_display_with_tabs'],
-			'show_in_rest' => WP_REST_Server::READABLE,
 		);
 
 		$options = new_cmb2_box( $args );
@@ -413,7 +410,6 @@ class Settings {
 			'tab_group'    => 'cp_groups_main_options',
 			'tab_title'    => 'Labels',
 			'display_cb'   => array( $this, 'options_display_with_tabs' ),
-			'show_in_rest' => WP_REST_Server::ALLMETHODS,
 		);
 
 		$advanced_options = new_cmb2_box( $args );
@@ -517,27 +513,4 @@ class Settings {
 
 		return $tabs;
 	}
-
-
-	/**
-	 * Adds configured options to REST API
-	 */
-	public function register_rest_routes() {
-		register_rest_route(
-			'cp-groups/v1',
-			'/settings',
-			array(
-				'methods'  => array( 'GET', 'POST' ),
-				'callback' => array( $this, 'get_rest_settings' ),
-			)
-		);
-	}
-
-	/**
-	 * Gets configured options for REST API
-	 */
-	public function get_rest_settings() {
-		// $boxes = CMB2_Boxes::get_
-	}
-
 }
