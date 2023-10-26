@@ -95,11 +95,15 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 		<div class="cp-group-item--attributes">
 			<?php if ( $item['handicap'] ) : ?>
-				<span class="cp-group-item--attributes--accessible"><?php echo Helpers::get_icon( 'accessible' ); ?> <?php _e( 'Accessible', 'cp-groups' ); ?></span>
+				<span class="cp-group-item--attributes--accessible"><?php echo Helpers::get_icon( 'accessible' ); ?>
+					<?php echo esc_html( Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+				</span>
 			<?php endif; ?>
 
 			<?php if ( $item['kidFriendly'] ) : ?>
-				<span class="cp-group-item--attributes--kid-friendly"><?php echo Helpers::get_icon( 'child' ); ?> <?php _e( 'Kid Friendly', 'cp-groups' ); ?></span>
+				<span class="cp-group-item--attributes--kid-friendly">
+					<?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+				</span>
 			<?php endif; ?>
 
 			<?php if ( $item['isFull'] ) : ?>

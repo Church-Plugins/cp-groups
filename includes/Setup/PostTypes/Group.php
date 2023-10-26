@@ -200,7 +200,7 @@ class Group extends PostType {
 		$args['supports'][] = 'page-attributes';
 		$args['supports'][] = 'excerpt';
 
-		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
+		if ( apply_filters( 'cp_groups_disable_archive', Settings::get_groups( 'disable_archive', false ) ) ) {
 			$args['has_archive'] = false;
 		}
 
@@ -258,14 +258,14 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Kid Friendly', 'cp-groups' ),
+			'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
 			'id'   => 'kid_friendly',
 			'type' => 'checkbox',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Handicap Accessible', 'cp-groups' ),
+			'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
 			'id'   => 'handicap_accessible',
 			'type' => 'checkbox',
@@ -324,7 +324,7 @@ class Group extends PostType {
 
 	/**
 	 * Register custom meta fields based on the mapping from CP Connect
-	 * 
+	 *
 	 * @param \CMB2 $cmb the metabox to add the custom fields to
 	 * @return void
 	 * @since 1.1.3

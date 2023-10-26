@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.7
+* Add setting to disable the Groups archive page
+
 #### 1.1.6
 * Update styles for archive page
 
