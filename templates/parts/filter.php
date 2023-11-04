@@ -72,7 +72,9 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 
 			<?php if ( Settings::get_advanced( 'kid_friendly_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="child-friendly" value="1" <?php checked( Helpers::get_param( $_GET, 'child-friendly' ) ); ?> /> <?php _e( 'Kid Friendly', 'cp-groups' ); ?></label>
+					<label><input type="checkbox" name="child-friendly" value="1" <?php checked( Helpers::get_param( $_GET, 'child-friendly' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
 				</div>
 			<?php endif; ?>
 
@@ -84,7 +86,9 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 
 			<?php if ( Settings::get_advanced( 'accessible_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> /> <?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></label>
+					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
 				</div>
 			<?php endif; ?>
 

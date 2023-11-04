@@ -239,14 +239,14 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Kid Friendly', 'cp-groups' ),
+			'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
 			'id'   => 'kid_friendly',
 			'type' => 'checkbox',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Handicap Accessible', 'cp-groups' ),
+			'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
 			'id'   => 'handicap_accessible',
 			'type' => 'checkbox',

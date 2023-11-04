@@ -119,6 +119,7 @@ class Settings {
 
 		$this->group_options();
 		$this->advanced_options();
+		$this->label_options();
 		$this->license_fields();
 	}
 
@@ -399,6 +400,41 @@ class Settings {
 
 	}
 
+	protected function label_options() {
+		$args = array(
+			'id'           => 'cp_groups_labels_page',
+			'title'        => 'Labels',
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'cp_groups_labels_options',
+			'parent_slug'  => 'cp_groups_main_options',
+			'tab_group'    => 'cp_groups_main_options',
+			'tab_title'    => 'Labels',
+			'display_cb'   => array( $this, 'options_display_with_tabs' ),
+		);
+
+		$advanced_options = new_cmb2_box( $args );
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Kid Friendly Badge Label',
+				'id'      => 'kid_friendly_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Kid Friendly', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the kid friendly badge on group lists.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Accessible Badge Label',
+				'id'      => 'accessible_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Wheelchair Accessible', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the accessible badge on group lists.', 'cp-groups' ),
+			)
+		);
+	}
+
 	/**
 	 * Setting a checkbox to be on by default doesn't work in CMB2, this is a way to get around that
 	 */
@@ -477,6 +513,4 @@ class Settings {
 
 		return $tabs;
 	}
-
-
 }
