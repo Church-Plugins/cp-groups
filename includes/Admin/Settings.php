@@ -2,6 +2,8 @@
 
 namespace CP_Groups\Admin;
 
+use WP_REST_Server;
+
 /**
  * Plugin settings
  *
@@ -66,7 +68,19 @@ class Settings {
 	 */
 	protected function __construct() {
 		add_action( 'cmb2_admin_init', [ $this, 'register_main_options_metabox' ] );
-		add_action( 'cmb2_save_options_page_fields', 'flush_rewrite_rules' );
+		add_action( 'cmb2_save_options-page_fields', [ $this, 'trigger_rewrite_flush' ] );
+		add_action( 'init', [ $this, 'maybe_flush_rules' ] );
+	}
+
+	public function trigger_rewrite_flush() {
+		update_option( '_cp_flush_rewrite', true );
+	}
+
+	public function maybe_flush_rules() {
+		if ( get_option( '_cp_flush_rewrite', false ) ) {
+			flush_rewrite_rules();
+			delete_option( '_cp_flush_rewrite' );
+		}
 	}
 
 	public function register_main_options_metabox() {
@@ -84,6 +98,7 @@ class Settings {
 			'tab_title'    => 'Main',
 			'parent_slug'  => 'edit.php?post_type=' . $post_type,
 			'display_cb'   => [ $this, 'options_display_with_tabs'],
+			'show_in_rest' => WP_REST_Server::READABLE,
 		);
 
 		$options = new_cmb2_box( $args );
@@ -107,6 +122,7 @@ class Settings {
 
 		$this->group_options();
 		$this->advanced_options();
+		$this->label_options();
 		$this->license_fields();
 	}
 
@@ -167,6 +183,13 @@ class Settings {
 			'desc'    => __( 'Caution: changing this value will also adjust the url structure and may affect your SEO.', 'cp-groups' ),
 			'type'    => 'text',
 			'default' => cp_groups()->setup->post_types->groups->plural_label,
+		) );
+
+		$options->add_field( array(
+			'name'    => __( 'Disable Archive Page', 'cp-groups' ),
+			'id'      => 'disable_archive',
+			'desc'    => sprintf( __( 'Check this box to disable the /%s/ archive page. Use this option if you want to use the %s shortcode on a page that you create.', 'cp-groups' ), strtolower( cp_groups()->setup->post_types->groups->plural_label ), cp_groups()->setup->post_types->groups->single_label ),
+			'type'    => 'checkbox',
 		) );
 
 	}
@@ -391,6 +414,42 @@ class Settings {
 
 	}
 
+	protected function label_options() {
+		$args = array(
+			'id'           => 'cp_groups_labels_page',
+			'title'        => 'Labels',
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'cp_groups_labels_options',
+			'parent_slug'  => 'cp_groups_main_options',
+			'tab_group'    => 'cp_groups_main_options',
+			'tab_title'    => 'Labels',
+			'display_cb'   => array( $this, 'options_display_with_tabs' ),
+			'show_in_rest' => WP_REST_Server::ALLMETHODS,
+		);
+
+		$advanced_options = new_cmb2_box( $args );
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Kid Friendly Badge Label',
+				'id'      => 'kid_friendly_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Kid Friendly', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the kid friendly badge on group lists.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Accessible Badge Label',
+				'id'      => 'accessible_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Wheelchair Accessible', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the accessible badge on group lists.', 'cp-groups' ),
+			)
+		);
+	}
+
 	/**
 	 * Setting a checkbox to be on by default doesn't work in CMB2, this is a way to get around that
 	 */
@@ -470,5 +529,26 @@ class Settings {
 		return $tabs;
 	}
 
+
+	/**
+	 * Adds configured options to REST API
+	 */
+	public function register_rest_routes() {
+		register_rest_route(
+			'cp-groups/v1',
+			'/settings',
+			array(
+				'methods'  => array( 'GET', 'POST' ),
+				'callback' => array( $this, 'get_rest_settings' ),
+			)
+		);
+	}
+
+	/**
+	 * Gets configured options for REST API
+	 */
+	public function get_rest_settings() {
+		// $boxes = CMB2_Boxes::get_
+	}
 
 }
