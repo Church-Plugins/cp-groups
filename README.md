@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.9
+* Compatibility fix for Divi breaking pagination
+
 #### 1.1.8
 * Add setting to customize labels
 
