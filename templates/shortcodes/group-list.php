@@ -1,5 +1,6 @@
 <?php
 use CP_Groups\Templates;
+use ChurchPlugins\Helpers;
 
 global $wp_query;
 
@@ -31,8 +32,8 @@ $wp_query = new WP_Query( $params );
 			<p><?php _e( "No groups found.", 'cp-groups' ); ?></p>
 		<?php endif; wp_reset_postdata(); ?>
 	</div>
-	
-	<?php the_posts_pagination( [ 'format' => '?groups-paged=%#%#cp-groups-list' ] ); ?>
+
+	<?php Helpers::safe_posts_pagination( [ 'format' => '?groups-paged=%#%#cp-groups-list' ] ); ?>
 
 </div>
 
