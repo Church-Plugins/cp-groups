@@ -19,6 +19,10 @@ npm run build
 
 ### Change Log
 
+#### 1.1.10
+* Allow editing of taxonomy labels
+* Compatibility fix for Divi breaking filters
+
 #### 1.1.9
 * Compatibility fix for Divi breaking pagination
 
