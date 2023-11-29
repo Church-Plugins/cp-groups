@@ -56,6 +56,10 @@ class Settings {
 		return self::get( $key, $default, 'cp_groups_group_options' );
 	}
 
+	public static function get_label( $key, $default = '' ) {
+		return self::get( $key, $default, 'cp_groups_labels_options' );
+	}
+
 	public static function get_advanced( $key, $default = '' ) {
 		return self::get( $key, $default, 'cp_groups_advanced_options' );
 	}
@@ -413,6 +417,66 @@ class Settings {
 		);
 
 		$advanced_options = new_cmb2_box( $args );
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Type Singular Label',
+				'id'      => 'type_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Type', 'cp-groups' ),
+				'desc'    => __( 'The label for Type.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Type Plural Label',
+				'id'      => 'type_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Types', 'cp-groups' ),
+				'desc'    => __( 'The label for Types.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Category Singular Label',
+				'id'      => 'category_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Category', 'cp-groups' ),
+				'desc'    => __( 'The label for Category.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Category Plural Label',
+				'id'      => 'category_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Categories', 'cp-groups' ),
+				'desc'    => __( 'The label for Categories.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Life Stage Singular Label',
+				'id'      => 'life_stage_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Life Stage', 'cp-groups' ),
+				'desc'    => __( 'The label for Life Stage.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Life Stage Plural Label',
+				'id'      => 'life_stage_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Life Stages', 'cp-groups' ),
+				'desc'    => __( 'The label for Life Stages.', 'cp-groups' ),
+			)
+		);
 
 		$advanced_options->add_field(
 			array(
