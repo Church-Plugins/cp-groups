@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.11
+* Allow specifying the number of groups per page
+
 #### 1.1.10
 * Allow editing of taxonomy labels
 * Compatibility fix for Divi breaking filters

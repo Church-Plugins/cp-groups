@@ -252,6 +252,19 @@ class Settings {
 			]
 		) );
 
+		$advanced_options->add_field( array(
+			'name'       => __( 'Pagination', 'cp-groups' ),
+			'desc'       => __( 'Groups per page (10-100)', 'cp-groups' ),
+			'id'         => 'groups_per_page',
+			'type'       => 'text',
+			'default'    => 40,
+			'attributes' => array(
+				'type' => 'number',
+				'min' => 10,
+				'max' => 100
+			)
+		) );
+
 		if( $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', false ) ) {
 			$advanced_options->add_field( array(
 				'name'         => __( 'CP Connect custom metadata', 'cp-groups' ),
