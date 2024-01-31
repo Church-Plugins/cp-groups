@@ -71,6 +71,10 @@ class Group extends Controller{
 	public function get_registration_url() {
 		$url = $this->registration_url;
 
+		if ( ! is_string( $url ) ) {
+			return '';
+		}
+
 		if ( is_email( $url ) ) {
 			$url = 'mailto:' . $url;
 		}
@@ -91,6 +95,10 @@ class Group extends Controller{
 			$url = $this->leader_email;
 		} else {
 			$url = $this->action_contact;
+		}
+
+		if ( ! is_string( $url ) ) {
+			return '';
 		}
 
 		if ( is_email( $url ) ) {
