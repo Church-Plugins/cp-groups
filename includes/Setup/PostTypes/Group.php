@@ -115,6 +115,9 @@ class Group extends PostType {
 
 		$query->set( 'meta_query', $meta_query );
 
+		$per_page = absint( Settings::get_advanced( 'groups_per_page', 40 ) );
+
+		$query->set( 'posts_per_page', $per_page ? $per_page : 40 );
 	}
 
 	/**
