@@ -73,7 +73,7 @@ try {
 			
 		<?php endif; ?>
 
-		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>
+		<h1 class="cp-group-single--title"><?php echo $item['title']; ?></h1>
 
 		<?php if ( $item['leader'] ) : ?>
 			<h6 class="cp-group-single--leader"><?php echo $item['leader']; ?></h6>
