@@ -129,7 +129,7 @@ try {
 				$email = get_post_meta( $item['id'], 'action_contact', true );
 			}
 
-			if( is_email( $email ) ) {
+			if( is_string( $email ) && is_email( $email ) ) {
 				cp_groups()->build_email_modal( 'action_contact', $email, $group_leader, $item['id'] );
 			}
 		}
@@ -137,7 +137,7 @@ try {
 		if( Settings::get_advanced( 'hide_registration', 'off' ) == 'off' ) {
 			$register_url = get_post_meta( $item['id'], 'registration_url', true );
 
-			if( is_email( $register_url ) ) {
+			if( is_string( $register_url ) && is_email( $register_url ) ) {
 				cp_groups()->build_email_modal( 'action_register', $register_url, $item['title'], $item['id'] );
 			}
 		} ?>
