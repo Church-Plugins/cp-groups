@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Allows filtering the classes for the main element.
  *
  * @param array<string> $classes An (unindexed) array of classes to apply.
+ * @return array<string> The modified array of classes.
+ * @since 1.0.0
  */
 $classes = apply_filters( 'cp_default_template_classes', [ 'cp-pg-template' ] );
 

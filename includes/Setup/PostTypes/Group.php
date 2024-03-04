@@ -184,8 +184,16 @@ class Group extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
+		
+		/**
+		 * Disable the archive page for groups
+		 *
+		 * @param bool $is_archive_disabled Whether the archive page is disabled. Default is the setting from the admin.
+		 * @since 1.1.0
+		 */
+		$is_archive_disabled = apply_filters( 'cp_groups_disable_archive', Settings::get_groups( 'disable_archive', false ) );
 
-		if ( apply_filters( 'cp_groups_disable_archive', Settings::get_groups( 'disable_archive', false ) ) ) {
+		if ( $is_archive_disabled ) {
 			$args['has_archive'] = false;
 		}
 
