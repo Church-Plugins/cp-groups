@@ -23,8 +23,8 @@ class Group extends PostType {
 	protected function __construct() {
 		$this->post_type = "cp_group";
 
-		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
-		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
+		$this->single_label = apply_filters( "cp_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
+		$this->plural_label = apply_filters( "cp_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
 
 		parent::__construct();
 
