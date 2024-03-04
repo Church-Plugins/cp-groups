@@ -54,6 +54,13 @@ class Category extends Taxonomy  {
 	 * @author Tanner Moushey
 	 */
 	public function get_object_types() {
+		/**
+		 * Filter the object types for the group category taxonomy.
+		 *
+		 * @param array $object_types The post types for this taxonomy.
+		 * @return string[]
+		 * @since 1.0.0
+		 */
 		return apply_filters( 'cp_group_category_taxonomy_types', [ cp_groups()->setup->post_types->groups->post_type ] );
 	}
 

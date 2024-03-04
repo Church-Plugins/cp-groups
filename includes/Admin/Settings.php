@@ -49,6 +49,15 @@ class Settings {
 			$value = $default;
 		}
 
+		/**
+		 * Get a plugin global setting
+		 *
+		 * @param $value mixed The value being returned.
+		 * @param $key string The setting key.
+		 * @param $group string The settings group.
+		 * @return mixed
+		 * @since  1.0.0
+		 */
 		return apply_filters( 'cp_groups_settings_get', $value, $key, $group );
 	}
 

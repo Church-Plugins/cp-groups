@@ -54,6 +54,13 @@ class LifeStage extends Taxonomy  {
 	 * @author Tanner Moushey
 	 */
 	public function get_object_types() {
+		/**
+		 * Filter the object types for the group life stage taxonomy.
+		 *
+		 * @param string[] $object_types The post types for this taxonomy.
+		 * @return string[]
+		 * @since 1.0.0
+		 */
 		return apply_filters( 'cp_group_life_stage_taxonomy_types', [ cp_groups()->setup->post_types->groups->post_type ] );
 	}
 
