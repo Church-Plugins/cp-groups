@@ -217,6 +217,13 @@ class Group extends PostType {
 			'name' => __( 'Group Leader Email', 'cp-groups' ),
 			'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
 			'id'   => 'leader_email',
+			'type' => 'text_email',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Group Email CC', 'cp-groups' ),
+			'desc'         => __( 'Enter the email address(es) to CC whenever a contact form is submitted for this group. Comma separate multiple email addresses.', 'cp-groups' ),
+			'id'   => 'cc',
 			'type' => 'text',
 		] );
 
