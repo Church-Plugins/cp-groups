@@ -12,17 +12,21 @@ try {
 	return;
 }
 
+$disable_modal_class = '';
+if ( Settings::get_groups( 'disable_modal', false ) ) {
+	$disable_modal_class = 'cp-group-item--disable-modal';
+}
 $is_location_page = get_query_var( 'cp_location_id' );
 ?>
 
-<div class="cp-group-item">
+<div class="cp-group-item <?php echo $disable_modal_class; ?>">
 
 	<div class="cp-group-item--thumb">
-		<div class="cp-group-item--thumb--canvas" style="background: url(<?php echo esc_url( $item['thumb'] ); ?>) 0% 0% / cover;">
+		<a class="cp-group-item--thumb--canvas" href="<?php the_permalink(); ?>" style="background: url(<?php echo esc_url( $item['thumb'] ); ?>) 0% 0% / cover;">
 			<?php if ( $item['thumb'] ) : ?>
 				<img alt="<?php esc_attr( $item['title'] ); ?>" src="<?php echo esc_url( $item['thumb'] ); ?>">
 			<?php endif; ?>
-		</div>
+		</a>
 	</div>
 
 	<div class="cp-group-item--details">
