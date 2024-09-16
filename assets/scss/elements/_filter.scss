@@ -23,6 +23,7 @@
 
 	input[type=checkbox] {
 		margin-right: var(--cp-gap-base);
+		display: inline-block;
 	}
 
 	&--form {
@@ -188,4 +189,7 @@
 		}
 	}
 
+	.cp-button {
+		justify-content: space-between;
+	}
 }

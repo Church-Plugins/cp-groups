@@ -52,7 +52,7 @@ class ShortCodes {
 	 */
 	public function groups_cb( $atts ) {
 		ob_start();
-		Templates::get_template_part( "shortcodes/group-list" );
+		Templates::get_template_part( "shortcodes/group-list", $atts );
 		return ob_get_clean();
 	}
 

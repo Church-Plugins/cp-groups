@@ -19,6 +19,14 @@ npm run build
 
 ### Change Log
 
+#### 1.1.13
+* Enhancement: Add support for Group taxonomies in cp-group shortcode
+* Enhancement: Add setting to disable to Group list popup
+
+#### 1.1.12
+* Enhancement: Add CC field to Group meta
+* Enhancement: update styling for theme compatibility
+
 #### 1.1.11
 * Allow specifying the number of groups per page
 

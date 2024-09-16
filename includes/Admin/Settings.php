@@ -202,6 +202,13 @@ class Settings {
 			'type'    => 'checkbox',
 		) );
 
+		$options->add_field( array(
+			'name'    => __( 'Disable Group Popup', 'cp-groups' ),
+			'id'      => 'disable_modal',
+			'desc'    => sprintf( __( 'Check this box to disable the popup for %s and link to the %s page instead.', 'cp-groups' ), cp_groups()->setup->post_types->groups->plural_label, cp_groups()->setup->post_types->groups->single_label ),
+			'type'    => 'checkbox',
+		) );
+
 	}
 
 	protected function advanced_options() {

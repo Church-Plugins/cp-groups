@@ -63,7 +63,18 @@ class Templates {
 	 * @author Tanner Moushey
 	 */
 	public static function get_facet_link( $slug, $facet ) {
-		$uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+		if ( is_singular( 'cp_group' ) ) {
+			$uri = get_post_type_archive_link( 'cp_group' );
+		} else {
+			$uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
+		}
+
+		$uri = apply_filters( 'cp_groups_facet_link_uri', $uri, $slug, $facet );
+
+		if ( empty( $uri ) ) {
+			return '#';
+		}
+
 		$get = $_GET;
 
 		if ( empty( $get ) ) {
