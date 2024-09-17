@@ -12,6 +12,9 @@ try {
 	return;
 }
 
+global $post;
+$distance = isset( $post->distance ) ? $post->distance : false;
+
 $disable_modal_class = '';
 if ( Settings::get_groups( 'disable_modal', false ) ) {
 	$disable_modal_class = 'cp-group-item--disable-modal';
@@ -78,6 +81,12 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 			<?php if ( ! empty( $item['location'] ) ) : ?>
 				<div class="cp-group--item--meta--location"><?php echo Helpers::get_icon( 'location' ); ?> <?php echo esc_html( $item['location'] ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( false !== $distance ) : ?>
+				<div class="cp-group--item--meta--distance">
+					<?php echo number_format( $distance, 1 ) . ' ' . __( 'mi', 'cp-groups' ); ?>
+				</div>
 			<?php endif; ?>
 		</div>
 

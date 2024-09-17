@@ -5,13 +5,14 @@ use CP_Groups\Admin\Settings;
 use CP_Groups\Ratelimit;
 use RuntimeException;
 
+require_once CP_GROUPS_PLUGIN_DIR . 'includes/ChurchPlugins/Setup/Plugin.php';
+
 /**
  * Provides the global $cp_groups object
  *
  * @author costmo
  */
-class Init {
-
+class Init extends \ChurchPlugins\Setup\Plugin {
 	// TODO: Add missing DocBlock comments for methods of this class
 
 	/**
@@ -29,9 +30,16 @@ class Init {
 	 */
 	public $integrations;
 
+	/**
+	 * @var \WPackio\Enqueue
+	 */
 	public $enqueue;
 
+	/**
+	 * @var Ratelimit
+	 */
 	protected $limiter;
+
 	/**
 	 * Only make one instance of Init
 	 *
@@ -46,13 +54,26 @@ class Init {
 	}
 
 	/**
+	 * Get plugin directory
+	 */
+	public function get_plugin_dir() {
+		return CP_GROUPS_PLUGIN_DIR;
+	}
+
+	/**
+	 * Get plugin URL
+	 */
+	public function get_plugin_url() {
+		return CP_GROUPS_PLUGIN_URL;
+	}	
+
+	/**
 	 * Class constructor: Add Hooks and Actions
-	 *
 	 */
 	protected function __construct() {
+		parent::__construct();
 		$this->enqueue = new \WPackio\Enqueue( 'cpGroups', 'dist', $this->get_version(), 'plugin', CP_GROUPS_PLUGIN_FILE );
 		$this->limiter = new Ratelimit( "send_group_email" );
-		add_action( 'cp_core_loaded', [ $this, 'maybe_setup' ], - 9999 );
 		add_action( 'init', [ $this, 'maybe_init' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
 	}
@@ -66,9 +87,7 @@ class Init {
 		if ( ! $this->check_required_plugins() ) {
 			return;
 		}
-
-		$this->includes();
-		$this->actions();
+		parent::maybe_setup();
 	}
 
 	/**
@@ -116,6 +135,9 @@ class Init {
 		$this->setup = Setup\Init::get_instance();
 	}
 
+	/**
+	 * Actions
+	 */
 	protected function actions() {
 		add_action( 'cp_send_email', [ $this, 'maybe_send_email' ] );
 		add_filter( 'cp_resources_output_resources_check_object', [ $this, 'allow_resources_for_group_modals' ], 50, 1 );
@@ -302,6 +324,9 @@ class Init {
 
 	/** Helper Methods **************************************/
 
+	/**
+	 * Get the default thumbnail for a group
+	 */
 	public function get_default_thumb() {
 		return CP_GROUPS_PLUGIN_URL . '/app/public/logo512.png';
 	}
@@ -492,12 +517,16 @@ class Init {
 		return $this->get_id() . '/v1';
 	}
 
+	/**
+	 * Whether plugin functionality is enabled
+	 */
 	public function enabled() {
 		return true;
 	}
 
 	/**
-	 * CP Resources only appends resources onto single objects. This makes sure the resources are added to groups content in an archive context.
+	 * CP Resources only appends resources onto single objects. This makes
+	 * sure the resources are added to group's content in an archive context.
 	 */
 	public function allow_resources_for_group_modals( $check ) {
 		if( get_post_type() === cp_groups()->setup->post_types->groups->post_type ) {
