@@ -100,7 +100,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 			<?php if ( $item['kidFriendly'] ) : ?>
 				<span class="cp-group-item--attributes--kid-friendly">
-					<?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					<?php echo Helpers::get_icon( 'child' ); ?> <?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
 				</span>
 			<?php endif; ?>
 

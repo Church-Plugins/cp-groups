@@ -23,6 +23,10 @@
 	top: calc( var(--cp-gap--lg) / 2 ) !important;
 	position: fixed !important;
 
+	* {
+		box-sizing: border-box;
+	}
+
 	.cp-group-single {
 		&--title {
 			font-size: min(3.75vw, var(--cp-font-size-h5)) !important;
