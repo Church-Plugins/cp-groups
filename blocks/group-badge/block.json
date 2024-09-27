@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cp-groups/group-badge",
+	"title": "Group Badge",
+	"category": "cp-groups",
+	"description": "Displays a badge if it exists on the group.",
+	"textdomain": "cp-groups",
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"attributes": {
+		"badgeType": {
+			"type": "string",
+			"default": "kid_friendly"
+		}
+	},
+	"supports": {
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"style": "file:style-index.css",
+	"editorScript": "file:index.js"
+}

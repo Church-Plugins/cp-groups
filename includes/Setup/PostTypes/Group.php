@@ -40,7 +40,6 @@ class Group extends PostType {
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
-
 		parent::add_actions();
 	}
 
@@ -60,6 +59,15 @@ class Group extends PostType {
 		}
 
 		if ( is_admin() ) {
+			return;
+		}
+
+		// don't modify rest API queries.
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
+		if ( true === $query->get( 'cp_group_query' ) ) {
 			return;
 		}
 
@@ -190,8 +198,9 @@ class Group extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
+		$args['supports'][] = 'excerpt';
 
-		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
+		if ( apply_filters( 'cp_groups_disable_archive', Settings::get_groups( 'disable_archive', false ) ) ) {
 			$args['has_archive'] = false;
 		}
 
@@ -210,6 +219,7 @@ class Group extends PostType {
 			'context' => 'normal',
 			'priority' => 'high',
 			'show_names' => true,
+			'show_in_rest' => \WP_REST_Server::READABLE
 		] );
 
 		$cmb->add_field( [
@@ -248,14 +258,14 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Kid Friendly', 'cp-groups' ),
+			'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
 			'id'   => 'kid_friendly',
 			'type' => 'checkbox',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Handicap Accessible', 'cp-groups' ),
+			'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
 			'id'   => 'handicap_accessible',
 			'type' => 'checkbox',
@@ -314,7 +324,7 @@ class Group extends PostType {
 
 	/**
 	 * Register custom meta fields based on the mapping from CP Connect
-	 * 
+	 *
 	 * @param \CMB2 $cmb the metabox to add the custom fields to
 	 * @return void
 	 * @since 1.1.3

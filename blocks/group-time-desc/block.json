@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cp-groups/group-time-desc",
+	"title": "Group Time Description",
+	"category": "cp-groups",
+	"description": "Displays what time the group meets at.",
+	"textdomain": "cp-groups",
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"attributes": {},
+	"supports": {
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"color": {
+			"text": true,
+			"background": true,
+			"gradients": true,
+			"enableContrastChecker": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"style": "file:style-index.css",
+	"editorScript": "file:index.js"
+}

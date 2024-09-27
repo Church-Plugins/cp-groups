@@ -1,0 +1,59 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cp-groups/group-excerpt",
+	"title": "Group Excerpt",
+	"category": "cp-groups",
+	"description": "Display a group's excerpt.",
+	"textdomain": "cp-groups",
+	"attributes": {
+		"textAlign": {
+			"type": "string"
+		},
+		"moreText": {
+			"type": "string"
+		},
+		"showMoreOnNewLine": {
+			"type": "boolean",
+			"default": true
+		},
+		"excerptLength": {
+			"type": "number",
+			"default": 55
+		}
+	},
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"gradients": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true,
+				"link": true
+			}
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalTextTransform": true,
+			"__experimentalTextDecoration": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true
+			}
+		}
+	},
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css",
+	"editorScript": "file:index.js"
+}

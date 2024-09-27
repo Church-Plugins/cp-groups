@@ -1,0 +1,16 @@
+
+.wp-block-cp-groups-group-title {
+	word-break: break-word;
+	// This block has customizable padding, border-box makes that more predictable.
+	box-sizing: border-box;
+
+	&.wp-block-cp-groups-group-title > a {
+		text-decoration: inherit;
+		text-decoration-color: currentColor;
+	}
+}
+
+.block-editor .editor-styles-wrapper .wp-block-cp-groups-group-title > a {
+	text-decoration: inherit;
+	text-decoration-color: currentColor;
+}
