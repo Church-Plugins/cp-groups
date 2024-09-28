@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.15
+* Enhancement: Initial block theme support
+
 #### 1.1.14
 * Enhancement: Mobile style updates
 * Bug Fix: Fix icon for Child Friendly
