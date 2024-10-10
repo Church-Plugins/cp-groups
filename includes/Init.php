@@ -5,12 +5,14 @@ use CP_Groups\Admin\Settings;
 use CP_Groups\Ratelimit;
 use RuntimeException;
 
+require_once CP_GROUPS_PLUGIN_DIR . 'includes/ChurchPlugins/Setup/Plugin.php';
+
 /**
  * Provides the global $cp_groups object
  *
  * @author costmo
  */
-class Init {
+class Init extends \ChurchPlugins\Setup\Plugin {
 
 	// TODO: Add missing DocBlock comments for methods of this class
 
@@ -50,11 +52,34 @@ class Init {
 	 *
 	 */
 	protected function __construct() {
+		parent::__construct();
 		$this->enqueue = new \WPackio\Enqueue( 'cpGroups', 'dist', $this->get_version(), 'plugin', CP_GROUPS_PLUGIN_FILE );
 		$this->limiter = new Ratelimit( "send_group_email" );
 		add_action( 'cp_core_loaded', [ $this, 'maybe_setup' ], - 9999 );
 		add_action( 'init', [ $this, 'maybe_init' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue' ] );
+	}
+
+	/**
+	 * Get the plugin version
+	 */
+	public function get_version() {
+		return CP_GROUPS_PLUGIN_VERSION;
+	}
+
+	/**
+	 * Get the plugin directory
+	 */
+	public function get_plugin_dir() {
+		return CP_GROUPS_PLUGIN_DIR;
+	}
+
+	/**
+	 * Get the plugin URL
+	 */
+	public function get_plugin_url() {
+		return CP_GROUPS_PLUGIN_URL;
 	}
 
 	/**
@@ -102,6 +127,16 @@ class Init {
 				wp_enqueue_script( 'grecaptcha', 'https://www.google.com/recaptcha/api.js?render=' . $site_key );
 			}
 		}
+	}
+
+	/**
+	 * `admin_enqueue_scripts` actions for the app's compiled sources
+	 *
+	 * @return void
+	 */
+	public function admin_enqueue() {
+		$this->enqueue->enqueue( 'scripts', 'admin', [ 'js_dep' => [ 'jquery' ] ] );
+		$this->enqueue->enqueue( 'styles', 'admin', [ 'css_dep' => [] ] );
 	}
 
 	/**
@@ -467,14 +502,6 @@ class Init {
 		return 'cp-groups';
 	}
 
-	/**
-	 * Provide a unique ID tag for the plugin
-	 *
-	 * @return string
-	 */
-	public function get_version() {
-		return '1.1.3';
-	}
 
 	/**
 	 * Get the API namespace to use

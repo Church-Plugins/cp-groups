@@ -213,18 +213,25 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Group Leader', 'cp-groups' ),
-			'desc' => __( 'The name of the group leader.', 'cp-groups' ),
-			'id'   => 'leader',
-			'type' => 'text',
+			'name' => 'Group Leaders',
+			'desc' => 'Select the leaders for this group.',
+			'id'   => 'leaders',
+			'type' => 'cp_group_leader',
 		] );
 
-		$cmb->add_field( [
-			'name' => __( 'Group Leader Email', 'cp-groups' ),
-			'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
-			'id'   => 'leader_email',
-			'type' => 'text',
-		] );
+		// $cmb->add_field( [
+		// 	'name' => __( 'Group Leader', 'cp-groups' ),
+		// 	'desc' => __( 'The name of the group leader.', 'cp-groups' ),
+		// 	'id'   => 'leader',
+		// 	'type' => 'text',
+		// ] );
+
+		// $cmb->add_field( [
+		// 	'name' => __( 'Group Leader Email', 'cp-groups' ),
+		// 	'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
+		// 	'id'   => 'leader_email',
+		// 	'type' => 'text',
+		// ] );
 
 		$cmb->add_field( [
 			'name' => __( 'Meeting Time Desc', 'cp-groups' ),
