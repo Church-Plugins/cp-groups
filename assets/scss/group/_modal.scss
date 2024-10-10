@@ -14,7 +14,7 @@
 
 .cp-groups-modal-popup {
 	border-radius: 4px;
-	z-index: 9999;
+	z-index: 99999;
 	padding: var(--cp-gap--md);
 	max-width: calc( 100vw - var(--cp-gap--lg) );
 	max-height: calc( 100vh - var(--cp-gap--lg) );
@@ -22,6 +22,10 @@
 	background: #f5f5fa;
 	top: calc( var(--cp-gap--lg) / 2 ) !important;
 	position: fixed !important;
+
+	* {
+		box-sizing: border-box;
+	}
 
 	.cp-group-single {
 		&--title {
@@ -63,7 +67,7 @@
 		top: var(--cp-gap--sm);
 		width: 1rem;
 		height: 1rem;
-		z-index: 9999;
+		z-index: 99999;
 
 		span {
 			display: none;
@@ -85,12 +89,12 @@
 }
 
 .cp-email-popup {
-	z-index: 9999;
+	z-index: 99999;
 }
 
 .cp-email-modal {
 	border-radius: 4px;
-	z-index: 9999;
+	z-index: 99999;
 	max-width: 30rem;
 	max-height: calc( 100vh - var(--cp-gap--lg) );
 	overflow: auto;
@@ -200,7 +204,7 @@
 		top: var(--cp-gap--sm);
 		width: 1rem;
 		height: 1rem;
-		z-index: 9999;
+		z-index: 99999;
 
 		span {
 			display: none;

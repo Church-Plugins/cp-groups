@@ -21,8 +21,12 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 	margin-bottom: var(--cp-gap--md);
 	border-radius: var(--cp-border-radius);
 	display: flex;
-	flex-direction: row;
-	cursor: pointer;
+	flex-flow: row wrap;
+	gap: var(--cp-gap--sm);
+
+	&:not(.cp-group-item--disable-modal) {
+		cursor: pointer;
+	}
 
 	&:before {
 		content: '';
@@ -42,8 +46,7 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 		cursor: pointer;
 		overflow: hidden;
 		border-radius: var(--cp-border-radius-sm);
-		flex: 0 1 35%;
-		margin-right: $gap;
+		flex: 1 0 max( 220px, 35% );
 
 		&--canvas {
 			width: 100%;
@@ -66,12 +69,13 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 		}
 
 			@include media-breakpoint-down(md) {
-				display: none;
+				aspect-ratio: 16 / 9;
+				margin: auto auto 1rem;
 			}
 	}
 
 	&--details {
-		flex: 1 1 0;
+		flex: 1 0 55%;
 		display: flex;
 		flex-direction: column;
 		padding: var(--cp-ui--gap-y--sm);
@@ -162,11 +166,11 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 		font-weight: var( --cp-font-weight--bold );
 		display: flex;
 		flex-flow: row wrap;
+		gap: var(--cp-gap--sm);
 
 		> * {
 			display: flex;
 			align-items: center;
-			margin-left: var(--cp-gap--sm);
 
 			span {
 				margin-right: calc( var(--cp-gap-base) / 2 );
@@ -213,6 +217,8 @@ $gap: min(3.5%, var(--cp-gap--sm, 1rem));
 		&--attributes {
 			left: 0;
 			bottom: 0;
+			position: relative;
+			margin-top: var(--cp-gap--sm);
 		}
 	}
 
