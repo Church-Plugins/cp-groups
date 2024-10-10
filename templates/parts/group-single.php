@@ -13,7 +13,7 @@ try {
 }
 ?>
 
-<div class="cp-group-single">
+<article class="cp-group-single">
 
 	<div class="cp-group-single--thumb">
 		<?php if ( $item['thumb'] ) : ?>
@@ -73,7 +73,7 @@ try {
 			
 		<?php endif; ?>
 
-		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>
+		<h1 class="cp-group-single--title"><?php echo $item['title']; ?></h1>
 
 		<?php if ( $item['leader'] ) : ?>
 			<h6 class="cp-group-single--leader"><?php echo $item['leader']; ?></h6>
@@ -143,4 +143,4 @@ try {
 		} ?>
 	</div>
 
-</div>
+</article>
