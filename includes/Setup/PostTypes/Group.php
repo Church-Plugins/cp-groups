@@ -23,8 +23,8 @@ class Group extends PostType {
 	protected function __construct() {
 		$this->post_type = 'cp_group';
 
-		$this->single_label = apply_filters( "cploc_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
-		$this->plural_label = apply_filters( "cploc_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
+		$this->single_label = apply_filters( "cp_single_{$this->post_type}_label", Settings::get_groups( 'singular_label', 'Group' ) );
+		$this->plural_label = apply_filters( "cp_plural_{$this->post_type}_label", Settings::get_groups( 'plural_label', 'Groups' ) );
 
 		parent::__construct();
 
@@ -124,6 +124,9 @@ class Group extends PostType {
 
 		$query->set( 'meta_query', $meta_query );
 
+		$per_page = absint( Settings::get_advanced( 'groups_per_page', 40 ) );
+
+		$query->set( 'posts_per_page', $per_page ? $per_page : 40 );
 	}
 
 	/**
@@ -190,8 +193,16 @@ class Group extends PostType {
 		$args               = parent::get_args();
 		$args['menu_icon']  = apply_filters( "{$this->post_type}_icon", 'dashicons-groups' );
 		$args['supports'][] = 'page-attributes';
+		
+		/**
+		 * Disable the archive page for groups
+		 *
+		 * @param bool $is_archive_disabled Whether the archive page is disabled. Default is the setting from the admin.
+		 * @since 1.1.0
+		 */
+		$is_archive_disabled = apply_filters( 'cp_groups_disable_archive', Settings::get_groups( 'disable_archive', false ) );
 
-		if ( apply_filters( 'cp_groups_disable_archive', false ) ) {
+		if ( $is_archive_disabled ) {
 			$args['has_archive'] = false;
 		}
 
@@ -223,6 +234,13 @@ class Group extends PostType {
 			'name' => __( 'Group Leader Email', 'cp-groups' ),
 			'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
 			'id'   => 'leader_email',
+			'type' => 'text_email',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Group Email CC', 'cp-groups' ),
+			'desc'         => __( 'Enter the email address(es) to CC whenever a contact form is submitted for this group. Comma separate multiple email addresses.', 'cp-groups' ),
+			'id'   => 'cc',
 			'type' => 'text',
 		] );
 
@@ -248,14 +266,14 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Kid Friendly', 'cp-groups' ),
+			'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
 			'id'   => 'kid_friendly',
 			'type' => 'checkbox',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Handicap Accessible', 'cp-groups' ),
+			'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
 			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
 			'id'   => 'handicap_accessible',
 			'type' => 'checkbox',
@@ -314,7 +332,7 @@ class Group extends PostType {
 
 	/**
 	 * Register custom meta fields based on the mapping from CP Connect
-	 * 
+	 *
 	 * @param \CMB2 $cmb the metabox to add the custom fields to
 	 * @return void
 	 * @since 1.1.3

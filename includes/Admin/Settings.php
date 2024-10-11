@@ -49,11 +49,24 @@ class Settings {
 			$value = $default;
 		}
 
+		/**
+		 * Get a plugin global setting
+		 *
+		 * @param $value mixed The value being returned.
+		 * @param $key string The setting key.
+		 * @param $group string The settings group.
+		 * @return mixed
+		 * @since  1.0.0
+		 */
 		return apply_filters( 'cp_groups_settings_get', $value, $key, $group );
 	}
 
 	public static function get_groups( $key, $default = '' ) {
 		return self::get( $key, $default, 'cp_groups_group_options' );
+	}
+
+	public static function get_label( $key, $default = '' ) {
+		return self::get( $key, $default, 'cp_groups_labels_options' );
 	}
 
 	public static function get_advanced( $key, $default = '' ) {
@@ -66,7 +79,19 @@ class Settings {
 	 */
 	protected function __construct() {
 		add_action( 'cmb2_admin_init', [ $this, 'register_main_options_metabox' ] );
-		add_action( 'cmb2_save_options_page_fields', 'flush_rewrite_rules' );
+		add_action( 'cmb2_save_options-page_fields', [ $this, 'trigger_rewrite_flush' ] );
+		add_action( 'init', [ $this, 'maybe_flush_rules' ] );
+	}
+
+	public function trigger_rewrite_flush() {
+		update_option( '_cp_flush_rewrite', true );
+	}
+
+	public function maybe_flush_rules() {
+		if ( get_option( '_cp_flush_rewrite', false ) ) {
+			flush_rewrite_rules();
+			delete_option( '_cp_flush_rewrite' );
+		}
 	}
 
 	public function register_main_options_metabox() {
@@ -107,6 +132,7 @@ class Settings {
 
 		$this->group_options();
 		$this->advanced_options();
+		$this->label_options();
 		$this->license_fields();
 	}
 
@@ -169,6 +195,20 @@ class Settings {
 			'default' => cp_groups()->setup->post_types->groups->plural_label,
 		) );
 
+		$options->add_field( array(
+			'name'    => __( 'Disable Archive Page', 'cp-groups' ),
+			'id'      => 'disable_archive',
+			'desc'    => sprintf( __( 'Check this box to disable the /%s/ archive page. Use this option if you want to use the %s shortcode on a page that you create.', 'cp-groups' ), strtolower( cp_groups()->setup->post_types->groups->plural_label ), cp_groups()->setup->post_types->groups->single_label ),
+			'type'    => 'checkbox',
+		) );
+
+		$options->add_field( array(
+			'name'    => __( 'Disable Group Popup', 'cp-groups' ),
+			'id'      => 'disable_modal',
+			'desc'    => sprintf( __( 'Check this box to disable the popup for %s and link to the %s page instead.', 'cp-groups' ), cp_groups()->setup->post_types->groups->plural_label, cp_groups()->setup->post_types->groups->single_label ),
+			'type'    => 'checkbox',
+		) );
+
 	}
 
 	protected function advanced_options() {
@@ -226,6 +266,19 @@ class Settings {
 				'show' => __( 'Enabled - Default: Show Full', 'cp-groups' ),
 				0 => __( 'Disable', 'cp-groups' ),
 			]
+		) );
+
+		$advanced_options->add_field( array(
+			'name'       => __( 'Pagination', 'cp-groups' ),
+			'desc'       => __( 'Groups per page (10-100)', 'cp-groups' ),
+			'id'         => 'groups_per_page',
+			'type'       => 'text',
+			'default'    => 40,
+			'attributes' => array(
+				'type' => 'number',
+				'min' => 10,
+				'max' => 100
+			)
 		) );
 
 		$advanced_options->add_field( array(
@@ -391,6 +444,101 @@ class Settings {
 
 	}
 
+	protected function label_options() {
+		$args = array(
+			'id'           => 'cp_groups_labels_page',
+			'title'        => 'Labels',
+			'object_types' => array( 'options-page' ),
+			'option_key'   => 'cp_groups_labels_options',
+			'parent_slug'  => 'cp_groups_main_options',
+			'tab_group'    => 'cp_groups_main_options',
+			'tab_title'    => 'Labels',
+			'display_cb'   => array( $this, 'options_display_with_tabs' ),
+		);
+
+		$advanced_options = new_cmb2_box( $args );
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Type Singular Label',
+				'id'      => 'type_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Type', 'cp-groups' ),
+				'desc'    => __( 'The label for Type.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Type Plural Label',
+				'id'      => 'type_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Types', 'cp-groups' ),
+				'desc'    => __( 'The label for Types.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Category Singular Label',
+				'id'      => 'category_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Category', 'cp-groups' ),
+				'desc'    => __( 'The label for Category.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Category Plural Label',
+				'id'      => 'category_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Categories', 'cp-groups' ),
+				'desc'    => __( 'The label for Categories.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Life Stage Singular Label',
+				'id'      => 'life_stage_singular_label',
+				'type'    => 'text',
+				'default' => __( 'Life Stage', 'cp-groups' ),
+				'desc'    => __( 'The label for Life Stage.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Life Stage Plural Label',
+				'id'      => 'life_stage_plural_label',
+				'type'    => 'text',
+				'default' => __( 'Life Stages', 'cp-groups' ),
+				'desc'    => __( 'The label for Life Stages.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Kid Friendly Badge Label',
+				'id'      => 'kid_friendly_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Kid Friendly', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the kid friendly badge on group lists.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Accessible Badge Label',
+				'id'      => 'accessible_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Wheelchair Accessible', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the accessible badge on group lists.', 'cp-groups' ),
+			)
+		);
+	}
+
 	/**
 	 * Setting a checkbox to be on by default doesn't work in CMB2, this is a way to get around that
 	 */
@@ -469,6 +617,4 @@ class Settings {
 
 		return $tabs;
 	}
-
-
 }

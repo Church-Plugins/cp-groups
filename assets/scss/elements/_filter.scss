@@ -23,6 +23,7 @@
 
 	input[type=checkbox] {
 		margin-right: var(--cp-gap-base);
+		display: inline-block;
 	}
 
 	&--form {
@@ -171,6 +172,7 @@
 			display: inline-flex;
 			padding: 0 .5em;
 			margin-right: .5em;
+			text-decoration: none;
 
 			&:before {
 				content: '\e5cd';
@@ -188,4 +190,7 @@
 		}
 	}
 
+	.cp-button {
+		justify-content: space-between;
+	}
 }

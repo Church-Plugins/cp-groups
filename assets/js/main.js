@@ -72,24 +72,28 @@ jQuery(($) => {
 	$groupItems.each(function() {
 		const $this = $(this)
 
-		const $detailsModal  = $this.find('.cp-group-modal')
+		if ( $this.hasClass( 'cp-group-item--disable-modal' ) ) {
+			return;
+		}
+
+		const $detailsModal = $this.find('.cp-group-modal');
 
 		$detailsModal.dialog({
 			...modalConfig,
 			dialogClass: 'cp-groups-modal-popup'
-		})
+		});
 
 		$this.on('click', (e) => {
 			if ($(e.target).hasClass('cp-button')) {
 				return true;
 			}
 
-			e.preventDefault()
+			e.preventDefault();
 
-			openModal( $detailsModal )
-		})
+			openModal($detailsModal);
+			initContactModals($detailsModal.find('.cp-group-single'))
+		});
 
-		initContactModals($detailsModal.find('.cp-group-single'))
 	})
 
 	// for a single group page

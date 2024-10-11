@@ -29,6 +29,11 @@ class Init {
 	 */
 	public $integrations;
 
+	/**
+	 * @var Templates
+	 */
+	public $templates;
+
 	public $enqueue;
 
 	protected $limiter;
@@ -110,7 +115,7 @@ class Init {
 	 * @return void
 	 */
 	protected function includes() {
-		Templates::init();
+		$this->templates = Templates::get_instance();
 		Admin\Init::get_instance();
 		$this->integrations = Integrations\_Init::get_instance();
 		$this->setup = Setup\Init::get_instance();
@@ -271,10 +276,14 @@ class Init {
 		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
 		$from_name  = Settings::get_advanced( 'from_name', get_bloginfo( 'name' ) );
 
-		$cc         = apply_filters( 'cp_groups_email_cc', Settings::get_advanced( 'cc' ), $group_id );
-		$bcc        = apply_filters( 'cp_groups_email_bcc', Settings::get_advanced( 'bcc' ), $group_id );
+		$cc   = [ Settings::get_advanced( 'ccd' ) ];
+		$cc[] = get_post_meta( $group_id, 'cc', true );
+		$cc   = implode( ',', array_filter( $cc ) );
 
-		$headers    =  [
+		$cc  = apply_filters( 'cp_groups_email_cc', $cc, $group_id );
+		$bcc = apply_filters( 'cp_groups_email_bcc', Settings::get_advanced( 'bcc' ), $group_id );
+
+		$headers = [
 			'Content-Type: text/html; cahrset=UTF-8',
 			"From: $from_name <$from_email>",
 			sprintf( 'Reply-To: %s <%s>', $name, $reply_to )
