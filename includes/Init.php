@@ -57,20 +57,6 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	}
 
 	/**
-	 * Get plugin directory
-	 */
-	public function get_plugin_dir() {
-		return CP_GROUPS_PLUGIN_DIR;
-	}
-
-	/**
-	 * Get plugin URL
-	 */
-	public function get_plugin_url() {
-		return CP_GROUPS_PLUGIN_URL;
-	}	
-
-	/**
 	 * Class constructor: Add Hooks and Actions
 	 */
 	protected function __construct() {

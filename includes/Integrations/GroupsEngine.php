@@ -127,10 +127,9 @@ class GroupsEngine {
 			update_post_meta( $group_id, 'geolocation', "$location->location_long,$location->location_lat" );
 
 			if ( ! $full_address && $api_key = Settings::get_advanced( 'mapbox_api_key', '' ) ) {
-				// TODO this will work once merged with feature/zip-filter
-				// $api = new \CP_Groups\API\Mapbox( $api_key );
-				// $full_address = $api->reverse_geocode( $location->location_lat, $location->location_long );
-				// update_post_meta( $group_id, 'location', $full_address );
+				$api = new \CP_Groups\API\Mapbox( $api_key );
+				$full_address = $api->reverse_geocode( $location->location_lat, $location->location_long );
+				update_post_meta( $group_id, 'location', $full_address );
 			}
 		}
 	}
