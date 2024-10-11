@@ -169,7 +169,8 @@ class Init {
 			</template>
 			<div class="cp-groups--group-leader-list">
 				<?php for ( $i = 0; $i < $leader_count; $i++ ): ?>
-					<?php if ( isset( $user_arr[ $leaders[ $i ]['id'] ] ) ) : ?>
+					<?php $leader_id = $leaders[ $i ]['id'] ?? ''; ?>
+					<?php if ( isset( $user_arr[ $leader_id ] ) || empty( $leader_id ) ) : ?>
 						<?php $this->render_single_group_leader_field( $leaders[ $i ], $user_arr, $i ); ?>
 					<?php endif; ?>
 				<?php endfor; ?>
@@ -197,8 +198,8 @@ class Init {
 					<option value="<?php echo esc_attr( $id ); ?>" <?php echo selected( $leader['id'], $id ); ?>><?php echo esc_html( $name ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<input type="text" name="leaders[<?php echo absint( $index ); ?>][name]" class="cp-groups--leader-name" placeholder="Name" <?php echo $hide_if_leader; ?>>
-			<input type="email" name="leaders[<?php echo absint( $index ); ?>][email]" class="cp-groups--leader-email" placeholder="Email" <?php echo $hide_if_leader; ?>>
+			<input type="text" name="leaders[<?php echo absint( $index ); ?>][name]" class="cp-groups--leader-name" placeholder="Name" <?php echo $hide_if_leader; ?> value="<?php echo esc_attr( $leader['name'] ); ?>">
+			<input type="email" name="leaders[<?php echo absint( $index ); ?>][email]" class="cp-groups--leader-email" placeholder="Email" <?php echo $hide_if_leader; ?> value="<?php echo esc_attr( $leader['email'] ); ?>">
 			<button type="button" class="button cp-groups--remove-leader"><?php esc_html_e( 'Remove', 'cp-groups' ); ?></button>
 		</div>
 		<?php
