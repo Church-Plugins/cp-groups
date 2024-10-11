@@ -67,12 +67,46 @@ class Mapbox {
 	}
 
 	/**
-	 * Convert zip code to coordinates.
+	 * Reverse geocode a latitude and longitude.
 	 *
-	 * @param string $zipcode The zip code to convert.
-	 * @return array|false The latitude and longitude of the zip code, or false if the zip code could not be converted.
+	 * @param float $latitude The latitude.
+	 * @param float $longitude The longitude.
+	 * @return string|false The address of the latitude and longitude, or false if the address could not be reverse geocoded.
 	 */
-	public function zip_to_coords( $zipcode ) {
+	public function reverse_geocode( $latitude, $longitude ) {
+		$cache_key = 'reverse_geocode_' . md5( $latitude . $longitude );
 
+		$cached =  wp_cache_get( $cache_key, 'cp-groups' );
+		if ( $cached ) {
+			return $cached;
+		}
+
+		$query_args = [
+			'latitude'     => $latitude,
+			'longitude'    => $longitude,
+			'access_token' => $this->access_token,
+		];
+
+		$response = wp_remote_get( add_query_arg( $query_args, 'https://api.mapbox.com/search/geocode/v6/reverse' ) );
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return false;
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! isset( $data['features'][0] ) ) {
+			return false;
+		}
+
+		$full_address = $data['features'][0]['properties']['full_address'] ?? '';
+
+		if ( ! $full_address ) {
+			return false;
+		}
+
+		wp_cache_set( $cache_key, $full_address, 'cp-groups' );
+
+		return $full_address;
 	}
 }
