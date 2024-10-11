@@ -281,6 +281,17 @@ class Settings {
 			)
 		) );
 
+		$advanced_options->add_field( array(
+			'name'    => __( 'Virtual', 'cp-groups' ),
+			'id'      => 'virtual_enabled',
+			'type'    => 'radio_inline',
+			'default' => 0,
+			'options' => [
+				1 => __( 'Enable', 'cp-groups' ),
+				0 => __( 'Disable', 'cp-groups' ),
+			]
+		) );
+
 		if( $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', false ) ) {
 			$advanced_options->add_field( array(
 				'name'         => __( 'CP Connect custom metadata', 'cp-groups' ),

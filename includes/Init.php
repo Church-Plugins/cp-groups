@@ -31,8 +31,10 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	public $integrations;
 
 	/**
-	 * @var \WPackio\Enqueue
+	 * @var Templates
 	 */
+	public $templates;
+
 	public $enqueue;
 
 	/**
@@ -129,7 +131,7 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	 * @return void
 	 */
 	protected function includes() {
-		Templates::init();
+		$this->templates = Templates::get_instance();
 		Admin\Init::get_instance();
 		$this->integrations = Integrations\_Init::get_instance();
 		$this->setup = Setup\Init::get_instance();

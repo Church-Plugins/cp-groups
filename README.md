@@ -19,6 +19,13 @@ npm run build
 
 ### Change Log
 
+#### 1.1.15
+* Enhancement: Initial block theme support
+
+#### 1.1.14
+* Enhancement: Mobile style updates
+* Bug Fix: Fix icon for Child Friendly
+
 #### 1.1.13
 * Enhancement: Add support for Group taxonomies in cp-group shortcode
 * Enhancement: Add setting to disable to Group list popup

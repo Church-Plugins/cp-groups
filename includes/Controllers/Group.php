@@ -7,7 +7,7 @@ use ChurchPlugins\Controllers\Controller;
 use ChurchPlugins\Helpers;
 use CP_Groups\Exception;
 
-class Group extends Controller{
+class Group extends Controller {
 
 	public function get_excerpt() {
 		return $this->filter( get_the_excerpt( $this->post->ID ), __FUNCTION__ );
@@ -241,6 +241,7 @@ class Group extends Controller{
 				'handicap'         => trim( $this->handicap_accessible ),
 				'kidFriendly'      => trim( $this->kid_friendly ),
 				'isFull'           => boolval( $this->is_group_full ),
+				'isVirtual'        => boolval( $this->virtual ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );
