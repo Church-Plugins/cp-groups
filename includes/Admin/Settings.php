@@ -310,6 +310,46 @@ class Settings {
 		}
 
 		$advanced_options->add_field( array(
+			'name' => __( 'Features', 'cp-groups' ),
+			'desc' => __( 'Enable additional functionality.', 'cp-groups' ),
+			'id'   => 'featuers_title',
+			'type' => 'title',
+		) );
+
+		$advanced_options->add_field( array(
+			'name'=> __( 'Enable zip code filtering', 'cp-groups' ),
+			'desc'=> __( 'Allow users to filter and search groups by zip code.', 'cp-groups' ),
+			'id'  => 'enable_zipcode_filter',
+			'type'=> 'checkbox'
+		) );
+
+		$advanced_options->add_field( array(
+			'name'       => __( 'Mapbox API key', 'cp-groups' ),
+			'desc'       => sprintf( __( 'CP Groups uses the mapbox API to handle location requests. You can get an API key for free at %s', 'cp-groups' ), '<a href="https://www.mapbox.com/" target="_blank">Mapbox.com</a>' ),
+			'id'         => 'mapbox_api_key',
+			'type'       => 'text',
+			'attributes' => array(
+				'placeholder' => 'pk.KRzB...',
+				'data-conditional-id' => 'enable_zipcode_filter',
+				'data-conditional-value' => 'on'
+			)
+		) );
+
+		$advanced_options->add_field( array(
+			'name' => __( 'GEO Radius', 'cp-groups' ),
+			'desc' => __( 'When a user enters a zip code, this is the radius in miles to search for groups.', 'cp-groups' ),
+			'id'   => 'geo_radius',
+			'type' => 'text',
+			'default' => 10,
+			'attributes' => array(
+				'type' => 'number',
+				'min' => 1,
+				'data-conditional-id' => 'enable_zipcode_filter',
+				'data-conditional-value' => 'on'
+			)
+		) );
+
+		$advanced_options->add_field( array(
 			'name'         => __( 'Buttons', 'cp-groups' ),
 			'desc'         => __( 'Customize the buttons to show for the Group.', 'cp-groups' ),
 			'id'           => 'buttons_title',
