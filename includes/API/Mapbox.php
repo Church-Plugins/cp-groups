@@ -2,7 +2,7 @@
 /**
  * A utility class for interacting with the Mapbox API.
  *
- * @since 1.3.0
+ * @since 1.2.0
  */
 
 namespace CP_Groups\API;

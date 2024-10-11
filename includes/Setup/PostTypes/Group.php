@@ -68,7 +68,7 @@ class Group extends PostType {
 	 * @author Tanner Moushey, 5/2/23
 	 * @since 1.0.0
 	 * @since 1.0.2 Updated query for attribute parameters
-	 * @since 1.3.0 Added sorting by distance from a set of coordinates
+	 * @since 1.2.0 Added sorting by distance from a set of coordinates
 	 */
 	public function groups_query( $query ) {
 		if ( $this->post_type !== $query->get( 'post_type' ) ) {
@@ -400,7 +400,7 @@ class Group extends PostType {
 	 * @param int $object_id
 	 * @param string $meta_key
 	 * @param mixed $meta_value
-	 * @since  1.3.0
+	 * @since  1.2.0
 	 */
 	public function set_geolocation( $meta_id, $object_id, $meta_key, $meta_value ) {
 		if ( 'location' !== $meta_key || get_post_type( $object_id ) !== $this->post_type ) {
@@ -431,7 +431,7 @@ class Group extends PostType {
 	 * @param mixed $updated Whether the field was updated.
 	 * @param string $action The action.
 	 * @param \CMB2_Field $field The field object.
-	 * @since 1.3.0
+	 * @since 1.2.0
 	 */
 	public function load_geolocations( $field_id, $updated, $action, $field ) {
 		if ( 'enable_zipcode_filter' !== $field_id ) {

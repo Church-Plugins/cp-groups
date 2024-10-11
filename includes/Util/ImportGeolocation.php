@@ -2,7 +2,7 @@
 /**
  * A background process class for importing group geolocation data.
  *
- * @since 1.3.0
+ * @since 1.2.0
  */
 
 namespace CP_Groups\Util;
