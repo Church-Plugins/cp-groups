@@ -19,6 +19,11 @@ npm run build
 
 ### Change Log
 
+#### 1.2.0
+* Feature: Add filtering and sorting by distance
+* Feature: Allow adding multiple group leaders to a group
+* Feature: Importing from GroupsEngine
+
 #### 1.1.15
 * Enhancement: Initial block theme support
 
