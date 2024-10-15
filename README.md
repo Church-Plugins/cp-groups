@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.16
+* Bug Fix: Update to new template system
+
 #### 1.1.15
 * Enhancement: Initial block theme support
 

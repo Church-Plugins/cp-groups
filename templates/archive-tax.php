@@ -35,7 +35,7 @@ if ( isset( $types[ $queried_post_type ] ) ) {
 				<?php while ( have_posts() ) : the_post(); ?>
 					<div class="cp-archive--list--item">
 						<?php $type = Templates::get_type( get_post_type() ); ?>
-						<?php Templates::get_template_part( 'parts/' . $type . '-list' ); ?>
+						<?php cp_groups()->templates->get_template_part( 'parts/' . $type . '-list' ); ?>
 					</div>
 				<?php endwhile; ?>
 			</div>
@@ -44,7 +44,7 @@ if ( isset( $types[ $queried_post_type ] ) ) {
 		<?php endif; ?>
 
 		<!-- pagination -->
-		<?php Templates::get_template_part( 'parts/pagination' ); ?>
+		<?php cp_groups()->templates->get_template_part( 'parts/pagination' ); ?>
 	</div>
 
 	<?php do_action( 'cp_after_archive' ); ?>

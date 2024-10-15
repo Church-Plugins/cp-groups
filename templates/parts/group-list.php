@@ -112,7 +112,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 	<div style="display:none;">
 		<?php
-			Templates::get_template_part( "parts/group-modal" );
+			cp_groups()->templates->get_template_part( "parts/group-modal" );
 		?>
 	</div>
 </div>
