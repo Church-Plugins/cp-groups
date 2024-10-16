@@ -29,6 +29,15 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 			</div>
 		</div>
 
+		<?php if ( Settings::get_advanced( 'enable_zipcode_filter', false ) ) : ?>
+			<div class="cp-groups-filter--facet cp-groups-filter--search">
+				<div class="cp-groups-filter--search--box cp-button is-light">
+					<input type="text" name="zipcode" value="<?php echo Helpers::get_param( $_GET, 'zipcode' ); ?>"
+							placeholder="<?php _e( 'Enter your address or zipcode', 'cp-groups' ); ?>"/>
+				</div>
+			</div>
+		<?php endif; ?>
+
 		<?php foreach( $taxonomies as $tax ) :
 			$terms = apply_filters( 'cp_groups_filter_facet_terms', get_terms( [ 'taxonomy' => $tax->taxonomy ] ), $tax->taxonomy, $tax );
 

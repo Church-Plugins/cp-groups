@@ -1,0 +1,15 @@
+
+.cp-groups--group-leader {
+	display: flex;
+	gap: 4px;
+	align-items: stretch;
+	margin-bottom: 8px;
+
+	input, select {
+		margin: 0 !important;
+	}
+
+	select {
+		max-width: 200px;
+	}
+}
