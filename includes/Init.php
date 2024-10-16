@@ -44,6 +44,11 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	protected $limiter;
 
 	/**
+	 * Migrator
+	 */
+	protected $migrator;
+
+	/**
 	 * Only make one instance of Init
 	 *
 	 * @return Init
@@ -63,6 +68,7 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 		parent::__construct();
 		$this->enqueue = new \WPackio\Enqueue( 'cpGroups', 'dist', $this->get_version(), 'plugin', CP_GROUPS_PLUGIN_FILE );
 		$this->limiter = new Ratelimit( "send_group_email" );
+		$this->migrator = new Migrator();
 		add_action( 'init', [ $this, 'maybe_init' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'app_enqueue' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue' ] );
