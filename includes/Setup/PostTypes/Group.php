@@ -16,6 +16,13 @@ use ChurchPlugins\Setup\PostTypes\PostType;
 class Group extends PostType {
 
 	/**
+	 * Importer for geolocation data
+	 *
+	 * @var \CP_Groups\Util\ImportGeolocation
+	 */
+	protected $geo_importer;
+
+	/**
 	 * Child class constructor. Punts to the parent.
 	 *
 	 * @author costmo
@@ -30,6 +37,7 @@ class Group extends PostType {
 
 		// the model for this class is not compatible with CP core.
 		$this->model = false;
+		$this->geo_importer = new \CP_Groups\Util\ImportGeolocation();
 	}
 
 	/**
@@ -40,6 +48,11 @@ class Group extends PostType {
 		add_filter( 'cp_location_taxonomy_types', [ $this, 'location_tax' ] );
 		add_action( 'pre_get_posts', [ $this, 'groups_query' ] );
 		add_action( "cp_save_{$this->post_type}", [ $this, 'save_group' ] );
+		add_action( "save_post_{$this->post_type}", [ $this, 'save_post' ] );
+		add_action( 'updated_post_meta', [ $this, 'set_geolocation' ], 10, 4 );
+		add_action( 'added_post_meta', [ $this, 'set_geolocation' ], 10, 4 );
+		add_action( 'cmb2_save_field', [ $this, 'load_geolocations' ], 10, 4 );
+		add_filter( 'query_vars', [ $this, 'add_coords_query_var' ] );
 
 		parent::add_actions();
 	}
@@ -53,6 +66,9 @@ class Group extends PostType {
 	 * @param \WP_Query $query The WordPress query.
 	 *
 	 * @author Tanner Moushey, 5/2/23
+	 * @since 1.0.0
+	 * @since 1.0.2 Updated query for attribute parameters
+	 * @since 1.2.0 Added sorting by distance from a set of coordinates
 	 */
 	public function groups_query( $query ) {
 		if ( $this->post_type !== $query->get( 'post_type' ) ) {
@@ -63,8 +79,25 @@ class Group extends PostType {
 			return;
 		}
 
-		$query->set( 'orderby', 'post_title' );
-		$query->set( 'order', 'ASC' );
+		$coords = false;
+		if ( $zipcode = $query->get( 'zipcode' ) ) {
+			$api = new \CP_Groups\API\Mapbox( Settings::get_advanced( 'mapbox_api_key', '' ) );
+			$coords = $api->geocode( $zipcode );
+		} else if ( $query->get( 'coords' ) ) {
+			$coords = array_map( 'floatval', explode( ',', $query->get( 'coords' ) ) );
+		}
+
+		if ( $coords ) {
+			// if we have coords specified, sort by distance
+			$group_ids = $this->sort_by_distance( $coords );
+			$query->set( 'post__in', array_keys( $group_ids ) );
+			$query->set( 'orderby', 'post__in' );
+			$query->set( 'cp_groups_sorted_by_distance', $group_ids );
+			add_filter( 'the_posts', [ $this, 'add_distance_to_groups' ], 10, 2 );
+		} else {
+			$query->set( 'orderby', 'post_title' );
+			$query->set( 'order', 'ASC' );
+		}
 
 		$meta_query = $query->get( 'meta_query', [] );
 
@@ -127,6 +160,36 @@ class Group extends PostType {
 		$per_page = absint( Settings::get_advanced( 'groups_per_page', 40 ) );
 
 		$query->set( 'posts_per_page', $per_page ? $per_page : 40 );
+	}
+
+	/**
+	 * Add a query var for coordinates
+	 *
+	 * @param array $vars The query vars
+	 * @return array
+	 */
+	public function add_coords_query_var( $vars ) {
+		$vars[] = 'coords';
+		$vars[] = 'zipcode';
+		return $vars;
+	}
+
+	/**
+	 * Add the distance to the groups
+	 *
+	 * @param array $posts The posts
+	 * @param \WP_Query $query The query object
+	 * @return array
+	 */
+	public function add_distance_to_groups( $posts, $query ) {
+		if ( ! $distances = $query->get( 'cp_groups_sorted_by_distance' ) ) {
+			return $posts;
+		}
+		foreach ( $posts as $post ) {
+			$post->distance = $distances[ $post->ID ];
+		}
+		remove_filter( 'the_posts', [ $this, 'add_distance_to_groups' ], 10 );
+		return $posts;
 	}
 
 	/**
@@ -224,18 +287,25 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Group Leader', 'cp-groups' ),
-			'desc' => __( 'The name of the group leader.', 'cp-groups' ),
-			'id'   => 'leader',
-			'type' => 'text',
+			'name' => 'Group Leaders',
+			'desc' => 'Select the leaders for this group.',
+			'id'   => 'leaders',
+			'type' => 'cp_group_leader',
 		] );
 
-		$cmb->add_field( [
-			'name' => __( 'Group Leader Email', 'cp-groups' ),
-			'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
-			'id'   => 'leader_email',
-			'type' => 'text_email',
-		] );
+		// $cmb->add_field( [
+		// 	'name' => __( 'Group Leader', 'cp-groups' ),
+		// 	'desc' => __( 'The name of the group leader.', 'cp-groups' ),
+		// 	'id'   => 'leader',
+		// 	'type' => 'text',
+		// ] );
+
+		// $cmb->add_field( [
+		// 	'name' => __( 'Group Leader Email', 'cp-groups' ),
+		// 	'desc' => __( 'The email address of the group leader.', 'cp-groups' ),
+		// 	'id'   => 'leader_email',
+		// 	'type' => 'text',
+		// ] );
 
 		$cmb->add_field( [
 			'name' => __( 'Group Email CC', 'cp-groups' ),
@@ -331,6 +401,77 @@ class Group extends PostType {
 	}
 
 	/**
+	 * Update geolocation from group address
+	 *
+	 * @param int $meta_id
+	 * @param int $object_id
+	 * @param string $meta_key
+	 * @param mixed $meta_value
+	 * @since  1.2.0
+	 */
+	public function set_geolocation( $meta_id, $object_id, $meta_key, $meta_value ) {
+		if ( 'location' !== $meta_key || get_post_type( $object_id ) !== $this->post_type ) {
+			return;
+		}
+
+		if (
+			! Settings::get_advanced( 'enable_zipcode_filter', false ) ||
+			! Settings::get_advanced( 'mapbox_api_key', '' )
+		) {
+			return;
+		}
+		
+		$api    = new \CP_Groups\API\Mapbox( Settings::get_advanced( 'mapbox_api_key' ) );
+		$coords = $api->geocode( $meta_value );
+		
+		if ( $coords ) {
+			update_post_meta( $object_id, 'geolocation', implode( ',', $coords ) );
+			// delete cached sorted groups
+			wp_cache_flush_group( 'cp_groups_sort_by_distance' );
+		}
+	}
+
+	/**
+	 * Load geolocations for all groups that don't have it enabled.
+	 *
+	 * @param string $field_id The field ID.
+	 * @param mixed $updated Whether the field was updated.
+	 * @param string $action The action.
+	 * @param \CMB2_Field $field The field object.
+	 * @since 1.2.0
+	 */
+	public function load_geolocations( $field_id, $updated, $action, $field ) {
+		if ( 'enable_zipcode_filter' !== $field_id ) {
+			return;
+		}
+
+		if (
+			isset( $_POST[ 'enable_zipcode_filter' ] ) &&
+			'on' === $_POST[ 'enable_zipcode_filter' ] &&
+			! Settings::get_advanced( 'enable_zipcode_filter', false ) &&
+			Settings::get_advanced( 'mapbox_api_key', '' )
+		) {
+			// get all groups that don't have a `geolocation` meta key
+			$group_ids = get_posts( [
+				'post_type'      => $this->post_type,
+				'posts_per_page' => 9999,
+				'fields'         => 'ids',
+				'meta_query' => [
+					[
+						'key' => 'geolocation',
+						'compare' => 'NOT EXISTS',
+					],
+				],
+			] );
+			$this->geo_importer->delete_all();
+			foreach ( $group_ids as $group_id ) {
+				$this->geo_importer->push_to_queue( $group_id );
+			}
+			$this->geo_importer->save()->dispatch();
+		}
+	}
+
+	/**
 	 * Register custom meta fields based on the mapping from CP Connect
 	 *
 	 * @param \CMB2 $cmb the metabox to add the custom fields to
@@ -355,5 +496,71 @@ class Group extends PostType {
 				'show_option_none' => true
 			] );
 		}
+	}
+
+	/**
+	 * Sort groups by distance from a given set of coordinates, also filters out groups that are too far away
+	 *
+	 * @param array $coords The coordinates to sort by
+	 * @return array The sorted groups
+	 */
+	public function sort_by_distance( $coords ) {
+		global $wpdb;
+
+		$cache_key   = 'sorted_by_distance_' . md5( serialize( $coords ) );
+		$cache_group = 'cp_groups_sort_by_distance';
+
+		$cached = wp_cache_get( $cache_key, $cache_group );
+		if ( $cached ) {
+			return $cached;
+		}
+
+		// get all groups ids that have a geolocation set
+		$groups = $wpdb->get_results( "SELECT ID, meta.meta_value AS geolocation
+			FROM $wpdb->posts AS posts
+			LEFT JOIN $wpdb->postmeta AS meta ON ID = meta.post_id
+			WHERE posts.post_type = '{$this->post_type}'
+			AND posts.post_status = 'publish'
+			AND meta.meta_key = 'geolocation'
+			ORDER BY ID ASC
+			LIMIT 9999
+		" );
+
+		$sorted = [];
+
+		$max_distance = (float) Settings::get_advanced( 'geo_radius', 10 );
+
+		foreach ( $groups as $group ) {
+			$location = array_map( 'floatval', explode( ',', (string) $group->geolocation ) );
+			$distance = $this->haversine( $coords, $location );
+			if ( $distance <= $max_distance ) {
+				$sorted[ $group->ID ] = $distance;
+			}
+		}
+
+		asort( $sorted );
+
+		wp_cache_set( $cache_key, $sorted, $cache_group );
+
+		return $sorted;
+	}
+
+	/**
+	 * Get the distance between two sets of coordinates using the Haversine formula
+	 *
+	 * @param array $coord1 The first set of coordinates
+	 * @param array $coord2 The second set of coordinates
+	 * @return float The distance between the two sets of coordinates in miles
+	 */
+	public function haversine( $coord1, $coord2 ) {
+		$earth_radius    = 3963; // miles radius
+		$lat1            = deg2rad( $coord1[1] );
+		$lat2            = deg2rad( $coord2[1] );
+		$delta_lat       = deg2rad( $coord2[1] - $coord1[1] );
+		$delta_lon       = deg2rad( $coord2[0] - $coord1[0] );
+		$haversine_value = sin( $delta_lat / 2 ) ** 2 + cos( $lat1 ) * cos( $lat2 ) * sin( $delta_lon / 2 ) ** 2;
+		$angle_delta     = 2 * atan2( sqrt( $haversine_value ), sqrt( 1 - $haversine_value ) );
+
+		return $earth_radius * $angle_delta;
 	}
 }
