@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.17
+* Enhancement: Add "Meets Online" filter & meta field.
+
 #### 1.1.16
 * Bug Fix: Update to new template system
 

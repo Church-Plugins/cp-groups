@@ -78,12 +78,6 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $isFull = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) : $isFull = $isFull === 'hide' ? __( 'Show', 'cp-groups' ) : __( 'Hide', 'cp-groups' ); ?>
-				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="is-full" value="1" <?php checked( Helpers::get_param( $_GET, 'is-full' ) ); ?> /> <?php echo ucwords( $isFull ); ?> <?php _e( 'Groups that are full', 'cp-groups' ); ?></label>
-				</div>
-			<?php endif; ?>
-
 			<?php if ( Settings::get_advanced( 'accessible_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
 					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> />
@@ -92,6 +86,19 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			<?php endif; ?>
 
+			<?php if ( $isFull = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) : $isFull = $isFull === 'hide' ? __( 'Show', 'cp-groups' ) : __( 'Hide', 'cp-groups' ); ?>
+				<div class="cp-groups-filter--facet">
+					<label><input type="checkbox" name="is-full" value="1" <?php checked( Helpers::get_param( $_GET, 'is-full' ) ); ?> /> <?php echo ucwords( $isFull ); ?> <?php _e( 'Groups that are full', 'cp-groups' ); ?></label>
+				</div>
+			<?php endif; ?>
+
+			<?php if ( Settings::get_advanced( 'meets_online_enabled', true ) ) : ?>
+				<div class="cp-groups-filter--facet">
+					<label><input type="checkbox" name="meets-online" value="1" <?php checked( Helpers::get_param( $_GET, 'meets-online' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'meets_online_badge_label', __( 'Meets Online', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
+				</div>
+			<?php endif; ?>
 		</div>
 
 	</form>

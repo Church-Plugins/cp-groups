@@ -241,6 +241,7 @@ class Group extends Controller{
 				'handicap'         => trim( $this->handicap_accessible ),
 				'kidFriendly'      => trim( $this->kid_friendly ),
 				'isFull'           => boolval( $this->is_group_full ),
+				'meetsOnline'      => boolval( $this->meets_online ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );

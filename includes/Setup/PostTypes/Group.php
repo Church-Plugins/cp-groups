@@ -79,6 +79,13 @@ class Group extends PostType {
 			];
 		}
 
+		if ( Helpers::get_param( $_GET, 'meets-online' ) ) {
+			$meta_query[] = [
+				'key' => 'meets_online',
+				'value' => 'on',
+			];
+		}
+
 		if ( $is_full_enabled = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) {
 			$is_full_param = Helpers::get_param( $_GET, 'is-full', false );
 			$show_full = ( 'show' == $is_full_enabled );
@@ -247,6 +254,13 @@ class Group extends PostType {
 			'desc' => __( 'The location for the meeting. Ex City Name, ST 12345', 'cp-groups' ),
 			'id'   => 'location',
 			'type' => 'text',
+		] );
+
+		$cmb->add_field( [
+			'name' => __( 'Meets Online', 'cp-groups' ),
+			'desc' => __( 'This group meets online.', 'cp-groups' ),
+			'id'   => 'meets_online',
+			'type' => 'checkbox',
 		] );
 
 		$cmb->add_field( [

@@ -257,6 +257,17 @@ class Settings {
 		) );
 
 		$advanced_options->add_field( array(
+			'name'    => __( 'Meets Online', 'cp-groups' ),
+			'id'      => 'meets_online_enabled',
+			'type'    => 'radio_inline',
+			'default' => 1,
+			'options' => [
+				1 => __( 'Enable', 'cp-groups' ),
+				0 => __( 'Disable', 'cp-groups' ),
+			]
+		) );
+
+		$advanced_options->add_field( array(
 			'name'    => __( 'Group is Full', 'cp-groups' ),
 			'id'      => 'is_full_enabled',
 			'type'    => 'radio',
@@ -524,6 +535,16 @@ class Settings {
 				'type'    => 'text',
 				'default' => __( 'Wheelchair Accessible', 'cp-groups' ),
 				'desc'    => __( 'The text that shows up on the accessible badge on group lists.', 'cp-groups' ),
+			)
+		);
+
+		$advanced_options->add_field(
+			array(
+				'name'    => 'Meets Online Badge Label',
+				'id'      => 'meets_online_badge_label',
+				'type'    => 'text',
+				'default' => __( 'Meets Online', 'cp-groups' ),
+				'desc'    => __( 'The text that shows up on the meets online badge on group lists.', 'cp-groups' ),
 			)
 		);
 	}
