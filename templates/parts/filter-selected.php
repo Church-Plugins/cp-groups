@@ -46,7 +46,7 @@ unset( $get['groups-paged'] );
 	<?php endif; ?>
 
 	<?php if ( ! empty( $_GET[ $virtual_param ] ) ) : $get = $_GET; unset( $get[ $virtual_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( 'Virtual', 'cp-groups' ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?></a>
 	<?php endif; ?>
 
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>

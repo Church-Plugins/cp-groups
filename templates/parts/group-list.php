@@ -119,9 +119,9 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				</span>
 			<?php endif; ?>
 
-			<?php if ( $item['meetsOnline'] ) : ?>
-				<span class="cp-group-item--attributes--meets-online">
-					<?php echo Helpers::get_icon( 'virtual' ); ?> <?php echo esc_html( Settings::get( 'meets_online_badge_label', __( 'Meets Online', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+			<?php if ( $item['isVirtual'] ) : ?>
+				<span class="cp-group-item--attributes--is-virtual">
+					<?php echo Helpers::get_icon( 'virtual' ); ?> <?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
 				</span>
 			<?php endif; ?>
 

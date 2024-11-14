@@ -117,16 +117,9 @@ class Group extends PostType {
 
 		if ( Helpers::get_param( $_GET, 'virtual' ) ) {
 			$meta_query[] = array(
-				'key'   => 'virtual',
+				'key'   => 'is_virtual',
 				'value' => 'on',
 			);
-		}
-
-		if ( Helpers::get_param( $_GET, 'meets-online' ) ) {
-			$meta_query[] = [
-				'key' => 'meets_online',
-				'value' => 'on',
-			];
 		}
 
 		if ( $is_full_enabled = Settings::get_advanced( 'is_full_enabled', 'hide' ) ) {
@@ -336,13 +329,6 @@ class Group extends PostType {
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Meets Online', 'cp-groups' ),
-			'desc' => __( 'This group meets online.', 'cp-groups' ),
-			'id'   => 'meets_online',
-			'type' => 'checkbox',
-		] );
-
-		$cmb->add_field( [
 			'name' => __( 'Group is Full', 'cp-groups' ),
 			'desc' => __( 'This group is full and not accepting new registrations.', 'cp-groups' ),
 			'id'   => 'is_group_full',
@@ -365,8 +351,8 @@ class Group extends PostType {
 
 		$cmb->add_field( [
 			'name' => __( 'Virtual', 'cp-groups' ),
-			'desc' => __( 'This group is meets online.', 'cp-groups' ),
-			'id'   => 'virtual',
+			'desc' => __( 'This group meets online.', 'cp-groups' ),
+			'id'   => 'is_virtual',
 			'type' => 'checkbox',
 		] );
 
