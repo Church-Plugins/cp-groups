@@ -8,10 +8,11 @@
     "start": "wpackio-scripts start",
     "archive": "wpackio-scripts pack"
   },
+  "devDependencies": {},
   "dependencies": {
     "@wpackio/entrypoint": "^6.4.0",
     "@wpackio/scripts": "^6.4.0",
-    "sass": "^1.42.1",
+    "sass": "^1.79.4",
     "url-loader": "^4.1.1"
   }
 }

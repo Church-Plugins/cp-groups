@@ -53,10 +53,10 @@ class Templates extends \ChurchPlugins\Templates {
 		if ( empty( $get ) ) {
 			$get = [];
 		}
-		
+
 		unset( $get['groups-paged'] );
-		
-		$get[ $facet ] = [ $slug ];
+
+		$get[ $facet ] = $single ? $slug : array( $slug );
 
 		return esc_url( add_query_arg( $get, $uri ) ) . '#cp-group-filters';
 	}
