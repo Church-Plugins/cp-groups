@@ -39,6 +39,7 @@ npm run build
 
 #### 1.1.11
 * Allow specifying the number of groups per page
+* Change heading on group single page to h1
 
 #### 1.1.10
 * Allow editing of taxonomy labels
