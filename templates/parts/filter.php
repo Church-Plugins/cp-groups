@@ -29,6 +29,15 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 			</div>
 		</div>
 
+		<?php if ( Settings::get_advanced( 'enable_zipcode_filter', false ) ) : ?>
+			<div class="cp-groups-filter--facet cp-groups-filter--search">
+				<div class="cp-groups-filter--search--box cp-button is-light">
+					<input type="text" name="zipcode" value="<?php echo Helpers::get_param( $_GET, 'zipcode' ); ?>"
+							placeholder="<?php _e( 'Enter your address or zipcode', 'cp-groups' ); ?>"/>
+				</div>
+			</div>
+		<?php endif; ?>
+
 		<?php foreach( $taxonomies as $tax ) :
 			$terms = apply_filters( 'cp_groups_filter_facet_terms', get_terms( [ 'taxonomy' => $tax->taxonomy ] ), $tax->taxonomy, $tax );
 
@@ -92,10 +101,10 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			<?php endif; ?>
 
-			<?php if ( Settings::get_advanced( 'meets_online_enabled', true ) ) : ?>
+			<?php if ( Settings::get_advanced( 'virtual_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="meets-online" value="1" <?php checked( Helpers::get_param( $_GET, 'meets-online' ) ); ?> />
-						<?php echo esc_html( Settings::get( 'meets_online_badge_label', __( 'Meets Online', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					<label><input type="checkbox" name="virtual" value="1" <?php checked( Helpers::get_param( $_GET, 'virtual' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
 					</label>
 				</div>
 			<?php endif; ?>

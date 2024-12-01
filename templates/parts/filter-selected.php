@@ -3,14 +3,17 @@ use ChurchPlugins\Helpers;
 use CP_Groups\Admin\Settings;
 
 $taxonomies = apply_filters( 'cp_groups_filter_facets', cp_groups()->setup->taxonomies->get_objects() );
+
 $uri = explode( '?', $_SERVER['REQUEST_URI'] )[0];
 $uri = explode( 'page', $uri )[0];
 $get = $_GET;
 
 $search_param = is_post_type_archive( 'cp_group' ) ? 's' : 'group-search';
+
 $kid_friendly_param = 'child-friendly';
-$is_full_param = 'is-full';
-$accessible_param = 'accessible';
+$is_full_param      = 'is-full';
+$accessible_param   = 'accessible';
+$virtual_param      = 'virtual';
 
 $isFull = Settings::get_advanced( 'is_full_enabled', 'hide' ) === 'hide' ? __( 'Show', 'cp-groups' ) : __( 'Hide', 'cp-groups' );
 
@@ -40,6 +43,10 @@ unset( $get['groups-paged'] );
 
 	<?php if ( ! empty( $_GET[ $accessible_param ] ) ) : $get = $_GET; unset( $get[ $accessible_param ] ); ?>
 		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="<?php echo esc_attr( $filter_classes ); ?>"><?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></a>
+	<?php endif; ?>
+
+	<?php if ( ! empty( $_GET[ $virtual_param ] ) ) : $get = $_GET; unset( $get[ $virtual_param ] ); ?>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?></a>
 	<?php endif; ?>
 
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>

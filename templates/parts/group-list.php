@@ -12,6 +12,9 @@ try {
 	return;
 }
 
+global $post;
+$distance = isset( $post->distance ) ? $post->distance : false;
+
 $disable_modal_class = '';
 if ( Settings::get_groups( 'disable_modal', false ) ) {
 	$disable_modal_class = 'cp-group-item--disable-modal';
@@ -57,6 +60,12 @@ $is_location_page = get_query_var( 'cp_location_id' );
 					</div>
 				<?php endif; ?>
 
+				<?php if ( ! empty( $item['isVirtual'] ) ) : ?>
+					<div class="cp-group-item--is-virtual">
+						<a class="cp-button is-xsmall is-transparent" href="<?php echo esc_url( Templates::get_facet_link( 1, 'virtual', true ) ); ?>"><?php esc_html_e( 'Virtual', 'cp-groups' ); ?></a>
+					</div>
+				<?php endif; ?>
+
 				<?php if( $cp_connect_tags = get_option( 'cp_group_custom_meta_mapping', false ) ) : ?>
 					<?php foreach( $cp_connect_tags as $tag ) : ?>
 						<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
@@ -78,6 +87,12 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 			<?php if ( ! empty( $item['location'] ) ) : ?>
 				<div class="cp-group--item--meta--location"><?php echo Helpers::get_icon( 'location' ); ?> <?php echo esc_html( $item['location'] ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( false !== $distance ) : ?>
+				<div class="cp-group--item--meta--distance">
+					<?php echo number_format( $distance, 1 ) . ' ' . __( 'mi', 'cp-groups' ); ?>
+				</div>
 			<?php endif; ?>
 		</div>
 
@@ -104,9 +119,9 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				</span>
 			<?php endif; ?>
 
-			<?php if ( $item['meetsOnline'] ) : ?>
-				<span class="cp-group-item--attributes--meets-online">
-					<?php echo Helpers::get_icon( 'virtual' ); ?> <?php echo esc_html( Settings::get( 'meets_online_badge_label', __( 'Meets Online', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+			<?php if ( $item['isVirtual'] ) : ?>
+				<span class="cp-group-item--attributes--is-virtual">
+					<?php echo Helpers::get_icon( 'virtual' ); ?> <?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
 				</span>
 			<?php endif; ?>
 
