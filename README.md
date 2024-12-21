@@ -19,6 +19,42 @@ npm run build
 
 ### Change Log
 
+#### 1.2.0
+* Feature: Add filtering and sorting by distance
+* Feature: Allow adding multiple group leaders to a group
+* Feature: Importing from GroupsEngine
+
+#### 1.1.16
+* Bug Fix: Update to new template system
+
+#### 1.1.15
+* Enhancement: Initial block theme support
+
+#### 1.1.14
+* Enhancement: Mobile style updates
+* Bug Fix: Fix icon for Child Friendly
+
+#### 1.1.13
+* Enhancement: Add support for Group taxonomies in cp-group shortcode
+* Enhancement: Add setting to disable to Group list popup
+
+#### 1.1.12
+* Enhancement: Add CC field to Group meta
+* Enhancement: update styling for theme compatibility
+
+#### 1.1.11
+* Allow specifying the number of groups per page
+
+#### 1.1.10
+* Allow editing of taxonomy labels
+* Compatibility fix for Divi breaking filters
+
+#### 1.1.9
+* Compatibility fix for Divi breaking pagination
+
+#### 1.1.8
+* Add setting to customize labels
+
 #### 1.1.7
 * Add setting to disable the Groups archive page
 

@@ -52,6 +52,10 @@ class _Init {
 			$this->cp_locations = CP_Locations::get_instance();
 		}
 
+		if ( defined( 'ENMGE_CURRENT_VERSION' ) ) {
+			GroupsEngine::get_instance();
+		}
+
 		do_action( 'cp_groups_load_integrations' );
 	}
 

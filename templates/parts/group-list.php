@@ -12,17 +12,24 @@ try {
 	return;
 }
 
+global $post;
+$distance = isset( $post->distance ) ? $post->distance : false;
+
+$disable_modal_class = '';
+if ( Settings::get_groups( 'disable_modal', false ) ) {
+	$disable_modal_class = 'cp-group-item--disable-modal';
+}
 $is_location_page = get_query_var( 'cp_location_id' );
 ?>
 
-<div class="cp-group-item">
+<div class="cp-group-item <?php echo $disable_modal_class; ?>">
 
 	<div class="cp-group-item--thumb">
-		<div class="cp-group-item--thumb--canvas" style="background: url(<?php echo esc_url( $item['thumb'] ); ?>) 0% 0% / cover;">
+		<a class="cp-group-item--thumb--canvas" href="<?php the_permalink(); ?>" style="background: url(<?php echo esc_url( $item['thumb'] ); ?>) 0% 0% / cover;">
 			<?php if ( $item['thumb'] ) : ?>
 				<img alt="<?php esc_attr( $item['title'] ); ?>" src="<?php echo esc_url( $item['thumb'] ); ?>">
 			<?php endif; ?>
-		</div>
+		</a>
 	</div>
 
 	<div class="cp-group-item--details">
@@ -81,6 +88,12 @@ $is_location_page = get_query_var( 'cp_location_id' );
 			<?php if ( ! empty( $item['location'] ) ) : ?>
 				<div class="cp-group--item--meta--location"><?php echo Helpers::get_icon( 'location' ); ?> <?php echo esc_html( $item['location'] ); ?></div>
 			<?php endif; ?>
+
+			<?php if ( false !== $distance ) : ?>
+				<div class="cp-group--item--meta--distance">
+					<?php echo number_format( $distance, 1 ) . ' ' . __( 'mi', 'cp-groups' ); ?>
+				</div>
+			<?php endif; ?>
 		</div>
 
 		<div class="cp-group-item--content"><?php echo wp_kses_post( $item['excerpt'] ); ?></div>
@@ -95,11 +108,21 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 		<div class="cp-group-item--attributes">
 			<?php if ( $item['handicap'] ) : ?>
-				<span class="cp-group-item--attributes--accessible"><?php echo Helpers::get_icon( 'accessible' ); ?> <?php _e( 'Accessible', 'cp-groups' ); ?></span>
+				<span class="cp-group-item--attributes--accessible"><?php echo Helpers::get_icon( 'accessible' ); ?>
+					<?php echo esc_html( Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+				</span>
 			<?php endif; ?>
 
 			<?php if ( $item['kidFriendly'] ) : ?>
-				<span class="cp-group-item--attributes--kid-friendly"><?php echo Helpers::get_icon( 'child' ); ?> <?php _e( 'Kid Friendly', 'cp-groups' ); ?></span>
+				<span class="cp-group-item--attributes--kid-friendly">
+					<?php echo Helpers::get_icon( 'child' ); ?> <?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+				</span>
+			<?php endif; ?>
+
+			<?php if ( $item['isVirtual'] ) : ?>
+				<span class="cp-group-item--attributes--is-virtual">
+					<?php echo Helpers::get_icon( 'virtual' ); ?> <?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+				</span>
 			<?php endif; ?>
 
 			<?php if ( $item['isFull'] ) : ?>
@@ -110,7 +133,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 
 	<div style="display:none;">
 		<?php
-			Templates::get_template_part( "parts/group-modal" );
+			cp_groups()->templates->get_template_part( "parts/group-modal" );
 		?>
 	</div>
 </div>

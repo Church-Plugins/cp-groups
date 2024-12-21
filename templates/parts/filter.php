@@ -29,6 +29,15 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 			</div>
 		</div>
 
+		<?php if ( Settings::get_advanced( 'enable_zipcode_filter', false ) ) : ?>
+			<div class="cp-groups-filter--facet cp-groups-filter--search">
+				<div class="cp-groups-filter--search--box cp-button is-light">
+					<input type="text" name="zipcode" value="<?php echo Helpers::get_param( $_GET, 'zipcode' ); ?>"
+							placeholder="<?php _e( 'Enter your address or zipcode', 'cp-groups' ); ?>"/>
+				</div>
+			</div>
+		<?php endif; ?>
+
 		<?php foreach( $taxonomies as $tax ) :
 			$terms = apply_filters( 'cp_groups_filter_facet_terms', get_terms( [ 'taxonomy' => $tax->taxonomy ] ), $tax->taxonomy, $tax );
 
@@ -72,7 +81,17 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 
 			<?php if ( Settings::get_advanced( 'kid_friendly_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="child-friendly" value="1" <?php checked( Helpers::get_param( $_GET, 'child-friendly' ) ); ?> /> <?php _e( 'Kid Friendly', 'cp-groups' ); ?></label>
+					<label><input type="checkbox" name="child-friendly" value="1" <?php checked( Helpers::get_param( $_GET, 'child-friendly' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
+				</div>
+			<?php endif; ?>
+
+			<?php if ( Settings::get_advanced( 'accessible_enabled', true ) ) : ?>
+				<div class="cp-groups-filter--facet">
+					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
 				</div>
 			<?php endif; ?>
 
@@ -82,18 +101,13 @@ $cp_connect_custom_meta = get_option( 'cp_group_custom_meta_mapping', [] );
 				</div>
 			<?php endif; ?>
 
-			<?php if ( Settings::get_advanced( 'accessible_enabled', true ) ) : ?>
+			<?php if ( Settings::get_advanced( 'virtual_enabled', true ) ) : ?>
 				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="accessible" value="1" <?php checked( Helpers::get_param( $_GET, 'accessible' ) ); ?> /> <?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></label>
+					<label><input type="checkbox" name="virtual" value="1" <?php checked( Helpers::get_param( $_GET, 'virtual' ) ); ?> />
+						<?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?>
+					</label>
 				</div>
 			<?php endif; ?>
-
-			<?php if ( Settings::get_advanced( 'virtual_enabled', false ) ) : ?>
-				<div class="cp-groups-filter--facet">
-					<label><input type="checkbox" name="virtual" value="1" <?php checked( Helpers::get_param( $_GET, 'virtual' ) ); ?> /> <?php _e( 'Virtual', 'cp-groups' ); ?></label>
-				</div>
-			<?php endif; ?>
-
 		</div>
 
 	</form>

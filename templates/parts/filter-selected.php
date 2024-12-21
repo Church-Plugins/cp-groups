@@ -23,27 +23,30 @@ if ( empty( $get ) ) {
 	return;
 }
 
+$filter_classes = apply_filters( 'cp_filters_selected_class', [ 'cp-groups-filter--filters--filter', 'cpl-filter--filters--filter', 'et_smooth_scroll_disabled' ] );
+$filter_classes = implode( ' ', $filter_classes );
+
 unset( $get['groups-paged'] );
 ?>
 <div class="cp-groups-filter--filters">
 	<?php if ( ! empty( $_GET[ $search_param ] ) ) : unset( $get[ $search_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo __( 'Search:' ) . ' ' . Helpers::get_request( $search_param ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="<?php echo esc_attr( $filter_classes ); ?>"><?php echo __( 'Search:' ) . ' ' . Helpers::get_request( $search_param ); ?></a>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $_GET[ $kid_friendly_param ] ) ) : $get = $_GET; unset( $get[ $kid_friendly_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( 'Kid Friendly', 'cp-groups' ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="<?php echo esc_attr( $filter_classes ); ?>"><?php _e( 'Kid Friendly', 'cp-groups' ); ?></a>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $_GET[ $is_full_param ] ) ) : $get = $_GET; unset( $get[ $is_full_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo ucwords( $isFull ); ?> <?php _e( 'Full Groups', 'cp-groups' ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="<?php echo esc_attr( $filter_classes ); ?>"><?php echo ucwords( $isFull ); ?> <?php _e( 'Full Groups', 'cp-groups' ); ?></a>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $_GET[ $accessible_param ] ) ) : $get = $_GET; unset( $get[ $accessible_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="<?php echo esc_attr( $filter_classes ); ?>"><?php _e( 'Wheelchair Accessible', 'cp-groups' ); ?></a>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $_GET[ $virtual_param ] ) ) : $get = $_GET; unset( $get[ $virtual_param ] ); ?>
-		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php _e( 'Virtual', 'cp-groups' ); ?></a>
+		<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>" class="cpl-filter--filters--filter"><?php echo esc_html( Settings::get( 'virtual_badge_label', __( 'Virtual', 'cp-groups' ), 'cp_groups_labels_options' ) ); ?></a>
 	<?php endif; ?>
 
 	<?php foreach ( $taxonomies as $tax ) : if ( empty( $_GET[ $tax->taxonomy ] ) ) continue; ?>
@@ -55,7 +58,7 @@ unset( $get['groups-paged'] );
 			$get = $_GET;
 			unset( $get[ $tax->taxonomy ][ array_search( $slug, $get[ $tax->taxonomy ] ) ] );
 			?>
-			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>#cp-group-filters" class="cp-groups-filter--filters--filter"><?php echo $term->name; ?></a>
+			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>#cp-group-filters" class="<?php echo esc_attr( $filter_classes ); ?>"><?php echo $term->name; ?></a>
 		<?php endforeach; ?>
 	<?php endforeach; ?>
 
@@ -69,7 +72,7 @@ unset( $get['groups-paged'] );
 			$get = $_GET;
 			unset( $get[ $meta_key ][ array_search( $slug, $get[ $meta_key ] ) ] );
 			?>
-			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>#cp-group-filters" class="cp-groups-filter--filters--filter"><?php echo esc_html( $term_name ) ?></a>
+			<a href="<?php echo esc_url( add_query_arg( $get, $uri ) ); ?>#cp-group-filters" class="<?php echo esc_attr( $filter_classes ); ?>"><?php echo esc_html( $term_name ) ?></a>
 		<?php endforeach; ?>
 	<?php endforeach; ?>
 </div>
