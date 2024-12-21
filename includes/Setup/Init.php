@@ -56,12 +56,12 @@ class Init {
 	}
 
 	protected function actions() {
-		add_action( 'init', [ $this, 'create_group_leader_role' ] );
-		add_action( 'show_user_profile', [ $this, 'add_group_leader_field'] );
-		add_action( 'edit_user_profile', [ $this, 'add_group_leader_field'] );
-		add_action( 'personal_options_update', [ $this, 'save_group_leader_role' ] );
-		add_action( 'edit_user_profile_update', [ $this, 'save_group_leader_role' ] );
-		add_action( 'profile_update', [ $this, 'save_group_leader_role' ] );
+//		add_action( 'init', [ $this, 'create_group_leader_role' ] );
+//		add_action( 'show_user_profile', [ $this, 'add_group_leader_field'] );
+//		add_action( 'edit_user_profile', [ $this, 'add_group_leader_field'] );
+//		add_action( 'personal_options_update', [ $this, 'save_group_leader_role' ] );
+//		add_action( 'edit_user_profile_update', [ $this, 'save_group_leader_role' ] );
+//		add_action( 'profile_update', [ $this, 'save_group_leader_role' ] );
 	}
 
 	/** Actions ***************************************************/

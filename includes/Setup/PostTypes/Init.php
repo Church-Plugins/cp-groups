@@ -156,7 +156,7 @@ class Init {
 		$leader_count = count( $leaders );
 
 		$user_arr = [];
-		$users    = get_users( [ 'role__in' => [ 'cp_group_leader' ] ] );
+		$users    = get_users();
 
 		foreach ( $users as $user ) {
 			$user_arr[ $user->ID ] = $user->display_name;

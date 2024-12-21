@@ -75,8 +75,8 @@ try {
 
 		<h3 class="cp-group-single--title"><?php echo $item['title']; ?></h3>
 
-		<?php if ( $item['leader'] ) : ?>
-			<h6 class="cp-group-single--leader"><?php echo $item['leader']; ?></h6>
+		<?php if ( ! empty( $item['leaders'] ) ) : ?>
+			<h6 class="cp-group-single--leader"><?php echo implode( ', ', wp_list_pluck( $item['leaders'], 'name' ) ); ?></h6>
 		<?php endif; ?>
 
 		<div class="cp-group-single--meta">
@@ -114,8 +114,12 @@ try {
 				<div class="cp-group-single--registration-url"><a href="<?php echo str_contains( $item['registration_url'], 'mailto' ) ? '#' : esc_url( $item['registration_url'] ); ?>" class="cp-button" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
 			<?php endif; ?>
 
-			<?php if ( $item['contact_url'] && Settings::get_advanced( 'contact_action' ) !== 'hide' ) : ?>
+			<?php if ( Settings::get_advanced( 'contact_action' ) !== 'hide' ) : ?>
+				<?php if ( $item['contact_url'] ) : ?>
 				<div class="cp-group-single--contact-url"><a href="<?php echo str_contains( $item['contact_url'], 'mailto' ) ? '#' : esc_url( $item['contact_url'] ); ?>" class="cp-button is-light" target="_blank"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
+				<?php elseif ( ! empty( $item['leaders'] ) ) : ?>
+					<div class="cp-group-single--contact-url"><a href="#" class="cp-button is-light cp-groups--contact-trigger"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 
@@ -124,8 +128,8 @@ try {
 
 	<div style="display: none;">
 		<?php if( Settings::get_advanced( 'contact_action', 'action' ) == 'form' ) {
-			$group_leader = get_post_meta( $item['id'], 'leader', true );
-			if ( ! $email = get_post_meta( $item['id'], 'leader_email', true ) ) {
+			$group_leader = $item['leaders'][0]['name'] ?? '';
+			if ( ! $email = $item['leaders'][0]['email'] ?? '' ) {
 				$email = get_post_meta( $item['id'], 'action_contact', true );
 			}
 

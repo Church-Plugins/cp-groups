@@ -40,7 +40,55 @@ class GroupsEngine {
 	 * Class constructor
 	 */
 	protected function __construct() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		add_action( 'cp_groups_import_from_groups_engine', [ $this, 'import_from_groups_engine' ] );
+		add_action('admin_menu', [ $this, 'add_migration_submenu' ] );
+	}
+
+	/**
+	 * Add migration submenu
+	 *
+	 * @return void
+	 */
+	public function add_migration_submenu() {
+		add_submenu_page(
+			'edit.php?post_type=cp_group',
+			__( 'Groups Engine Migration', 'cp-groups' ),
+			__( 'Groups Engine Migration', 'cp-groups' ),
+			'manage_options',
+			'cp-groups-migration',
+			[ $this, 'migration_page' ]
+		);
+	}
+
+	/**
+	 * Migration page
+	 *
+	 * @return void
+	 */
+	public function migration_page() {
+		// Check if the migration action is triggered
+		if (isset($_GET['action']) && $_GET['action'] === 'cp_groups_import_from_groups_engine') {
+			// Trigger the migration action
+			do_action('cp_groups_import_from_groups_engine');
+
+			// Provide feedback to the user
+			echo '<div class="notice notice-success is-dismissible"><p>Migration from GroupsEngine started successfully.</p></div>';
+		}
+
+		// Page content
+		?>
+		<div class="wrap">
+			<h1>GroupsEngine Migration</h1>
+			<p>Click the button below to migrate your groups from GroupsEngine to CP Groups.</p>
+			<a href="<?php echo esc_url(add_query_arg(['page' => 'cp-groups-migration', 'action' => 'cp_groups_import_from_groups_engine'], admin_url('edit.php?post_type=cp_group'))); ?>" class="button button-primary">
+				Start Migration
+			</a>
+		</div>
+		<?php
 	}
 
 	/**
@@ -49,10 +97,6 @@ class GroupsEngine {
 	 * @return void
 	 */
 	public function import_from_groups_engine() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
 		global $wpdb;
 
 		$groups = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ge_groups" );
@@ -109,28 +153,36 @@ class GroupsEngine {
 			)
 		);
 
-		$full_address = false;
-		if ( $location->location_address1 && $location->location_city && $location->location_state && $location->location_zip ) {
-			$full_address = sprintf(
-				'%s, %s%s, %s %s',
-				$location->location_address1,
-				$location->location_address2 ? $location->location_address2 . ', ' : '',
-				$location->location_city,
-				$location->location_state,
-				$location->location_zip
-			);
-			update_post_meta( $group_id, 'location', $full_address );
+		if ( ! $location ) {
+			return;
 		}
+
+		if ( ! empty( $location->location_name ) ) {
+			update_post_meta( $group_id, 'location_label', $location->location_name );
+		}
+
+		$address = '';
+		foreach( [ 'location_address1', 'location_address2', 'location_city', 'location_state', 'location_zip' ] as $field ) {
+			if ( empty( $location->$field ) ) {
+				continue;
+			}
+
+			$address .= $location->$field;
+
+			if ( $field == 'location_city' ) {
+				$address .= ', ';
+			} elseif ( in_array( $field, [ 'location_address1', 'location_address2' ] ) ) {
+				$address .= "\r\n";
+			} else {
+				$address .= ' ';
+			}
+		}
+
+		update_post_meta( $group_id, 'location', trim( $address ) );
 
 		// geo coordinates
 		if ( $location->location_lat && $location->location_long ) {
 			update_post_meta( $group_id, 'geolocation', "$location->location_long,$location->location_lat" );
-
-			if ( ! $full_address && $api_key = Settings::get_advanced( 'mapbox_api_key', '' ) ) {
-				$api = new \CP_Groups\API\Mapbox( $api_key );
-				$full_address = $api->reverse_geocode( $location->location_lat, $location->location_long );
-				update_post_meta( $group_id, 'location', $full_address );
-			}
 		}
 	}
 
@@ -158,6 +210,27 @@ class GroupsEngine {
 		$cp_leaders = [];
 
 		foreach ( $leaders as $leader ) {
+
+			if ( $leader->leader_username && $user = get_user_by( 'login', $leader->leader_username ) ) {
+				$cp_leaders[] = [
+					'id'    => $user->ID,
+					'name'  => $leader->leader_name,
+					'email' => $leader->leader_email,
+				];
+
+				continue;
+			}
+
+			if ( $leader->leader_email && $user = get_user_by( 'email', $leader->leader_email ) ) {
+				$cp_leaders[] = [
+					'id'    => $user->ID,
+					'name'  => $leader->leader_name,
+					'email' => $leader->leader_email,
+				];
+
+				continue;
+			}
+
 			$cp_leaders[] = [
 				'id'    => '',
 				'name'  => $leader->leader_name,
