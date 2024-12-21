@@ -7,7 +7,7 @@ use ChurchPlugins\Controllers\Controller;
 use ChurchPlugins\Helpers;
 use CP_Groups\Exception;
 
-class Group extends Controller{
+class Group extends Controller {
 
 	public function get_excerpt() {
 		return $this->filter( get_the_excerpt( $this->post->ID ), __FUNCTION__ );
@@ -189,6 +189,56 @@ class Group extends Controller{
 		return $this->filter( $return, __FUNCTION__ );
 	}
 
+	public function get_location_label() {
+		$label = $this->location_label ?: $this->location;
+
+		return $this->filter( trim( $label ), __FUNCTION__ );
+	}
+
+	public function get_leader() {
+		$leader = $this->leader;
+
+		return $this->filter( trim( $leader ), __FUNCTION__ );
+	}
+
+	public function get_leaders() {
+		$leaders = get_post_meta( $this->post->ID, 'leaders', true );
+
+		if ( empty( $leaders ) && $this->leader ) {
+			$leaders = [
+				[
+					'id'    => 0,
+					'name'  => $this->leader,
+					'email' => $this->leader_email,
+				]
+			];
+		}
+
+		if ( ! is_array( $leaders ) ) {
+			return [];
+		}
+
+		foreach( $leaders as &$leader ) {
+			if ( empty( $leader['id'] ) ) {
+				continue;
+			}
+
+			$user = get_user_by( 'ID', $leader['id'] );
+			$leader['name'] = $user->display_name;
+			$leader['email'] = $user->user_email;
+		}
+
+		$leaders = array_map( function( $leader ) {
+			return [
+				'id'    => absint( $leader[ 'id' ] ),
+				'name'  => esc_html( $leader[ 'name' ] ),
+				'email' => sanitize_email( $leader[ 'email' ] ),
+			];
+		}, $leaders );
+
+		return $this->filter( $leaders, __FUNCTION__ );
+	}
+
 	/**
 	 * Get the type taxonomy associated with this item
 	 *
@@ -236,12 +286,13 @@ class Group extends Controller{
 				'types'            => $this->get_types(),
 				'lifeStages'       => $this->get_life_stages(),
 				'startTime'        => trim( $this->time_desc ),
-				'leader'           => trim( $this->leader ),
-				'location'         => trim( $this->location ),
+				'leader'           => trim( $this->get_leader() ),
+				'leaders'          => $this->get_leaders(),
+				'location'         => $this->get_location_label(),
 				'handicap'         => trim( $this->handicap_accessible ),
 				'kidFriendly'      => trim( $this->kid_friendly ),
 				'isFull'           => boolval( $this->is_group_full ),
-				'meetsOnline'      => boolval( $this->meets_online ),
+				'isVirtual'        => boolval( $this->is_virtual ),
 			];
 		} catch ( \ChurchPlugins\Exception $e ) {
 			error_log( $e );
