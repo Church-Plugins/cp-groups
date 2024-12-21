@@ -12,7 +12,7 @@
 	margin: auto;
 }
 
-.cp-groups-modal-popup {
+div.cp-groups-modal-popup {
 	border-radius: 4px;
 	z-index: 99999;
 	padding: var(--cp-gap--md);
@@ -25,6 +25,11 @@
 
 	* {
 		box-sizing: border-box;
+	}
+
+	.cp-email-modal,
+	.cp-group-modal {
+		width: 100% !important;
 	}
 
 	.cp-group-single {
@@ -50,6 +55,7 @@
 	.ui-dialog-titlebar {
 		height: 0;
 		display: block;
+		padding: 0;
 	}
 
 	.ui-dialog-titlebar-close {

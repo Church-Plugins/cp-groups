@@ -274,6 +274,8 @@ class Group extends PostType {
 
 	public function register_metaboxes() {
 		$this->meta_details();
+		$this->meta_location();
+		$this->meta_actions();
 	}
 
 	protected function meta_details() {
@@ -321,39 +323,93 @@ class Group extends PostType {
 			'type' => 'text',
 		] );
 
+//		$cmb->add_field( [
+//			'name' => __( 'Meeting Location', 'cp-groups' ),
+//			'desc' => __( 'The location for the meeting. Ex City Name, ST 12345', 'cp-groups' ),
+//			'id'   => 'location',
+//			'type' => 'text',
+//		] );
+
+		if ( 0 !== Settings::get_advanced( 'is_full_enabled', true ) ) {
+			$cmb->add_field( [
+				'name' => __( 'Group is Full', 'cp-groups' ),
+				'desc' => __( 'This group is full and not accepting new registrations.', 'cp-groups' ),
+				'id'   => 'is_group_full',
+				'type' => 'checkbox',
+			] );
+		}
+
+		if ( Settings::get_advanced( 'kid_friendly_enabled', true ) ) {
+			$cmb->add_field( [
+				'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
+				'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
+				'id'   => 'kid_friendly',
+				'type' => 'checkbox',
+			] );
+		}
+
+
+		if ( Settings::get_advanced( 'accessible_enabled', true ) ) {
+			$cmb->add_field( [
+				'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
+				'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
+				'id'   => 'handicap_accessible',
+				'type' => 'checkbox',
+			] );
+		}
+
+//		$cmb->add_field( [
+//			'name' => __( 'Virtual', 'cp-groups' ),
+//			'desc' => __( 'This group meets online.', 'cp-groups' ),
+//			'id'   => 'is_virtual',
+//			'type' => 'checkbox',
+//		] );
+
+		$this->register_cp_connect_fields( $cmb );
+	}
+
+	protected function meta_location() {
+		$cmb = new_cmb2_box( [
+			'id' => 'groups_location_meta',
+			'title' => $this->single_label . ' ' . __( 'Location', 'cp-groups' ),
+			'object_types' => [ $this->post_type ],
+			'context' => 'normal',
+			'priority' => 'high',
+			'show_names' => true,
+		] );
+
+		if ( Settings::get_advanced( 'virtual_enabled', true ) ) {
+			$cmb->add_field( [
+				'name' => __( 'Virtual', 'cp-groups' ),
+				'desc' => __( 'This group meets online.', 'cp-groups' ),
+				'id'   => 'is_virtual',
+				'type' => 'checkbox',
+			] );
+		}
+
 		$cmb->add_field( [
-			'name' => __( 'Meeting Location', 'cp-groups' ),
-			'desc' => __( 'The location for the meeting. Ex City Name, ST 12345', 'cp-groups' ),
-			'id'   => 'location',
+			'name' => __( 'Meeting Location Label', 'cp-groups' ),
+			'desc' => __( 'The label for the meeting location.', 'cp-groups' ),
+			'id'   => 'location_label',
 			'type' => 'text',
 		] );
 
 		$cmb->add_field( [
-			'name' => __( 'Group is Full', 'cp-groups' ),
-			'desc' => __( 'This group is full and not accepting new registrations.', 'cp-groups' ),
-			'id'   => 'is_group_full',
-			'type' => 'checkbox',
+			'name' => __( 'Meeting Location', 'cp-groups' ),
+			'desc' => __( 'The location for the meeting. Ex City Name, ST 12345', 'cp-groups' ),
+			'id'   => 'location',
+			'type' => 'textarea_small',
 		] );
+	}
 
-		$cmb->add_field( [
-			'name' => Settings::get( 'kid_friendly_badge_label', __( 'Kid Friendly', 'cp-groups' ), 'cp_groups_labels_options' ),
-			'desc' => __( 'This group is kid friendly or has child care.', 'cp-groups' ),
-			'id'   => 'kid_friendly',
-			'type' => 'checkbox',
-		] );
-
-		$cmb->add_field( [
-			'name' => Settings::get( 'accessible_badge_label', __( 'Wheelchair Accessible', 'cp-groups' ), 'cp_groups_labels_options' ),
-			'desc' => __( 'This group is handicap accessible.', 'cp-groups' ),
-			'id'   => 'handicap_accessible',
-			'type' => 'checkbox',
-		] );
-
-		$cmb->add_field( [
-			'name' => __( 'Virtual', 'cp-groups' ),
-			'desc' => __( 'This group meets online.', 'cp-groups' ),
-			'id'   => 'is_virtual',
-			'type' => 'checkbox',
+	protected function meta_actions() {
+		$cmb = new_cmb2_box( [
+			'id' => 'groups_action_meta',
+			'title' => $this->single_label . ' ' . __( 'Actions', 'cp-groups' ),
+			'object_types' => [ $this->post_type ],
+			'context' => 'normal',
+			'priority' => 'high',
+			'show_names' => true,
 		] );
 
 		$cmb->add_field( [
@@ -376,8 +432,6 @@ class Group extends PostType {
 			'id'   => 'action_contact',
 			'type' => 'text',
 		] );
-
-		$this->register_cp_connect_fields( $cmb );
 	}
 
 	/**
