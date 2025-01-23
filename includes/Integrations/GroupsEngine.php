@@ -133,6 +133,8 @@ class GroupsEngine {
 
 			// import group topics as categories
 			$this->import_group_categories( $ge_group->group_id, $group_id );
+
+			do_action( 'cp_groups_import_group', $ge_group, $group_id );
 		}
 	}
 	
