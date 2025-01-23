@@ -25,7 +25,7 @@ $pagination = paginate_links(
 
 if ( ! empty( $pagination ) ) {
 	?>
-	<div class="cp-pg-pagination">
+	<div class="cp-pg-pagination cp-pagination">
 		<?php echo $pagination; ?>
 	</div>
 	<?php

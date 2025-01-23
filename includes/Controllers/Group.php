@@ -230,9 +230,9 @@ class Group extends Controller {
 
 		$leaders = array_map( function( $leader ) {
 			return [
-				'id'    => absint( $leader[ 'id' ] ),
-				'name'  => esc_html( $leader[ 'name' ] ),
-				'email' => sanitize_email( $leader[ 'email' ] ),
+				'id'    => isset( $leader['id'] ) ? absint( $leader['id'] ) : '',
+				'name'  => isset( $leader['name'] ) ? esc_html( $leader['name'] ) : '',
+				'email' => isset( $leader['email'] ) ? sanitize_email( $leader['email'] ) : '',
 			];
 		}, $leaders );
 

@@ -103,9 +103,9 @@ class Init {
 		}
 
 		foreach ( $meta_value as $key => $val ) {
-			$meta_value[ $key ][ 'id' ]    = absint( $val[ 'id' ] );
-			$meta_value[ $key ][ 'name' ]  = esc_html( $val[ 'name' ] );
-			$meta_value[ $key ][ 'email' ] = sanitize_email( $val[ 'email' ] );
+			$meta_value[ $key ][ 'id' ]    = isset( $val['id'] ) ? absint( $val[ 'id' ] ) : '';
+			$meta_value[ $key ][ 'name' ]  = isset( $val[ 'name' ] ) ? esc_html( $val[ 'name' ] ) : '';
+			$meta_value[ $key ][ 'email' ] = isset( $val['email' ] ) ? sanitize_email( $val[ 'email' ] ) : '';
 		}
 
 		return $meta_value;

@@ -22,6 +22,12 @@ class Templates extends \ChurchPlugins\Templates {
 	 */
 	protected function __construct() {
 		parent::__construct();
+
+		add_action( 'cp_groups_after_archive', 'the_posts_pagination' );
+	}
+
+	public function pagination() {
+		$this->get_template_part( 'parts/pagination' );
 	}
 
 	/**
@@ -56,7 +62,7 @@ class Templates extends \ChurchPlugins\Templates {
 
 		unset( $get['groups-paged'] );
 
-		$get[ $facet ] = $single ? $slug : array( $slug );
+		$get[ $facet ] = array( $slug );
 
 		return esc_url( add_query_arg( $get, $uri ) ) . '#cp-group-filters';
 	}
