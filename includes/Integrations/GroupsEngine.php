@@ -211,16 +211,6 @@ class GroupsEngine {
 
 		foreach ( $leaders as $leader ) {
 
-			if ( $leader->leader_username && $user = get_user_by( 'login', $leader->leader_username ) ) {
-				$cp_leaders[] = [
-					'id'    => $user->ID,
-					'name'  => $leader->leader_name,
-					'email' => $leader->leader_email,
-				];
-
-				continue;
-			}
-
 			if ( $leader->leader_email && $user = get_user_by( 'email', $leader->leader_email ) ) {
 				$cp_leaders[] = [
 					'id'    => $user->ID,
