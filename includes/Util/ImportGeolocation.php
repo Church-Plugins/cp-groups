@@ -12,7 +12,7 @@ use CP_Groups\Admin\Settings;
 /**
  * Class ImportGeolocation
  */
-class ImportGeolocation extends \WP_Background_Process {
+class ImportGeolocation extends \ChurchPlugins\Utils\WP_Background_Process {
 	/**
 	 * Prefix
 	 *
