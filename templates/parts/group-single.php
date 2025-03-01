@@ -106,19 +106,20 @@ try {
 		</div>
 
 		<div class="cp-group-single--actions">
+			<?php $has_action = false; ?>
 			<?php if ( Settings::get_advanced( 'hide_details' ) !== 'on' && $public_url = get_post_meta( $item['id'], 'public_url', true ) ) : ?>
-				<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button is-large" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
-			<?php endif; ?>
+				<div class="cp-group-single--registration-url"><a href="<?php echo esc_url( $public_url ); ?>" class="cp-button" target="_blank"><?php _e( 'View Details', 'cp-groups' ); ?></a></div>
+			<?php $has_action = true; endif; ?>
 
 			<?php if ( $item['registration_url'] && Settings::get_advanced( 'hide_registration' ) !== 'on' ) : ?>
-				<div class="cp-group-single--registration-url"><a href="<?php echo str_contains( $item['registration_url'], 'mailto' ) ? '#' : esc_url( $item['registration_url'] ); ?>" class="cp-button" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
-			<?php endif; ?>
+				<div class="cp-group-single--registration-url"><a href="<?php echo str_contains( $item['registration_url'], 'mailto' ) ? '#' : esc_url( $item['registration_url'] ); ?>" class="cp-button <?php echo $has_action ? 'is-light' : ''; ?>" target="_blank"><?php _e( 'Register Now', 'cp-groups' ); ?></a></div>
+			<?php $has_action = true; endif; ?>
 
 			<?php if ( Settings::get_advanced( 'contact_action' ) !== 'hide' ) : ?>
 				<?php if ( $item['contact_url'] ) : ?>
-				<div class="cp-group-single--contact-url"><a href="<?php echo str_contains( $item['contact_url'], 'mailto' ) ? '#' : esc_url( $item['contact_url'] ); ?>" class="cp-button is-light" target="_blank"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
+					<div class="cp-group-single--contact-url"><a href="<?php echo str_contains( $item['contact_url'], 'mailto' ) ? '#' : esc_url( $item['contact_url'] ); ?>" class="cp-button <?php echo $has_action ? 'is-light' : ''; ?>" target="_blank"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
 				<?php elseif ( ! empty( $item['leaders'] ) ) : ?>
-					<div class="cp-group-single--contact-url"><a href="#" class="cp-button is-light cp-groups--contact-trigger"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
+					<div class="cp-group-single--contact-url"><a href="#" class="cp-button <?php echo $has_action ? 'is-light' : ''; ?> cp-groups--contact-trigger"><?php _e( 'Contact', 'cp-groups' ); ?></a></div>
 				<?php endif; ?>
 			<?php endif; ?>
 		</div>
