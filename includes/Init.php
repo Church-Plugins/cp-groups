@@ -187,7 +187,7 @@ class Init {
 				<div class='cp-email-form--email-verify'>
 					<label>
 						<?php _e( 'Email Verify', 'cp-groups' ) ?>
-						<input type='text' name='email-verify' autocomplete="do-not-autofill" id="verify-<?php echo time(); ?>">
+						<input type='text' name='email-verify' autocomplete="do-not-autofill" tabindex="-1" id="verify-<?php echo time(); ?>">
 					</label>
 				</div>
 
@@ -270,7 +270,7 @@ class Init {
 
 		$subject = apply_filters( 'cp_groups_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
 
-		$message_suffix = apply_filters( 'cp_groups_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Group Contact Form. Simply click Reply to respond to them directly.', 'cp-groups' ), $name ), $group_id );
+		$message_suffix = apply_filters( 'cp_groups_email_message_suffix', '<br /><br />-<br />' . sprintf( __( 'Submitted by %s via Group Contact Form from "%s". Simply click Reply to respond to them directly.', 'cp-groups' ), $name, get_the_title( $group_id ) ), $group_id );
 		$message        = apply_filters( 'cp_groups_email_message', $message . $message_suffix, $group_id );
 
 		$from_email = Settings::get_advanced( 'from_email', get_bloginfo( 'admin_email' ) );
