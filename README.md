@@ -21,6 +21,9 @@ npm run build
 
 #### 1.1.17
 * Enhancement: Add "Meets Online" filter & meta field.
+* Enhancement: Add Group Name to group webform email
+* Enhancement: Add cp-template shortcode for better page builder support
+* Bug Fix: Navigation was missing on some templates
 
 #### 1.1.16
 * Bug Fix: Update to new template system
