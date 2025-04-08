@@ -195,6 +195,10 @@ class Group extends Controller {
 		return $this->filter( trim( $label ), __FUNCTION__ );
 	}
 
+	public function get_location() {
+		return $this->filter( trim( $this->location ), __FUNCTION__ );
+	}
+
 	public function get_leader() {
 		$leader = $this->leader;
 
