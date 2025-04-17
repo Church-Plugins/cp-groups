@@ -75,6 +75,11 @@ class Group extends PostType {
 			return;
 		}
 
+		// if this is a single group, don't modify the query
+		if ( is_main_query() && is_single() ) {
+			return;
+		}
+
 		if ( is_admin() ) {
 			return;
 		}
