@@ -53,6 +53,10 @@ class Group extends PostType {
 		add_action( 'added_post_meta', [ $this, 'set_geolocation' ], 10, 4 );
 		add_action( 'cmb2_save_field', [ $this, 'load_geolocations' ], 10, 4 );
 		add_filter( 'query_vars', [ $this, 'add_coords_query_var' ] );
+		
+		// Keep leader meta fields in sync when the leaders array is updated
+		add_action( 'updated_post_meta', [ $this, 'sync_leader_meta' ], 10, 4 );
+		add_action( 'added_post_meta', [ $this, 'sync_leader_meta' ], 10, 4 );
 
 		parent::add_actions();
 	}
@@ -457,6 +461,49 @@ class Group extends PostType {
 		}
 
 		parent::save_post( $group_id );
+	}
+	
+	/**
+	 * Sync indexed leader meta for efficient querying
+	 *
+	 * @since 1.2.0
+	 * @param int $meta_id ID of the metadata entry
+	 * @param int $post_id ID of the object metadata is for
+	 * @param string $meta_key Metadata key
+	 * @param mixed $meta_value Metadata value
+	 */
+	public function sync_leader_meta( $meta_id, $post_id, $meta_key, $meta_value ) {
+		// Only process the 'leaders' meta key
+		if ( 'leaders' !== $meta_key ) {
+			return;
+		}
+		
+		// Skip if this is an autosave or revision
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		
+		global $wpdb;
+		
+		// Remove existing indexed meta
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM $wpdb->postmeta WHERE post_id = %d AND (meta_key LIKE %s OR meta_key LIKE %s)",
+			$post_id,
+			'leader_%_id',
+			'leader_%_email'
+		) );
+		
+		// Create indexed meta from the new value
+		if ( ! empty( $meta_value ) && is_array( $meta_value ) ) {
+			foreach ( $meta_value as $index => $leader ) {
+				if ( ! empty( $leader['id'] ) ) {
+					add_post_meta( $post_id, "leader_{$index}_id", $leader['id'] );
+				}
+				if ( ! empty( $leader['email'] ) ) {
+					add_post_meta( $post_id, "leader_{$index}_email", $leader['email'] );
+				}
+			}
+		}
 	}
 
 	/**

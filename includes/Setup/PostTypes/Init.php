@@ -68,7 +68,7 @@ class Init {
 		add_filter( 'use_block_editor_for_post_type', [ $this, 'disable_gutenberg' ], 10, 2 );
 		add_action( 'init', [ $this, 'register_post_types' ], 4 );
 		add_action( 'cmb2_render_cp_group_leader', [ $this, 'render_group_leader_field' ], 10, 5 );
-		add_action( 'cmb2_sanitize_cp_group_leader', [ $this, 'cp_group_leader_sanitize' ], 10, 2 );
+		add_action( 'cmb2_sanitize_cp_group_leader', [ $this, 'cp_group_leader_sanitize' ], 10, 5 );
 		add_action( 'cmb2_types_esc_cp_group_leader', [ $this, 'cp_group_leader_escaped_value' ], 10, 2 );
 	}
 
@@ -118,7 +118,7 @@ class Init {
 	 * @param mixed $meta_value The value to be sanitized.
 	 * @since 1.2.0
 	 */
-	public function cp_group_leader_sanitize( $check, $meta_value ) {
+	public function cp_group_leader_sanitize( $check, $meta_value, $object_id, $args, $sanitizer ) {
 		if ( ! is_array( $meta_value ) ) {
 			return $check;
 		}
@@ -147,10 +147,13 @@ class Init {
 	 * @param object      $field_type_object The field type object.
 	 */
 	public function render_group_leader_field( $field, $escaped_value, $object_id, $object_type, $field_type_object ) {
-		$leaders = get_post_meta( $object_id, 'leaders', true );
+		$leaders = [];
 
-		if ( ! is_array( $leaders ) ) {
-			$leaders = [];
+		try {
+			$group = new \CP_Groups\Controllers\Group( $object_id );
+			$leaders = $group->get_leaders();
+		} catch ( \Exception $e ) {
+			// Handle exception if needed
 		}
 
 		$leader_count = count( $leaders );

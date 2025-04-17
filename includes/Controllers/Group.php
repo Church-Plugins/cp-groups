@@ -199,10 +199,24 @@ class Group extends Controller {
 		return $this->filter( trim( $this->location ), __FUNCTION__ );
 	}
 
-	public function get_leader() {
-		$leader = $this->leader;
+	public function get_leader( $field = 'name' ) {
+		$leaders = $this->get_leaders();
 
-		return $this->filter( trim( $leader ), __FUNCTION__ );
+		$leader = [
+			'id'    => 0,
+			'name'  => '',
+			'email' => '',
+		];
+
+		if ( ! empty( $leaders ) ) {
+			$leader = array_shift( $leaders );
+		}
+
+		if ( $field && isset( $leader[ $field ] ) ) {
+			$leader = $leader[ $field ];
+		}
+
+		return $this->filter( $leader, __FUNCTION__ );
 	}
 
 	public function get_leaders() {
@@ -228,20 +242,237 @@ class Group extends Controller {
 			}
 
 			$user = get_user_by( 'ID', $leader['id'] );
-			$leader['name'] = $user->display_name;
-			$leader['email'] = $user->user_email;
+			if ( $user ) {
+				$leader['name'] = $user->first_name . ' ' . $user->last_name;
+				$leader['email'] = $user->user_email;
+			}
 		}
 
-		$leaders = array_map( function( $leader ) {
-			return [
-				'id'    => isset( $leader['id'] ) ? absint( $leader['id'] ) : '',
-				'name'  => isset( $leader['name'] ) ? esc_html( $leader['name'] ) : '',
-				'email' => isset( $leader['email'] ) ? sanitize_email( $leader['email'] ) : '',
-			];
-		}, $leaders );
+		$leaders = array_map( [ $this, 'sanitize_leader' ], $leaders );
 
 		return $this->filter( $leaders, __FUNCTION__ );
 	}
+	
+	/**
+	 * Update all leaders for this group
+	 *
+	 * @param array $leaders Array of leader data
+	 * @return bool True on success, false on failure
+	 */
+	public function update_leaders( $leaders ) {
+		if ( ! is_array( $leaders ) ) {
+			return false;
+		}
+		
+		// Sanitize and normalize leaders
+		$sanitized_leaders = array_map( [ $this, 'sanitize_leader' ], $leaders );
+		
+		// Update the meta (this will trigger the sync_leader_meta hook in PostTypes/Group.php)
+		return update_post_meta( $this->post->ID, 'leaders', $sanitized_leaders );
+	}
+	
+	/**
+	 * Add a leader to this group
+	 *
+	 * @param mixed $id_or_email User ID or email address
+	 * @param string $name Name (required when using email)
+	 * @return bool True on success, false if leader already exists or invalid data
+	 */
+	public function add_leader( $id_or_email, $name = '' ) {
+		$leader = $this->prepare_leader_data( $id_or_email, $name );
+		if ( ! $leader ) {
+			return false;
+		}
+		
+		$leaders = $this->get_leaders();
+		
+		// Check if already exists
+		foreach ( $leaders as $existing ) {
+			if ( ( $leader['id'] && $leader['id'] === $existing['id'] ) || 
+				( ! $leader['id'] && $leader['email'] === $existing['email'] ) ) {
+				return false; // Already exists
+			}
+		}
+		
+		$leaders[] = $leader;
+		return $this->update_leaders( $leaders );
+	}
+	
+	/**
+	 * Remove a leader from this group
+	 *
+	 * @param mixed $id_or_email User ID or email address
+	 * @return bool True on success, false if not found
+	 */
+	public function remove_leader( $id_or_email ) {
+		$leaders = $this->get_leaders();
+		$found = false;
+		
+		if ( is_numeric( $id_or_email ) ) {
+			$id = absint( $id_or_email );
+			$leaders = array_filter( $leaders, function( $leader ) use ( $id, &$found ) {
+				if ( absint( $leader['id'] ) === $id ) {
+					$found = true;
+					return false;
+				}
+				return true;
+			} );
+		} else if ( is_email( $id_or_email ) ) {
+			$email = sanitize_email( $id_or_email );
+			$leaders = array_filter( $leaders, function( $leader ) use ( $email, &$found ) {
+				if ( $leader['email'] === $email ) {
+					$found = true;
+					return false;
+				}
+				return true;
+			} );
+		}
+		
+		if ( ! $found ) {
+			return false;
+		}
+		
+		return $this->update_leaders( array_values( $leaders ) );
+	}
+	
+	/**
+	 * Helper method to prepare leader data
+	 *
+	 * @param mixed $id_or_email User ID or email
+	 * @param string $name Optional name (required for email)
+	 * @return array|false Leader data or false on failure
+	 */
+	protected function prepare_leader_data( $id_or_email, $name = '' ) {
+		if ( is_numeric( $id_or_email ) ) {
+			$user = get_user_by( 'ID', absint( $id_or_email ) );
+			if ( ! $user ) {
+				return false;
+			}
+			
+			return [
+				'id' => $user->ID,
+				'name' => $user->first_name . ' ' . $user->last_name,
+				'email' => $user->user_email
+			];
+		} else if ( is_email( $id_or_email ) ) {
+			$data = [
+				'id' => '',
+				'name' => sanitize_text_field( $name ),
+				'email' => sanitize_email( $id_or_email )
+			];
+
+			$user = get_user_by( 'email', $data['email'] );
+			if ( $user ) {
+				$data['id'] = $user->ID;
+				$data['name'] = $user->first_name . ' ' . $user->last_name;
+			}
+
+			if ( empty( $data['name'] ) ) {
+				return false; // Name is required for email
+			}
+
+			return $data;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Sanitize a leader entry
+	 *
+	 * @param array $leader Leader data
+	 * @return array Sanitized leader data
+	 */
+	protected function sanitize_leader( $leader ) {
+		return [
+			'id'    => isset( $leader['id'] ) ? absint( $leader['id'] ) : '',
+			'name'  => isset( $leader['name'] ) ? sanitize_text_field( trim( $leader['name'] ) ) : '',
+			'email' => isset( $leader['email'] ) ? sanitize_email( trim( $leader['email'] ) ) : '',
+		];
+	}
+
+
+	/**
+	 * Get all groups where a user is a leader
+	 *
+	 * @param mixed  $id         User ID
+	 * @param string $email      Optional email address when first param is ID
+	 * @param array  $query_args Optional additional WP_Query arguments
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array Array of group post IDs
+	 */
+	public static function get_groups_by_leader( $user_id, $user_email = '', $query_args = [] ) {
+
+		$args = array_merge( [
+			'post_type'              => 'cp_group',
+			'post_status'            => 'publish',
+			'posts_per_page'         => 999, // Limit to reasonable batch size
+			'fields'                 => 'ids',        // Just get IDs for better performance
+			'no_found_rows'          => true,  // Skip counting total rows for pagination
+			'update_post_meta_cache' => false, // Don't prime post meta cache
+			'update_post_term_cache' => false, // Don't prime taxonomy cache
+			'meta_query'             => [
+				'relation' => 'OR'
+			]
+		], $query_args );
+
+		// Add user ID to query if provided
+		if ( ! empty( $user_id ) ) {
+			$args['meta_query'][] = [
+				'key'     => "leader_",
+				'value'   => absint( $user_id ),
+				'compare' => '=',
+				'compare_key' => 'LIKE'
+			];
+		}
+
+		// Add email to query if provided
+		if ( ! empty( $user_email ) && is_email( $user_email ) ) {
+			$args['meta_query'][] = [
+				'key'     => 'leader_',
+				'value'   => sanitize_email( $user_email ),
+				'compare' => '=',
+				'compare_key' => 'LIKE'
+			];
+		}
+
+		// Return empty array if no valid search criteria
+		if ( count( $args['meta_query'] ) <= 1 ) {
+			return [];
+		}
+
+		$args = apply_filters( 'cp_groups_get_groups_by_leader_args', $args, $user_id, $user_email );
+
+		remove_action( 'pre_get_posts', [ cp_groups()->setup->post_types->groups, 'groups_query' ] );
+		$query = new \WP_Query( $args );
+		add_action( 'pre_get_posts', [ cp_groups()->setup->post_types->groups, 'groups_query' ] );
+
+		if ( ! $query->have_posts() ) {
+			return [];
+		}
+
+		return $query->posts;
+	}
+
+	public function get_leader_emails() {
+		$emails = [];
+		$leaders = $this->get_leaders();
+
+		if ( empty( $leaders ) ) {
+			return [];
+		}
+
+		foreach( $leaders as $leader ) {
+			if ( ! empty( $leader['email'] ) ) {
+				$emails[] = $leader['email'];
+			}
+		}
+
+		return $this->filter( $emails, __FUNCTION__ );
+	}
+
 
 	/**
 	 * Get the type taxonomy associated with this item

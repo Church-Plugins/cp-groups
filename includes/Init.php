@@ -2,6 +2,7 @@
 namespace CP_Groups;
 
 use CP_Groups\Admin\Settings;
+use CP_Groups\Controllers\Group;
 use CP_Groups\Ratelimit;
 use RuntimeException;
 
@@ -267,7 +268,6 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	 */
 	public function maybe_send_email() {
 		$group_id = \ChurchPlugins\Helpers::get_post( 'group-id' );
-		$email_to = \ChurchPlugins\Helpers::get_post( 'email-to' );
 		$reply_to = \ChurchPlugins\Helpers::get_post( 'email-from' );
 		$honeypot = \ChurchPlugins\Helpers::get_post( 'email-verify' );
 		$name     = \ChurchPlugins\Helpers::get_post( 'from-name' );
@@ -276,7 +276,7 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 		$limit    = intval( Settings::get_advanced( 'throttle_amount', 3 ) );
 
 
-		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
+		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) ) {
 			wp_send_json_error( array( 'error' => __( 'Something went wrong. Please reload the page and try again.', 'church-plugins' ) ) );
 		}
 
@@ -292,9 +292,9 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 			wp_send_json_error( array( 'error' => __( "Daily send limit of {$limit} submissions exceeded - Message blocked. Please try again later.", 'church-plugins' ) ) );
 		}
 
-		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
-			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
-		}
+//		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
+//			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
+//		}
 
 		if( empty( $subject ) ) {
 			wp_send_json_error( array( 'error' => __( 'Please add an Email Subject.', 'church-plugins' ), 'request' => $_REQUEST ) );
@@ -310,6 +310,19 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 
 		if( ! $this->is_verified_captcha() ) {
 			wp_send_json_error( array( 'error' => __( 'Your captcha score is too low', 'cp-groups' ), 'request' => $_REQUEST ) );
+		}
+
+		$email_to = false;
+
+		try {
+			$group    = new Group( $group_id );
+			$email_to = $group->get_leader( 'email' );
+		} catch ( \Exception $e ) {
+			wp_send_json_error( array( 'error' => __( 'Group not found', 'cp-groups' ), 'request' => $_REQUEST ) );
+		}
+
+		if ( empty( $email_to ) ) {
+			wp_send_json_error( array( 'error'   => __( 'Group leader email not found', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
 		$subject = apply_filters( 'cp_groups_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );
@@ -341,7 +354,8 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 			$headers[] = 'Bcc: ' . $bcc;
 		}
 
-		$headers = apply_filters( 'cp_groups_email_headers', $headers, $group_id );
+		$headers  = apply_filters( 'cp_groups_email_headers', $headers, $group_id );
+		$email_to = apply_filters( 'cp_groups_email_to', $email_to, $group_id );
 
 		wp_mail( $email_to, stripslashes( $subject ), stripslashes( wpautop( $message ) ), $headers );
 
@@ -418,6 +432,11 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 	 * @author Jonathan Roley, 6/6/23
 	 */
 	public function is_verified_captcha() {
+
+		if ( ! Settings::get_advanced( 'enable_captcha', false ) ) {
+			return true;
+		}
+
 		$token      = \ChurchPlugins\Helpers::get_post( 'token' );
 		$action     = \ChurchPlugins\Helpers::get_post( 'action' );
 		$secret_key = Settings::get_advanced( 'captcha_secret_key', '' );

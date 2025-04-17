@@ -25,17 +25,22 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 	 */
 	public function get_migrations(): array {
 		return array(
-			'1.2.0' => [
+			'1.2.0-beta1' => [
 				'up'   => [ $this, 'migrate_1_2_0' ],
 				'down' => [ $this, 'rollback_1_2_0' ],
 			]
 		);
 	}
 
+	public function migrate_1_2_0() {
+		// run after CPTs are registered
+		add_action( 'init', [ $this, 'migrate_leader_data' ] );
+	}
+
 	/**
 	 * Migrate to 1.2.0
 	 */
-	public function migrate_1_2_0() {
+	public function migrate_leader_data() {
 		// group leader is stored as postmeta, with leader_name and leader_email values
 		// we need to convert this to an array of leader objects and save it as the leaders postmeta
 		$group_args = [
@@ -55,9 +60,15 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 				continue;
 			}
 
+			$id = '';
+
+			if ( $leader_email && $user = get_user_by( 'email', $leader_email ) ) {
+				$id = $user->ID;
+			}
+
 			$leaders = [
 				[
-					'id'    => '',
+					'id'    => $id,
 					'name'  => $leader_name,
 					'email' => $leader_email,
 				],
