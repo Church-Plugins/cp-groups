@@ -40,13 +40,9 @@ if ( isset( $types[ $queried_post_type ] ) ) {
 				<?php endwhile; ?>
 			</div>
 		<?php else: ?>
-			<p><?php printf( __( "No %s found.", 'cp-library' ), $type->plural_label ); ?></p>
+			<p><?php printf( __( "No %s found.", 'cp-library' ), get_taxonomy_labels( get_taxonomy( $term->taxonomy ) )->name ); ?></p>
 		<?php endif; ?>
-
-		<!-- pagination -->
-		<?php cp_groups()->templates->get_template_part( 'parts/pagination' ); ?>
 	</div>
 
 	<?php do_action( 'cp_after_archive' ); ?>
-	<?php do_action( 'cp_after_archive_'  . $term->slug ); ?>
 </div>

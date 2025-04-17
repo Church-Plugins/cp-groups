@@ -33,6 +33,6 @@ use CP_Groups\Templates;
 		</div>
 	</div>
 	
-	<?php do_action( 'cp_groups_after_archive' ); ?>
+	<?php do_action( 'cp_after_archive' ); ?>
 	
 </div>
