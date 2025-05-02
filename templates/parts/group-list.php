@@ -36,7 +36,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				<?php if ( ! empty( $item['categories'] ) ) : ?>
 					<div class="cp-group-item--category">
 						<?php foreach( $item['categories'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_category' ); ?>"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_category' ); ?>" rel="nofollow"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
@@ -44,7 +44,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				<?php if ( ! empty( $item['types'] ) ) : ?>
 					<div class="cp-group-item--type">
 						<?php foreach( $item['types'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_type' ); ?>" rel="nofollow"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
@@ -52,7 +52,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 				<?php if ( ! empty( $item['lifeStages'] ) ) : ?>
 					<div class="cp-group-item--life-stage">
 						<?php foreach( $item['lifeStages'] as $slug => $label ) : ?>
-							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_life_stage' ); ?>"><?php echo $label; ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $slug, 'cp_group_life_stage' ); ?>" rel="nofollow"><?php echo $label; ?></a>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
@@ -62,7 +62,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 						<?php $item_tag = get_post_meta( $item['originID'], $tag['slug'], true ) ?>
 						<?php if( empty( $item_tag ) ) continue; ?>
 						<?php if( isset( $tag['options'][$item_tag] ) ) : ?>
-							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $item_tag, $tag['slug'] ) ?>"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
+							<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( $tag['slug'], $item_tag ); ?>" rel="nofollow"><?php echo esc_html( $tag['options'][$item_tag] ); ?></a>
 						<?php endif; ?>
 					<?php endforeach; ?>
 				<?php endif; ?>
@@ -86,7 +86,7 @@ $is_location_page = get_query_var( 'cp_location_id' );
 		<?php if ( ! empty( $item['locations'] ) ) : ?>
 			<div class="cp-group-item--locations">
 				<?php foreach( $item['locations'] as $id => $location ) : ?>
-					<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( 'location_' . $id, 'cp_location' ); ?>"><?php echo $location['title']; ?></a>
+					<a class="cp-button is-xsmall is-transparent" href="<?php echo Templates::get_facet_link( 'location_' . $id, 'cp_location' ); ?>" rel="nofollow"><?php echo $location['title']; ?></a>
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
