@@ -19,6 +19,9 @@ npm run build
 
 ### Change Log
 
+#### 1.1.18
+* Enhancement: Add rel="nofollow" to taxonomy filter links for improved SEO
+
 #### 1.1.17
 * Enhancement: Add "Meets Online" filter & meta field.
 * Enhancement: Add Group Name to group webform email
