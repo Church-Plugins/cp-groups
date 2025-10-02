@@ -316,13 +316,18 @@ class Init extends \ChurchPlugins\Setup\Plugin {
 
 		try {
 			$group    = new Group( $group_id );
-			$email_to = $group->get_leader( 'email' );
+			$email_to = $group->get_leader_emails();
 		} catch ( \Exception $e ) {
 			wp_send_json_error( array( 'error' => __( 'Group not found', 'cp-groups' ), 'request' => $_REQUEST ) );
 		}
 
 		if ( empty( $email_to ) ) {
 			wp_send_json_error( array( 'error'   => __( 'Group leader email not found', 'cp-groups' ), 'request' => $_REQUEST ) );
+		}
+
+		// Convert array of emails to comma-separated string for wp_mail
+		if ( is_array( $email_to ) ) {
+			$email_to = implode( ', ', $email_to );
 		}
 
 		$subject = apply_filters( 'cp_groups_email_subject', __( '[Web Inquiry]', 'cp-groups' ) . ' ' . $subject, $subject );

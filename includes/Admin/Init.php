@@ -42,6 +42,7 @@ class Init {
 	protected function includes() {
 //		License::get_instance();
 		Settings::get_instance();
+		Tools::get_instance();
 	}
 
 	/**
