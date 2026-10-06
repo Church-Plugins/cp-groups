@@ -60,7 +60,7 @@ class Group extends PostType {
 			return;
 		}
 
-		$query->set( 'orderby', 'post_title' );
+		$query->set( 'orderby', 'menu_order post_title' );
 		$query->set( 'order', 'ASC' );
 
 		$meta_query = $query->get( 'meta_query', [] );
