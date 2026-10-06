@@ -179,6 +179,7 @@ class CP_Groups_Mail {
 			e.preventDefault()
 
 			const form = this.$form
+			form.find('[name="email-to"]').remove()
 
 			try {
 				await this.before_submit( form )
@@ -264,7 +265,9 @@ class CP_Groups_Mail {
 			this.message( "An unexpected error occured" , "error")
 		}
 
-		this.$modal.find('.email-to').val(email)
+		this.$modal.find('input.email-to').filter(function () {
+			return ! this.name
+		}).val(email)
 	}
 
 	message(text, type) {

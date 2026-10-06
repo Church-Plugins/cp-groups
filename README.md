@@ -19,6 +19,8 @@ npm run build
 
 ### Change Log
 
+* Sites using page caching should purge their cache after updating so the updated contact form loads.
+
 #### 1.1.18
 * Enhancement: Add rel="nofollow" to taxonomy filter links for improved SEO
 
