@@ -238,7 +238,7 @@ class Init {
 		$email_to = $this->resolve_recipient_email( $group_id, $contact );
 
 		if ( ! absint( $group_id ) ) {
-			wp_send_json_error( array( 'error' => __( 'Please refresh the page and try again.', 'cp-groups' ) ) );
+			wp_send_json_error( array( 'error' => __( 'Please refresh the page and try again.', 'church-plugins' ) ) );
 		}
 
 		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
@@ -316,6 +316,9 @@ class Init {
 	/**
 	 * Read the contact form recipient from the published group record.
 	 *
+	 * An empty contact uses a posted address only when it matches a stored
+	 * group address, then the leader email, then the contact email.
+	 *
 	 * @param mixed $group_id Group post ID.
 	 * @param mixed $contact  Stored contact to use: leader, contact, or register.
 	 * @return string
@@ -329,7 +332,11 @@ class Init {
 
 		$group_id = absint( $group_id );
 
-		if ( ! $group_id || ! is_string( $contact ) || ! isset( $sources[ $contact ] ) ) {
+		if ( ! $group_id || ! is_string( $contact ) ) {
+			return '';
+		}
+
+		if ( '' !== $contact && ! isset( $sources[ $contact ] ) ) {
 			return '';
 		}
 
@@ -337,13 +344,36 @@ class Init {
 			return '';
 		}
 
-		$email = get_post_meta( $group_id, $sources[ $contact ], true );
+		if ( '' !== $contact ) {
+			$email = get_post_meta( $group_id, $sources[ $contact ], true );
 
-		if ( ! is_string( $email ) || ! is_email( $email ) ) {
-			return '';
+			if ( ! is_string( $email ) || ! is_email( $email ) ) {
+				return '';
+			}
+
+			return $email;
 		}
 
-		return $email;
+		$posted = \ChurchPlugins\Helpers::get_post( 'email-to' );
+		if ( is_string( $posted ) && '' !== $posted ) {
+			foreach ( [ 'leader_email', 'action_contact', 'registration_url' ] as $key ) {
+				$email = get_post_meta( $group_id, $key, true );
+
+				if ( is_string( $email ) && $posted === $email && is_email( $email ) ) {
+					return $email;
+				}
+			}
+		}
+
+		foreach ( [ 'leader_email', 'action_contact' ] as $key ) {
+			$email = get_post_meta( $group_id, $key, true );
+
+			if ( is_string( $email ) && is_email( $email ) ) {
+				return $email;
+			}
+		}
+
+		return '';
 	}
 
 

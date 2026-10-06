@@ -227,18 +227,6 @@ namespace {
 		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Message recipient was not the stored leader address' );
 		cp_groups_test_assert( $requested !== $GLOBALS['cp_groups_test_mail'][0]['to'], 'Request recipient was used' );
 
-		$rejected = cp_groups_test_send(
-			cp_groups_test_fields(
-				array(
-					'email-to' => $requested,
-					'contact'  => '',
-				)
-			)
-		);
-
-		cp_groups_test_assert( false === $rejected->ok, 'Expected a request without a stored contact to be rejected' );
-		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'A request recipient was sent without a stored contact' );
-
 		$GLOBALS['cp_groups_test_meta'][10]['leader_email'] = 'not-an-email';
 		$invalid = cp_groups_test_send(
 			cp_groups_test_fields(
@@ -355,6 +343,142 @@ namespace {
 		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
 	}
 
+	function cp_groups_test_honeypot_setting_turned_on() {
+		cp_groups_test_add_post(
+			10,
+			'cp_group',
+			'publish',
+			array(
+				'leader_email' => 'leader@groups.test',
+			)
+		);
+		$GLOBALS['cp_groups_test_settings']['enable_honeypot'] = 'on';
+
+		$filled = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'email-verify' => 'visitor@example.com',
+				)
+			)
+		);
+
+		cp_groups_test_assert( false === $filled->ok, 'Expected a filled honeypot field to be rejected when the setting is on' );
+		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message when the honeypot setting is on' );
+
+		$empty = cp_groups_test_send( cp_groups_test_fields() );
+
+		cp_groups_test_assert( true === $empty->ok, 'Expected an empty honeypot field to still send when the setting is on' );
+		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
+	}
+
+	function cp_groups_test_group_addresses() {
+		return array(
+			'leader_email'     => 'leader@groups.test',
+			'action_contact'   => 'contact@groups.test',
+			'registration_url' => 'register@groups.test',
+		);
+	}
+
+	function cp_groups_test_empty_contact_with_matching_email_to() {
+		cp_groups_test_add_post( 10, 'cp_group', 'publish', cp_groups_test_group_addresses() );
+
+		foreach ( cp_groups_test_group_addresses() as $email ) {
+			$response = cp_groups_test_send(
+				cp_groups_test_fields(
+					array(
+						'contact'  => '',
+						'email-to' => $email,
+					)
+				)
+			);
+
+			cp_groups_test_assert( true === $response->ok, "Expected a matching stored address {$email} to send" );
+			cp_groups_test_assert( $email === $GLOBALS['cp_groups_test_mail'][0]['to'], "Expected the stored address {$email}" );
+		}
+
+		cp_groups_test_add_post( 11, 'cp_group', 'draft', cp_groups_test_group_addresses() );
+		$draft = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'group-id' => 11,
+					'contact'  => '',
+					'email-to' => 'register@groups.test',
+				)
+			)
+		);
+
+		cp_groups_test_assert( false === $draft->ok, 'Expected an unpublished group to be rejected' );
+		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message for an unpublished group' );
+	}
+
+	function cp_groups_test_empty_contact_with_non_matching_email_to() {
+		cp_groups_test_add_post( 10, 'cp_group', 'publish', cp_groups_test_group_addresses() );
+
+		$posted   = 'other@elsewhere.test';
+		$response = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'contact'  => '',
+					'email-to' => $posted,
+				)
+			)
+		);
+
+		cp_groups_test_assert( true === $response->ok, 'Expected the leader address when the posted address does not match' );
+		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
+		cp_groups_test_assert( $posted !== $GLOBALS['cp_groups_test_mail'][0]['to'], 'Posted address was used' );
+
+		$GLOBALS['cp_groups_test_meta'][10]['leader_email'] = 'not-an-email';
+		$fallback = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'contact'  => '',
+					'email-to' => $posted,
+				)
+			)
+		);
+
+		cp_groups_test_assert( true === $fallback->ok, 'Expected the contact address when the leader address is not usable' );
+		cp_groups_test_assert( 'contact@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored contact address' );
+		cp_groups_test_assert( $posted !== $GLOBALS['cp_groups_test_mail'][0]['to'], 'Posted address was used' );
+
+		$unknown = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'contact'  => 'website',
+					'email-to' => 'contact@groups.test',
+				)
+			)
+		);
+
+		cp_groups_test_assert( false === $unknown->ok, 'Expected an unknown contact to be rejected' );
+		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message for an unknown contact' );
+	}
+
+	function cp_groups_test_empty_contact_without_email_to() {
+		cp_groups_test_add_post( 10, 'cp_group', 'publish', cp_groups_test_group_addresses() );
+
+		$fields = cp_groups_test_fields( array( 'contact' => '' ) );
+		unset( $fields['email-to'] );
+
+		$response = cp_groups_test_send( $fields );
+
+		cp_groups_test_assert( true === $response->ok, 'Expected the leader address when no address is posted' );
+		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
+
+		$GLOBALS['cp_groups_test_meta'][10]['leader_email'] = '';
+		$contact = cp_groups_test_send( $fields );
+
+		cp_groups_test_assert( true === $contact->ok, 'Expected the contact address when the leader address is empty' );
+		cp_groups_test_assert( 'contact@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored contact address' );
+
+		$GLOBALS['cp_groups_test_meta'][10]['action_contact'] = '';
+		$none = cp_groups_test_send( $fields );
+
+		cp_groups_test_assert( false === $none->ok, 'Expected no send when the group has no stored address' );
+		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message without a stored address' );
+	}
+
 	function cp_groups_test_missing_group_id_asks_to_refresh() {
 		$without_id = cp_groups_test_fields();
 		unset( $without_id['group-id'] );
@@ -392,6 +516,10 @@ namespace {
 		'published group sends to stored email' => 'cp_groups_test_published_group_sends_to_stored_email',
 		'unpublished or non-group id is rejected' => 'cp_groups_test_unpublished_or_non_group_is_rejected',
 		'filled honeypot field still sends'    => 'cp_groups_test_filled_honeypot_still_sends',
+		'honeypot setting turned on'         => 'cp_groups_test_honeypot_setting_turned_on',
+		'empty contact with matching email-to' => 'cp_groups_test_empty_contact_with_matching_email_to',
+		'empty contact with non-matching email-to' => 'cp_groups_test_empty_contact_with_non_matching_email_to',
+		'empty contact with no email-to'     => 'cp_groups_test_empty_contact_without_email_to',
 		'request without a group id asks to refresh' => 'cp_groups_test_missing_group_id_asks_to_refresh',
 	);
 	$failed = 0;
