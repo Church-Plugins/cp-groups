@@ -13,7 +13,7 @@ try {
 }
 ?>
 
-<div class="cp-group-single">
+<article class="cp-group-single">
 
 	<div class="cp-group-single--thumb">
 		<?php if ( $item['thumb'] ) : ?>
@@ -143,4 +143,4 @@ try {
 		} ?>
 	</div>
 
-</div>
+</article>
