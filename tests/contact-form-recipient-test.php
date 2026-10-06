@@ -331,6 +331,52 @@ namespace {
 		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message for a missing group id' );
 	}
 
+	function cp_groups_test_filled_honeypot_still_sends() {
+		cp_groups_test_add_post(
+			10,
+			'cp_group',
+			'publish',
+			array(
+				'leader_email' => 'leader@groups.test',
+			)
+		);
+		$GLOBALS['cp_groups_test_settings']['enable_honeypot'] = 'off';
+
+		$response = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'email-verify' => 'visitor@example.com',
+				)
+			)
+		);
+
+		cp_groups_test_assert( true === $response->ok, 'Expected a filled honeypot field to still send' );
+		cp_groups_test_assert( 1 === count( $GLOBALS['cp_groups_test_mail'] ), 'Expected one message' );
+		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
+	}
+
+	function cp_groups_test_missing_group_id_asks_to_refresh() {
+		$without_id = cp_groups_test_fields();
+		unset( $without_id['group-id'] );
+
+		$requests = array(
+			$without_id,
+			cp_groups_test_fields( array( 'group-id' => '' ) ),
+			cp_groups_test_fields( array( 'group-id' => '0' ) ),
+		);
+
+		foreach ( $requests as $request ) {
+			$response = cp_groups_test_send( $request );
+
+			cp_groups_test_assert( false === $response->ok, 'Expected a request without a group id to be rejected' );
+			cp_groups_test_assert(
+				isset( $response->data['error'] ) && 'Please refresh the page and try again.' === $response->data['error'],
+				'Expected the refresh message'
+			);
+			cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message without a group id' );
+		}
+	}
+
 	set_error_handler(
 		function ( $severity, $message, $file, $line ) {
 			if ( ! ( error_reporting() & $severity ) ) {
@@ -345,6 +391,8 @@ namespace {
 		'request recipient is ignored'        => 'cp_groups_test_request_recipient_is_ignored',
 		'published group sends to stored email' => 'cp_groups_test_published_group_sends_to_stored_email',
 		'unpublished or non-group id is rejected' => 'cp_groups_test_unpublished_or_non_group_is_rejected',
+		'filled honeypot field still sends'    => 'cp_groups_test_filled_honeypot_still_sends',
+		'request without a group id asks to refresh' => 'cp_groups_test_missing_group_id_asks_to_refresh',
 	);
 	$failed = 0;
 

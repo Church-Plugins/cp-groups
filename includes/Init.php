@@ -237,6 +237,10 @@ class Init {
 
 		$email_to = $this->resolve_recipient_email( $group_id, $contact );
 
+		if ( ! absint( $group_id ) ) {
+			wp_send_json_error( array( 'error' => __( 'Please refresh the page and try again.', 'cp-groups' ) ) );
+		}
+
 		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
 			wp_send_json_error( array( 'error' => __( 'Something went wrong. Please reload the page and try again.', 'church-plugins' ) ) );
 		}
@@ -253,7 +257,7 @@ class Init {
 			wp_send_json_error( array( 'error' => __( "Daily send limit of {$limit} submissions exceeded - Message blocked. Please try again later.", 'church-plugins' ) ) );
 		}
 
-		if( ! empty( $honeypot ) ) {
+		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
 			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
 
