@@ -141,10 +141,12 @@ class Init {
 	 * @param string $name
 	 * @param string $email
 	 * @param string $title
+	 * @param int    $id
+	 * @param string $contact Stored contact to use: leader, contact, or register.
 	 * @return void
 	 * @author Jonathan Roley
 	 */
-	public function build_email_modal( string $name, string $email, string $title, int $id = 0 ) {
+	public function build_email_modal( string $name, string $email, string $title, int $id = 0, string $contact = '' ) {
 		$is_hidden_att = Settings::get_advanced( 'show_leader_email', 'off' ) == 'on' ? '' : 'hidden';
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
@@ -162,7 +164,6 @@ class Init {
 				<div <?php echo $is_hidden_att ?>>
 					<label>
 						<?php _e( 'To:', 'cp-groups' ); ?>
-						<input type="hidden" name="email-to" class="email-to" />
 						<input type="text" disabled="disabled" class="email-to" />
 						<div class="group-copy-email" title="Copy email address">
 							<span class="material-icons-outlined">content_copy</span>
@@ -206,6 +207,7 @@ class Init {
 				</div>
 
 				<input type="hidden" name="group-id" value="<?php echo absint( $id ); ?>" />
+				<input type="hidden" name="contact" value="<?php echo esc_attr( $contact ); ?>" />
 				<input class="cp-button is-large" type="submit" value="Send"/>
 
 			</form>
@@ -216,6 +218,8 @@ class Init {
 	/**
 	 * Send an email message via AJAX request after validating input
 	 *
+	 * The recipient address is resolved from the group record. An address in the request is not used.
+	 *
 	 * Responds to browser request with 200 for success or 503 on error. Script execution is halted without function return in either case.
 	 *
 	 * @return void
@@ -223,7 +227,7 @@ class Init {
 	 */
 	public function maybe_send_email() {
 		$group_id = \ChurchPlugins\Helpers::get_post( 'group-id' );
-		$email_to = \ChurchPlugins\Helpers::get_post( 'email-to' );
+		$contact  = \ChurchPlugins\Helpers::get_post( 'contact' );
 		$reply_to = \ChurchPlugins\Helpers::get_post( 'email-from' );
 		$honeypot = \ChurchPlugins\Helpers::get_post( 'email-verify' );
 		$name     = \ChurchPlugins\Helpers::get_post( 'from-name' );
@@ -231,6 +235,7 @@ class Init {
 		$message  = \ChurchPlugins\Helpers::get_post( 'message' );
 		$limit    = intval( Settings::get_advanced( 'throttle_amount', 3 ) );
 
+		$email_to = $this->resolve_recipient_email( $group_id, $contact );
 
 		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
 			wp_send_json_error( array( 'error' => __( 'Something went wrong. Please reload the page and try again.', 'church-plugins' ) ) );
@@ -248,7 +253,7 @@ class Init {
 			wp_send_json_error( array( 'error' => __( "Daily send limit of {$limit} submissions exceeded - Message blocked. Please try again later.", 'church-plugins' ) ) );
 		}
 
-		if( ! empty( $honeypot ) && Settings::get_advanced( 'enable_honeypot', 'off' ) === 'on' ) {
+		if( ! empty( $honeypot ) ) {
 			wp_send_json_error( array( 'error' => __( 'Blocked for suspicious activity', 'church-plugins' ), 'request' => $_REQUEST ) );
 		}
 
@@ -302,6 +307,39 @@ class Init {
 		wp_mail( $email_to, stripslashes( $subject ), stripslashes( wpautop( $message ) ), $headers );
 
 		wp_send_json_success( array( 'success' => __( 'Email sent!', 'church-plugins' ), 'request' => $_REQUEST ) );
+	}
+
+	/**
+	 * Read the contact form recipient from the published group record.
+	 *
+	 * @param mixed $group_id Group post ID.
+	 * @param mixed $contact  Stored contact to use: leader, contact, or register.
+	 * @return string
+	 */
+	private function resolve_recipient_email( $group_id, $contact ) {
+		$sources = [
+			'leader'   => 'leader_email',
+			'contact'  => 'action_contact',
+			'register' => 'registration_url',
+		];
+
+		$group_id = absint( $group_id );
+
+		if ( ! $group_id || ! is_string( $contact ) || ! isset( $sources[ $contact ] ) ) {
+			return '';
+		}
+
+		if ( 'cp_group' !== get_post_type( $group_id ) || 'publish' !== get_post_status( $group_id ) ) {
+			return '';
+		}
+
+		$email = get_post_meta( $group_id, $sources[ $contact ], true );
+
+		if ( ! is_string( $email ) || ! is_email( $email ) ) {
+			return '';
+		}
+
+		return $email;
 	}
 
 
