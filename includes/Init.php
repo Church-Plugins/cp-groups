@@ -147,6 +147,23 @@ class Init {
 	 * @author Jonathan Roley
 	 */
 	public function build_email_modal( string $name, string $email, string $title, int $id = 0, string $contact = '' ) {
+		if ( '' === $contact && $id ) {
+			$stored_contacts = [
+				'leader_email'     => 'leader',
+				'action_contact'   => 'contact',
+				'registration_url' => 'register',
+			];
+
+			foreach ( $stored_contacts as $meta_key => $contact_key ) {
+				$stored = get_post_meta( $id, $meta_key, true );
+
+				if ( is_string( $stored ) && $stored === $email ) {
+					$contact = $contact_key;
+					break;
+				}
+			}
+		}
+
 		$is_hidden_att = Settings::get_advanced( 'show_leader_email', 'off' ) == 'on' ? '' : 'hidden';
 		?>
 		<div class='cp-email-modal <?php echo esc_attr( $name ) ?>'>
@@ -241,7 +258,15 @@ class Init {
 			wp_send_json_error( array( 'error' => __( 'Please refresh the page and try again.', 'church-plugins' ) ) );
 		}
 
-		if( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) || ! is_email( $email_to ) ) {
+		if ( ! wp_verify_nonce( $_REQUEST['cp_send_email_nonce'], 'cp_send_email' ) ) {
+			wp_send_json_error( array( 'error' => __( 'Something went wrong. Please reload the page and try again.', 'church-plugins' ) ) );
+		}
+
+		if ( ! is_email( $email_to ) ) {
+			if ( $this->published_group_contact_has_no_address( $group_id, $contact ) ) {
+				wp_send_json_error( array( 'error' => __( "Sorry, this message couldn't be sent. This group's contact details have changed. Please contact the church directly.", 'church-plugins' ) ) );
+			}
+
 			wp_send_json_error( array( 'error' => __( 'Something went wrong. Please reload the page and try again.', 'church-plugins' ) ) );
 		}
 
@@ -374,6 +399,33 @@ class Init {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Whether a published group was asked for a known contact that has no stored address.
+	 *
+	 * @param mixed $group_id Group post ID.
+	 * @param mixed $contact  leader, contact, or register.
+	 * @return bool
+	 */
+	private function published_group_contact_has_no_address( $group_id, $contact ) {
+		$sources = [
+			'leader'   => 'leader_email',
+			'contact'  => 'action_contact',
+			'register' => 'registration_url',
+		];
+
+		if ( ! is_string( $contact ) || ! isset( $sources[ $contact ] ) ) {
+			return false;
+		}
+
+		if ( 'cp_group' !== get_post_type( $group_id ) || 'publish' !== get_post_status( $group_id ) ) {
+			return false;
+		}
+
+		$email = get_post_meta( $group_id, $sources[ $contact ], true );
+
+		return ! is_string( $email ) || ! is_email( $email );
 	}
 
 

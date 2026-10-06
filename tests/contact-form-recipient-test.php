@@ -139,6 +139,42 @@ namespace {
 		return $text;
 	}
 
+	function esc_attr( $text ) {
+		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	}
+
+	function esc_url( $url ) {
+		return (string) $url;
+	}
+
+	function _e( $text, $domain = 'default' ) {
+		echo $text;
+	}
+
+	function admin_url( $path = '', $scheme = 'admin' ) {
+		return 'https://groups.test/wp-admin/' . ltrim( (string) $path, '/' );
+	}
+
+	function add_query_arg( $key, $value = '', $url = '' ) {
+		if ( ! is_string( $key ) ) {
+			return (string) $url;
+		}
+
+		$separator = str_contains( (string) $url, '?' ) ? '&' : '?';
+
+		return $url . $separator . rawurlencode( $key ) . '=' . rawurlencode( (string) $value );
+	}
+
+	function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $echo = true ) {
+		$html = '<input type="hidden" name="' . esc_attr( $name ) . '" value="test-nonce" />';
+
+		if ( $echo ) {
+			echo $html;
+		}
+
+		return $html;
+	}
+
 	require dirname( __DIR__ ) . '/includes/Init.php';
 
 	function cp_groups_test_reset() {
@@ -358,6 +394,7 @@ namespace {
 			cp_groups_test_fields(
 				array(
 					'email-verify' => 'visitor@example.com',
+					'email-to'     => 'other@elsewhere.test',
 				)
 			)
 		);
@@ -365,10 +402,18 @@ namespace {
 		cp_groups_test_assert( false === $filled->ok, 'Expected a filled honeypot field to be rejected when the setting is on' );
 		cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], 'Expected no message when the honeypot setting is on' );
 
-		$empty = cp_groups_test_send( cp_groups_test_fields() );
+		$empty = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'email-verify' => '',
+					'email-to'     => 'other@elsewhere.test',
+				)
+			)
+		);
 
 		cp_groups_test_assert( true === $empty->ok, 'Expected an empty honeypot field to still send when the setting is on' );
 		cp_groups_test_assert( 'leader@groups.test' === $GLOBALS['cp_groups_test_mail'][0]['to'], 'Expected the stored leader address' );
+		cp_groups_test_assert( 'other@elsewhere.test' !== $GLOBALS['cp_groups_test_mail'][0]['to'], 'Posted address was used' );
 	}
 
 	function cp_groups_test_group_addresses() {
@@ -501,6 +546,164 @@ namespace {
 		}
 	}
 
+	function cp_groups_test_input_value( $html, $name ) {
+		$pattern = '/name="' . preg_quote( $name, '/' ) . '" value="([^"]*)"/';
+
+		if ( ! preg_match( $pattern, $html, $matches ) ) {
+			throw new RuntimeException( "Missing {$name} field" );
+		}
+
+		return $matches[1];
+	}
+
+	function cp_groups_test_render_modal( $name, $email, $title, $id ) {
+		$init = ( new ReflectionClass( \CP_Groups\Init::class ) )->newInstanceWithoutConstructor();
+
+		ob_start();
+		$init->build_email_modal( $name, $email, $title, $id );
+
+		return ob_get_clean();
+	}
+
+	function cp_groups_test_four_arg_modal_uses_stored_contact() {
+		cp_groups_test_add_post( 10, 'cp_group', 'publish', cp_groups_test_group_addresses() );
+
+		$cases = array(
+			array( 'action_contact', 'leader@groups.test', 'leader' ),
+			array( 'action_contact', 'contact@groups.test', 'contact' ),
+			array( 'action_register', 'register@groups.test', 'register' ),
+		);
+
+		foreach ( $cases as $case ) {
+			list( $name, $email, $contact ) = $case;
+			$html = cp_groups_test_render_modal( $name, $email, 'Group', 10 );
+
+			cp_groups_test_assert( $contact === cp_groups_test_input_value( $html, 'contact' ), "Expected the rendered contact to be {$contact}" );
+			cp_groups_test_assert( '10' === cp_groups_test_input_value( $html, 'group-id' ), 'Expected the rendered group id' );
+			cp_groups_test_assert( false === str_contains( $html, 'name="email-to"' ), 'Expected the modal not to post an address' );
+
+			$fields = cp_groups_test_fields(
+				array(
+					'group-id' => cp_groups_test_input_value( $html, 'group-id' ),
+					'contact'  => cp_groups_test_input_value( $html, 'contact' ),
+				)
+			);
+			unset( $fields['email-to'] );
+
+			$response = cp_groups_test_send( $fields );
+
+			cp_groups_test_assert( true === $response->ok, "Expected {$contact} to send" );
+			cp_groups_test_assert( $email === $GLOBALS['cp_groups_test_mail'][0]['to'], "Expected {$contact} to use {$email}" );
+			cp_groups_test_assert( 'leader@groups.test' === $email || 'leader@groups.test' !== $GLOBALS['cp_groups_test_mail'][0]['to'], 'Register was sent to the leader address' );
+		}
+	}
+
+	function cp_groups_test_error_message( $response ) {
+		return isset( $response->data['error'] ) ? $response->data['error'] : '';
+	}
+
+	function cp_groups_test_changed_contact_message() {
+		cp_groups_test_add_post(
+			10,
+			'cp_group',
+			'publish',
+			array(
+				'leader_email'     => 'leader@groups.test',
+				'action_contact'   => '',
+				'registration_url' => '',
+			)
+		);
+
+		$changed = "Sorry, this message couldn't be sent. This group's contact details have changed. Please contact the church directly.";
+		$reload  = 'Something went wrong. Please reload the page and try again.';
+		$refresh = 'Please refresh the page and try again.';
+
+		foreach ( array( 'leader', 'contact', 'register' ) as $contact ) {
+			if ( 'leader' === $contact ) {
+				$GLOBALS['cp_groups_test_meta'][10]['leader_email'] = '';
+			}
+
+			$response = cp_groups_test_send(
+				cp_groups_test_fields(
+					array(
+						'contact' => $contact,
+					)
+				)
+			);
+
+			cp_groups_test_assert( false === $response->ok, "Expected {$contact} without a stored address to be rejected" );
+			cp_groups_test_assert( $changed === cp_groups_test_error_message( $response ), "Expected the changed-details message for {$contact}" );
+			cp_groups_test_assert( array() === $GLOBALS['cp_groups_test_mail'], "Expected no message for {$contact}" );
+		}
+
+		$GLOBALS['cp_groups_test_meta'][10]['leader_email'] = 'leader@groups.test';
+
+		$missing = cp_groups_test_fields( array( 'contact' => 'leader' ) );
+		unset( $missing['group-id'] );
+		$missing_response = cp_groups_test_send( $missing );
+		cp_groups_test_assert( $refresh === cp_groups_test_error_message( $missing_response ), 'Expected the refresh message when the group id is missing' );
+
+		$zero = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'group-id' => '0',
+					'contact'  => 'leader',
+				)
+			)
+		);
+		cp_groups_test_assert( $refresh === cp_groups_test_error_message( $zero ), 'Expected the refresh message when the group id is zero' );
+
+		$unknown = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'contact' => 'website',
+				)
+			)
+		);
+		cp_groups_test_assert( $reload === cp_groups_test_error_message( $unknown ), 'Expected the reload message for an unknown contact' );
+		cp_groups_test_assert( $changed !== cp_groups_test_error_message( $unknown ), 'Unknown contact used the changed-details message' );
+
+		cp_groups_test_add_post( 11, 'cp_group', 'draft', array( 'leader_email' => 'leader@groups.test' ) );
+		$draft = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'group-id' => 11,
+					'contact'  => 'leader',
+				)
+			)
+		);
+		cp_groups_test_assert( $reload === cp_groups_test_error_message( $draft ), 'Expected the reload message for an unpublished group' );
+
+		cp_groups_test_add_post( 12, 'post', 'publish', array( 'leader_email' => 'leader@groups.test' ) );
+		$other = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'group-id' => 12,
+					'contact'  => 'leader',
+				)
+			)
+		);
+		cp_groups_test_assert( $reload === cp_groups_test_error_message( $other ), 'Expected the reload message for a non-group id' );
+
+		$nonce = cp_groups_test_send(
+			cp_groups_test_fields(
+				array(
+					'cp_send_email_nonce' => 'wrong-nonce',
+					'contact'             => 'register',
+				)
+			)
+		);
+		cp_groups_test_assert( $reload === cp_groups_test_error_message( $nonce ), 'Expected the reload message when the nonce does not match' );
+		cp_groups_test_assert( $changed !== cp_groups_test_error_message( $nonce ), 'Nonce failure used the changed-details message' );
+
+		$empty_contact = cp_groups_test_fields( array( 'contact' => '' ) );
+		unset( $empty_contact['email-to'] );
+		$GLOBALS['cp_groups_test_meta'][10]['leader_email']   = '';
+		$GLOBALS['cp_groups_test_meta'][10]['action_contact'] = '';
+		$empty = cp_groups_test_send( $empty_contact );
+		cp_groups_test_assert( $reload === cp_groups_test_error_message( $empty ), 'Expected the reload message when contact is empty and no address is stored' );
+	}
+
 	set_error_handler(
 		function ( $severity, $message, $file, $line ) {
 			if ( ! ( error_reporting() & $severity ) ) {
@@ -520,6 +723,8 @@ namespace {
 		'empty contact with matching email-to' => 'cp_groups_test_empty_contact_with_matching_email_to',
 		'empty contact with non-matching email-to' => 'cp_groups_test_empty_contact_with_non_matching_email_to',
 		'empty contact with no email-to'     => 'cp_groups_test_empty_contact_without_email_to',
+		'four argument modal uses stored contact' => 'cp_groups_test_four_arg_modal_uses_stored_contact',
+		'changed contact details message'    => 'cp_groups_test_changed_contact_message',
 		'request without a group id asks to refresh' => 'cp_groups_test_missing_group_id_asks_to_refresh',
 	);
 	$failed = 0;
