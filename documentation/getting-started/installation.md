@@ -15,8 +15,7 @@ This guide walks you through installing and activating CP Groups on your WordPre
 
 Before installing CP Groups:
 
-- A WordPress site running version 5.0 or higher
-- PHP 7.0 or higher
+- A WordPress site
 - A valid CP Groups license key from [ChurchPlugins](https://churchplugins.com)
 
 ## Installing the Plugin
