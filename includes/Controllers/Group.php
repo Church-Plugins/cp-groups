@@ -243,7 +243,13 @@ class Group extends Controller {
 
 			$user = get_user_by( 'ID', $leader['id'] );
 			if ( $user ) {
-				$leader['name'] = $user->first_name . ' ' . $user->last_name;
+				$user_name = trim( (string) $user->first_name . ' ' . (string) $user->last_name );
+
+				// A matched user with no first or last name keeps the stored leader name.
+				if ( '' !== $user_name ) {
+					$leader['name'] = $user_name;
+				}
+
 				$leader['email'] = $user->user_email;
 			}
 		}
