@@ -43,8 +43,9 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 	 * Copy 1.1 leader meta into the 1.2 leaders list.
 	 *
 	 * 1.1.x stores the name in `leader` and the email in `leader_email`.
-	 * `leader_name` is only used when `leader` is empty. Groups that already
-	 * have a leaders list are left unchanged, and the old meta is kept.
+	 * `leader_name` is only used when `leader` is empty. The email is copied
+	 * only when is_email() accepts it. Groups that already have a leaders
+	 * list are left unchanged, and the old meta is kept.
 	 */
 	public function migrate_leader_data() {
 		$group_ids = get_posts( [
@@ -72,7 +73,7 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 		}
 
 		$name  = $this->legacy_leader_name( $group_id );
-		$email = $this->legacy_leader_email( $group_id );
+		$email = $this->validated_leader_email( $this->legacy_leader_email( $group_id ) );
 
 		if ( '' === $name && '' === $email ) {
 			return;
@@ -117,6 +118,26 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 	 */
 	protected function legacy_leader_email( $group_id ) {
 		return $this->meta_string( get_post_meta( $group_id, 'leader_email', true ) );
+	}
+
+	/**
+	 * Keep a legacy email only when is_email() accepts it.
+	 *
+	 * @param string $email Trimmed legacy email.
+	 * @return string
+	 */
+	protected function validated_leader_email( $email ) {
+		if ( '' === $email ) {
+			return '';
+		}
+
+		$valid = is_email( $email );
+
+		if ( ! is_string( $valid ) || '' === $valid ) {
+			return '';
+		}
+
+		return $valid;
 	}
 
 	/**

@@ -15,7 +15,7 @@
  * - a group that already has a leaders list
  * - the same records a second time
  *
- * It also checks the leader_name fallback and that legacy meta is kept.
+ * It also checks the leader_name fallback, email checks, leader display, and that legacy meta is kept.
  *
  * @package CP_Groups
  */
@@ -28,6 +28,41 @@ namespace ChurchPlugins\Setup {
 			 * @return array
 			 */
 			abstract public function get_migrations(): array;
+		}
+	}
+}
+
+namespace ChurchPlugins\Controllers {
+
+	if ( ! class_exists( 'ChurchPlugins\Controllers\Controller', false ) ) {
+		class Controller {
+			/**
+			 * @var object
+			 */
+			public $post;
+
+			/**
+			 * @param int  $id         Post ID.
+			 * @param bool $use_origin Unused. Matches the core constructor signature.
+			 */
+			public function __construct( $id, $use_origin = true ) {
+				unset( $use_origin );
+
+				$this->post = (object) array(
+					'ID' => $id,
+				);
+			}
+
+			/**
+			 * @param mixed  $value    Value to return.
+			 * @param string $function Caller name.
+			 * @return mixed
+			 */
+			protected function filter( $value, $function ) {
+				unset( $function );
+
+				return $value;
+			}
 		}
 	}
 }
@@ -107,11 +142,94 @@ namespace {
 	 * @return object|false
 	 */
 	function get_user_by( $field, $value ) {
-		if ( 'email' !== $field || ! isset( $GLOBALS['cp_groups_users'][ $value ] ) ) {
+		if ( 'email' === $field ) {
+			foreach ( $GLOBALS['cp_groups_users'] as $email => $user ) {
+				if ( 0 === strcasecmp( (string) $email, (string) $value ) ) {
+					return $user;
+				}
+			}
+
 			return false;
 		}
 
-		return $GLOBALS['cp_groups_users'][ $value ];
+		if ( 'ID' === $field ) {
+			foreach ( $GLOBALS['cp_groups_users'] as $user ) {
+				if ( (int) $user->ID === (int) $value ) {
+					return $user;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Subset of WordPress is_email(). Returns the email string when it is valid.
+	 *
+	 * @param string $email Email address.
+	 * @return string|false
+	 */
+	function is_email( $email ) {
+		if ( ! is_string( $email ) || strlen( $email ) < 6 || false === strpos( $email, '@', 1 ) ) {
+			return false;
+		}
+
+		list( $local, $domain ) = explode( '@', $email, 2 );
+
+		if ( ! preg_match( '/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]+$/', $local ) ) {
+			return false;
+		}
+
+		if ( preg_match( '/\.{2,}/', $domain ) || trim( $domain, " \t\n\r\0\x0B." ) !== $domain ) {
+			return false;
+		}
+
+		$subs = explode( '.', $domain );
+
+		if ( count( $subs ) < 2 ) {
+			return false;
+		}
+
+		foreach ( $subs as $sub ) {
+			if ( trim( $sub, " \t\n\r\0\x0B-" ) !== $sub || ! preg_match( '/^[a-z0-9-]+$/i', $sub ) ) {
+				return false;
+			}
+		}
+
+		return $email;
+	}
+
+	/**
+	 * @param mixed $value Value to cast.
+	 * @return int
+	 */
+	function absint( $value ) {
+		return abs( (int) $value );
+	}
+
+	/**
+	 * @param string $email Email address.
+	 * @return string
+	 */
+	function sanitize_email( $email ) {
+		$email = trim( (string) $email );
+
+		if ( '' === $email || ! is_email( $email ) ) {
+			return '';
+		}
+
+		return $email;
+	}
+
+	/**
+	 * @param string $value Text to clean.
+	 * @return string
+	 */
+	function sanitize_text_field( $value ) {
+		$value = strip_tags( (string) $value );
+		$value = preg_replace( '/[\r\n\t ]+/', ' ', $value );
+
+		return trim( $value );
 	}
 
 	/**
@@ -156,9 +274,36 @@ namespace {
 	}
 
 	require dirname( __DIR__ ) . '/includes/Migrator.php';
+	require dirname( __DIR__ ) . '/includes/Controllers/Group.php';
 
-	$ada_id = 42;
-	$GLOBALS['cp_groups_users']['ada@example.com'] = (object) array( 'ID' => $ada_id );
+	$ada_id   = 42;
+	$blank_id = 80;
+	$case_id  = 77;
+
+	$GLOBALS['cp_groups_users']['ada@example.com'] = (object) array(
+		'ID'         => $ada_id,
+		'first_name' => 'Ada',
+		'last_name'  => 'Lovelace',
+		'user_email' => 'ada@example.com',
+	);
+	$GLOBALS['cp_groups_users']['blank.name@example.com'] = (object) array(
+		'ID'         => $blank_id,
+		'first_name' => '',
+		'last_name'  => '',
+		'user_email' => 'blank.name@example.com',
+	);
+	$GLOBALS['cp_groups_users']['case.user@example.com'] = (object) array(
+		'ID'         => $case_id,
+		'first_name' => 'Profile',
+		'last_name'  => 'Name',
+		'user_email' => 'case.user@example.com',
+	);
+	$GLOBALS['cp_groups_users']['not-an-email'] = (object) array(
+		'ID'         => 99,
+		'first_name' => 'Should',
+		'last_name'  => 'Not Match',
+		'user_email' => 'not-an-email',
+	);
 
 	$already = array(
 		array(
@@ -209,6 +354,24 @@ namespace {
 		'leaders'      => array(),
 		'leader'       => 'Filled Later',
 		'leader_email' => 'filled@example.com',
+	) );
+	cp_groups_add_post( 10, 'cp_group', array(
+		'leader'       => 'Stored Name',
+		'leader_email' => 'blank.name@example.com',
+	) );
+	cp_groups_add_post( 11, 'cp_group', array(
+		'leader' => '  <b>Grace</b> Hopper  ',
+	) );
+	cp_groups_add_post( 12, 'cp_group', array(
+		'leader'       => 'Invalid Email',
+		'leader_email' => 'not-an-email',
+	) );
+	cp_groups_add_post( 13, 'cp_group', array(
+		'leader_email' => 'still-not-valid',
+	) );
+	cp_groups_add_post( 14, 'cp_group', array(
+		'leader'       => 'Case Match',
+		'leader_email' => 'Case.User@Example.com',
 	) );
 
 	$migrator = new \CP_Groups\Migrator();
@@ -278,10 +441,35 @@ namespace {
 		cp_groups_leader_entry( 9 )
 	);
 
+	cp_groups_assert_same(
+		'case-mismatched email matches a user',
+		array(
+			'id'    => $case_id,
+			'name'  => 'Case Match',
+			'email' => 'Case.User@Example.com',
+		),
+		cp_groups_leader_entry( 14 )
+	);
+
+	cp_groups_assert_same(
+		'invalid email is omitted when a name is present',
+		array(
+			'id'    => '',
+			'name'  => 'Invalid Email',
+			'email' => '',
+		),
+		cp_groups_leader_entry( 12 )
+	);
+	cp_groups_assert_same( 'invalid email meta is kept', 'not-an-email', get_post_meta( 12, 'leader_email', true ) );
+	cp_groups_assert_same( 'invalid email and no name skips the leaders row', '', get_post_meta( 13, 'leaders', true ) );
+	cp_groups_assert_same( 'invalid email and no name keeps email meta', 'still-not-valid', get_post_meta( 13, 'leader_email', true ) );
+
+	cp_groups_assert_same( 'HTML in name is stored trimmed', '<b>Grace</b> Hopper', cp_groups_leader_entry( 11 )['name'] );
+
 	cp_groups_assert_same( 'legacy meta is not deleted', array(), $GLOBALS['cp_groups_deletes'] );
 	cp_groups_assert_same(
 		'first run writes only groups that need a list',
-		array( 1, 2, 3, 6, 7, 9 ),
+		array( 1, 2, 3, 6, 7, 9, 10, 11, 12, 14 ),
 		array_map(
 			function ( $update ) {
 				return $update[0];
@@ -300,6 +488,45 @@ namespace {
 	cp_groups_assert_same( 'second run still has one leader for the named group', 1, count( get_post_meta( 1, 'leaders', true ) ) );
 	cp_groups_assert_same( 'second run keeps the existing list at two leaders', 2, count( get_post_meta( 5, 'leaders', true ) ) );
 	cp_groups_assert_same( 'second run still does not delete meta', array(), $GLOBALS['cp_groups_deletes'] );
+
+	$blank_group = new \CP_Groups\Controllers\Group( 10 );
+	cp_groups_assert_same(
+		'blank user first and last name falls back to the stored name',
+		array(
+			array(
+				'id'    => $blank_id,
+				'name'  => 'Stored Name',
+				'email' => 'blank.name@example.com',
+			),
+		),
+		$blank_group->get_leaders()
+	);
+
+	$html_group = new \CP_Groups\Controllers\Group( 11 );
+	cp_groups_assert_same(
+		'HTML in name is plain text when displayed',
+		array(
+			array(
+				'id'    => 0,
+				'name'  => 'Grace Hopper',
+				'email' => '',
+			),
+		),
+		$html_group->get_leaders()
+	);
+
+	$case_group = new \CP_Groups\Controllers\Group( 14 );
+	cp_groups_assert_same(
+		'a user name still replaces the stored name',
+		array(
+			array(
+				'id'    => $case_id,
+				'name'  => 'Profile Name',
+				'email' => 'case.user@example.com',
+			),
+		),
+		$case_group->get_leaders()
+	);
 
 	if ( $GLOBALS['cp_groups_failures'] > 0 ) {
 		echo "\n{$GLOBALS['cp_groups_failures']} check(s) failed.\n";
