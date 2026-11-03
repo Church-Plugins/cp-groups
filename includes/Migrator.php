@@ -11,7 +11,9 @@ namespace CP_Groups;
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/ChurchPlugins/Setup/Migrator.php';
+if ( ! class_exists( 'ChurchPlugins\Setup\Migrator', false ) ) {
+	require_once __DIR__ . '/ChurchPlugins/Setup/Migrator.php';
+}
 
 /**
  * Class Migrator
@@ -38,46 +40,97 @@ class Migrator extends \ChurchPlugins\Setup\Migrator {
 	}
 
 	/**
-	 * Migrate to 1.2.0
+	 * Copy 1.1 leader meta into the 1.2 leaders list.
+	 *
+	 * 1.1.x stores the name in `leader` and the email in `leader_email`.
+	 * `leader_name` is only used when `leader` is empty. Groups that already
+	 * have a leaders list are left unchanged, and the old meta is kept.
 	 */
 	public function migrate_leader_data() {
-		// group leader is stored as postmeta, with leader_name and leader_email values
-		// we need to convert this to an array of leader objects and save it as the leaders postmeta
-		$group_args = [
+		$group_ids = get_posts( [
 			'post_type'      => 'cp_group',
 			'posts_per_page' => -1,
 			'post_status'    => 'any',
 			'fields'         => 'ids',
-		];
-
-		$group_ids = get_posts( $group_args );
+		] );
 
 		foreach ( $group_ids as $group_id ) {
-			$leader_name  = get_post_meta( $group_id, 'leader_name', true );
-			$leader_email = get_post_meta( $group_id, 'leader_email', true );
-
-			if ( ! $leader_name && ! $leader_email ) {
-				continue;
-			}
-
-			$id = '';
-
-			if ( $leader_email && $user = get_user_by( 'email', $leader_email ) ) {
-				$id = $user->ID;
-			}
-
-			$leaders = [
-				[
-					'id'    => $id,
-					'name'  => $leader_name,
-					'email' => $leader_email,
-				],
-			];
-
-			update_post_meta( $group_id, 'leaders', $leaders );
-			delete_post_meta( $group_id, 'leader_name' );
-			delete_post_meta( $group_id, 'leader_email' );
+			$this->migrate_group_leader( $group_id );
 		}
+	}
+
+	/**
+	 * Migrate one group when it still needs a leaders list.
+	 *
+	 * @param int $group_id Group post ID.
+	 */
+	protected function migrate_group_leader( $group_id ) {
+		$existing = get_post_meta( $group_id, 'leaders', true );
+
+		if ( is_array( $existing ) && ! empty( $existing ) ) {
+			return;
+		}
+
+		$name  = $this->legacy_leader_name( $group_id );
+		$email = $this->legacy_leader_email( $group_id );
+
+		if ( '' === $name && '' === $email ) {
+			return;
+		}
+
+		$id = '';
+
+		if ( '' !== $email && $user = get_user_by( 'email', $email ) ) {
+			$id = $user->ID;
+		}
+
+		update_post_meta( $group_id, 'leaders', [
+			[
+				'id'    => $id,
+				'name'  => $name,
+				'email' => $email,
+			],
+		] );
+	}
+
+	/**
+	 * Leader name stored by 1.1.x, with a fallback for `leader_name`.
+	 *
+	 * @param int $group_id Group post ID.
+	 * @return string
+	 */
+	protected function legacy_leader_name( $group_id ) {
+		$name = $this->meta_string( get_post_meta( $group_id, 'leader', true ) );
+
+		if ( '' !== $name ) {
+			return $name;
+		}
+
+		return $this->meta_string( get_post_meta( $group_id, 'leader_name', true ) );
+	}
+
+	/**
+	 * Leader email stored by 1.1.x.
+	 *
+	 * @param int $group_id Group post ID.
+	 * @return string
+	 */
+	protected function legacy_leader_email( $group_id ) {
+		return $this->meta_string( get_post_meta( $group_id, 'leader_email', true ) );
+	}
+
+	/**
+	 * Normalize a meta value to a trimmed string.
+	 *
+	 * @param mixed $value Raw meta value.
+	 * @return string
+	 */
+	protected function meta_string( $value ) {
+		if ( ! is_string( $value ) ) {
+			return '';
+		}
+
+		return trim( $value );
 	}
 
 	/**
